@@ -1,0 +1,130 @@
+<SCENE>
+
+<INITIALS>
+    <frustum near="0.1" far="500.0"/>
+    <translation x="-7" y="-15 " z="-7" />
+    <rotation axis="x" angle="0" />
+    <rotation axis="y" angle="0" />
+    <rotation axis="z" angle="0" /> 
+    <scale sx="0.5" sy="0.5" sz="0.5" />
+    <reference length="0" />
+</INITIALS>
+
+<ILLUMINATION>
+    <ambient r="0.1" g="0.1" b="0.1" a="1.0" />
+    <background r="0.63" g="0.56" b="0.35" a="1.0" />
+</ILLUMINATION>
+
+<LIGHTS>
+    <LIGHT id="luz_cena">
+        <enable value= "1" />
+        <position x="10" y="7" z="10" w="1.0" />
+        <ambient r="0.9" g="0.9" b="0.9" a="1.0" />
+        <diffuse r="0.9" g="0.9" b="0.9" a="1.0" />
+        <specular r="0.9" g="0.9" b="0.9" a="1.0" /> 
+    </LIGHT>
+</LIGHTS>
+
+
+<TEXTURES>
+    <TEXTURE id="rocketTexture">
+        <file path="textures/rocket.png" />
+        <amplif_factor s="1" t="1" />
+    </TEXTURE>
+</TEXTURES>
+
+
+<MATERIALS>
+     <MATERIAL id="branco">                               
+        <shininess value="1.0" />
+        <specular r="0" g="0" b="0" a="1" />        <!-- specular reflection -->
+        <diffuse r="0.6" g="0.6" b="0.6" a="1" />         <!-- diffuse reflection -->
+        <ambient r="0.6" g="0.6" b="0.6" a="1" />         <!-- ambient reflection -->
+        <emission r="0" g="0" b="0" a="1" />        <!-- emission component -->
+    </MATERIAL>
+</MATERIALS>
+
+
+<LEAVES>
+	<LEAF id="rocket" type="vehicle" />
+	<LEAF id="terrain" type="terrain" texture="textures/marsTerrain.png" heightmap="textures/marsHeightmap.png" />
+</LEAVES>
+
+
+<NODES>
+    <ROOT id="descolagemMarte" />
+
+	<NODE id="descolagemMarte">
+		<MATERIAL id="null" />
+        <TEXTURE id="null" />
+		
+        <DESCENDANTS>
+			<DESCENDANT id="orientaFoguetao" />
+			<DESCENDANT id="marte" />
+		</DESCENDANTS>
+	</NODE>
+	
+	<NODE id="marte">
+		<MATERIAL id="null" />
+		<TEXTURE id="null" />
+		
+		<SCALE sx="50" sy="25" sz="50" />
+		
+		<DESCENDANTS>
+			<DESCENDANT id="terrain" />
+		</DESCENDANTS>
+		<ANIMATIONREF id="aguardar" />
+		<ANIMATIONREF id="afastamento" />
+	</NODE>
+	
+	<NODE id="orientaFoguetao">
+		<MATERIAL id="null" />
+        <TEXTURE id="null" />
+		
+		<TRANSLATION x="-10" y="0" z="-10" />
+		
+		<ROTATION axis="y" angle="120" />
+		<ROTATION axis="z" angle="90" />
+		
+        <DESCENDANTS>
+			<DESCENDANT id="foguetao" />
+		</DESCENDANTS>
+	</NODE>
+	
+    <NODE id="foguetao">
+        <MATERIAL id="branco" />
+        <TEXTURE id="rocketTexture" />
+		
+		<ROTATION axis="z" angle="-90" />
+		
+        <DESCENDANTS>
+			<DESCENDANT id="rocket" />
+		</DESCENDANTS>
+		<ANIMATIONREF id="aguardar" />
+		<ANIMATIONREF id="descolagem" />
+		<ANIMATIONREF id="orientacao" />
+		<ANIMATIONREF id="orbita" />
+    </NODE>
+
+</NODES>
+
+<ANIMATIONS>
+	<ANIMATION id="aguardar" span="5" type="linear">
+		<CONTROLPOINT xx="0" yy="0" zz="0" />
+	</ANIMATION>
+    <ANIMATION id="descolagem" span="5" type="linear">
+		<CONTROLPOINT xx="0" yy="0" zz="0" />
+        <CONTROLPOINT xx="10" yy="0" zz="0" />
+    </ANIMATION>
+	<ANIMATION id="orientacao" span="5" type="circular" center="10 0 5" radius="5" startang="90" rotang="-90"/>
+	<ANIMATION id="orbita" span="10" type="linear">
+		<CONTROLPOINT xx="15" yy="00" zz="5" />
+		<CONTROLPOINT xx="15" yy="0" zz="20" />
+	</ANIMATION>
+	<ANIMATION id="afastamento" span="5" type="linear">
+		<CONTROLPOINT xx="0" yy="0" zz="0" />
+		<CONTROLPOINT xx="0" yy="-5" zz="0" />
+	</ANIMATION>
+</ANIMATIONS>
+
+</SCENE>
