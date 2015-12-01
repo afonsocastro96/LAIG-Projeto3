@@ -75,6 +75,7 @@
 <LEAVES>
 	<LEAF id="square" type="rectangle" args="-0.5 0.5 0.5 -0.5" />
 	<LEAF id="cylinder" type="cylinder" args="1.0 0.5 0.5 20 20" /> 
+	<LEAF id="sphere" type="sphere" args="0.5 20 20" />
 </LEAVES>
 
 
@@ -240,14 +241,55 @@
     	<MATERIAL id="branco" />
         <TEXTURE id="lightwood" />
 
-        <TRANSLATION x="0" y="1.5" z="0" />
         <SCALE sx="0.65" sy="1.5" sz="0.65" />
-        <ROTATION axis="x" angle="90" />
-
+		
         <DESCENDANTS>
-            <DESCENDANT id="cylinder" />
+            <DESCENDANT id="whitetowerbody" />
+			<DESCENDANT id="whitetowerbottomcover" />
+			<DESCENDANT id="whitetowertopcover" />
         </DESCENDANTS>
     </NODE>
+	
+	<NODE id="whitetowerbody">
+		<MATERIAL id="null" />
+		<TEXTURE id="null" />
+		
+        <ROTATION axis="x" angle="-90" />
+		
+		<DESCENDANTS>
+			<DESCENDANT id="cylinder" />
+		</DESCENDANTS>
+	</NODE>
+	
+	<NODE id="whitetowerbottomcover">
+		<MATERIAL id="null" />
+		<TEXTURE id="null" />
+		
+		<DESCENDANTS>
+			<DESCENDANT id="whitetowercover" />
+		</DESCENDANTS>
+	</NODE>
+	
+	<NODE id="whitetowertopcover">
+		<MATERIAL id="null" />
+		<TEXTURE id="null" />
+		
+		<TRANSLATION x="0" y="1" z="0" />
+		
+		<DESCENDANTS>
+			<DESCENDANT id="whitetowercover" />
+		</DESCENDANTS>
+	</NODE>
+	
+	<NODE id="whitetowercover">
+		<MATERIAL id="null" />
+		<TEXTURE id="null" />
+		
+		<DESCENDANTS>
+			<DESCENDANT id="circle" />
+		</DESCENDANTS>
+	</NODE>
+	
 
     <NODE id="blacksquare">
         <MATERIAL id="branco" />
@@ -296,6 +338,17 @@
             <DESCENDANT id="cubesquareTop" /> 
         </DESCENDANTS>
     </NODE>
+	
+	<NODE id="circle">
+		<MATERIAL id="null" />
+		<TEXTURE id="null" />
+		
+		<SCALE sx="1" sy="0" sz="1" />
+		
+		<DESCENDANTS>
+			<DESCENDANT id="sphere" />
+		</DESCENDANTS>
+	</NODE>
 
 
     <!-- FIM PECAS JOGO -->
