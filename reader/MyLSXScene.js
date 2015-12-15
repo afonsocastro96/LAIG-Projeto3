@@ -51,6 +51,23 @@ MyLSXScene.prototype.setInterface = function(myinterface) {
  */
 MyLSXScene.prototype.initObjects = function() {
 	this.primitives = [];
+
+	this.tile = new GameBoard(this,
+		[[new WhiteSquareTile(this), new WhiteSquareTile(this), new BlackCircleTile(this)],
+		 [new EmptyTile(), new WhiteCircleTile(this), new BlackSquareTile(this)],
+		 [new EmptyTile(), new EmptyTile(), new BlackSquareTile(this)],
+		 [new WhiteSquareTile(this), new WhiteSquareTile(this), new BlackCircleTile(this)],
+		 [new WhiteSquareTile(this), new WhiteSquareTile(this), new BlackCircleTile(this)],
+		 [new WhiteSquareTile(this), new WhiteSquareTile(this), new BlackCircleTile(this)]]);
+
+	this.stack = new TileStack(this);
+
+	this.stack.incBlackSquares();
+	this.stack.incBlackSquares();
+	this.stack.incBlackSquares();
+	this.stack.incBlackCircles();
+	this.stack.incWhiteCircles();
+	this.stack.incWhiteSquares();
 }
 
 /**
@@ -177,7 +194,11 @@ MyLSXScene.prototype.display = function () {
 	   	// Draw objects
 		this.setDefaultAppearance();
 
-		this.drawSceneGraph();
+		this.tile.display();
+
+		//this.stack.display();
+
+		//this.drawSceneGraph();
 	}	
 };
 
