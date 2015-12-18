@@ -615,5 +615,7 @@ format_rows(Length, Length, []).
 format_rows(Length, I, [CurrRow|Rows]) :- format_row(Length, 0, I, CurrRow), X is I+1, format_rows(Length, X, Rows).
 format_row(Length, Length, _, []).
 format_row(Length, Col, Row, [[Colour, Shape]|CurrRow]) :- board_cell(Row, Col, [_,Colour,Shape]), X is Col + 1, format_row(Length, X, Row, CurrRow).
+get_towers(Towers) :- tower_positions('T', DarkTowers), tower_positions('L', LightTowers), append(DarkTowers, LightTowers, Towers).
 player_possible_moves(Actions) :- current_player(Player), available_actions(Player, Actions).
-update_game(Action, Board) :- make_action(Action), format_board(Board).
+get_board(Board, Towers) :- format_board(Board), get_towers(Towers).
+update_game(Action, Board, Towers) :- make_action(Action), get_board(Board, Towers).
