@@ -609,8 +609,7 @@ evaluate_action(Player, ['sink', X, Y], Score) :-
 
 %Predicados para LAIG
 
-format_board(Board) :- board_length(Length), format_board_aux(Board, Length).
-format_board_aux(Board, Length) :- format_rows(Length, 0, Board).
+format_board(Board) :- board_length(Length), format_rows(Length, 0, Board).
 format_rows(Length, Length, []).
 format_rows(Length, I, [CurrRow|Rows]) :- format_row(Length, 0, I, CurrRow), X is I+1, format_rows(Length, X, Rows).
 format_row(Length, Length, _, []).
