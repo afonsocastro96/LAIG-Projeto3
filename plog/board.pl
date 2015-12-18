@@ -16,7 +16,7 @@
 %Database manipulation
 purge_database(N) :-	N > 0, purge_database_aux(0,0), retract(board_length(N)), retract(sink_streak(_,_)), retract(current_player(_)),
 retract(number_circles(_)), retract(number_squares(_)), retract(number_blacks(_)), retract(number_whites(_)),
-retract(number_pass('white',_)), retract(number_pass('black',_)), (bot_colour(_) -> retract(bot_colour(_)); true).
+retract(number_pass('white',_)), retract(number_pass('black',_)), (bot_colour(_) -> retract(bot_colour(_)); true), (win_condition(_) -> retract(win_condition(_));true).
 purge_database_aux(Row, Col) :- board_length(Length), Row < Length, Col < Length, !, retract(board_cell(Row, Col, _)), NCol is Col + 1, purge_database_aux(Row,NCol).
 purge_database_aux(Row, _) :- board_length(Length), Row < Length, !, NRow is Row + 1, purge_database_aux(NRow, 0).
 purge_database_aux(Row, _) :- board_length(Row).
@@ -56,6 +56,7 @@ insert_tower(X,Y,'T') :- board_cell(X,Y,[' ',Colour,'Q']), !, change_tile(X,Y,['
 remove_tower(X,Y) :- board_cell(X,Y,[Tower,Colour,Shape]), Tower \= ' ', change_tile(X,Y,[' ', Colour, Shape]).
 
 %Start game
+start_game :-  board_length(Length), purge_database(Length), !, pick_play_mode.
 start_game :- pick_play_mode.
 pick_play_mode :- write('Please state the desired play mode (1- Player vs Computer 2- Player vs Player 3- Computer vs Computer): '), read(Mode), test_mode(Mode).
 test_mode(1) :- game_cvp.
@@ -165,7 +166,7 @@ validate_bot_difficulty(_) :- nl, write('Invalid difficulty'), nl, ask_bot_diffi
 ask_bot_difficulty(X) :- nl, write('Please state the bot difficulty you want (0: easy/1: difficult)'), read(X), validate_bot_difficulty(X), nl, !.
 
 %After a winner is found, end the game
-end_game(Winner) :- nl, write('Player '), write(Winner), write(' has won the game!'), board_length(Length), purge_database(Length).
+end_game(Winner) :- nl, display_board, write('Player '), write(Winner), write(' has won the game!').
 
 % Player 1 picks the towers
 pick_towers :-
@@ -238,10 +239,18 @@ make_play_cvc(BotDifficulty) :- current_player(Player), display_board, write(Pla
 
 make_bot_play(0, Player) :- bot_action(0, Player, Action), make_bot_move(Action).
 make_bot_play(1, Player) :- bot_action(1, Player, Action), make_bot_move(Action).
-make_bot_move(['move',StartX,StartY,X,Y]) :- move_tower_aux(StartX,StartY,X,Y), write('The bot moved a tower from '), print_bot_play_coordinates(StartX, StartY), write(' to '),  print_bot_play_coordinates(X, Y), nl, nl.
-make_bot_move(['pass']) :- pass.
-make_bot_move(['slide',StartX, StartY, X, Y]) :- slide_tile_aux(StartX,StartY,X,Y), write('The bot slided a tile from '), print_bot_play_coordinates(StartX, StartY), write(' to '),  print_bot_play_coordinates(X, Y), nl, nl.
-make_bot_move(['sink',X,Y]) :- sink_tile_aux(X,Y), write('The bot sinked a tile in '), print_bot_play_coordinates(X, Y), nl, nl.
+
+make_bot_move(Action) :- make_action(Action), log_bot_move(Action).
+log_bot_move(['move',StartX,StartY,X,Y]) :- write('The bot moved a tower from '), print_bot_play_coordinates(StartX, StartY), write(' to '),  print_bot_play_coordinates(X, Y), nl, nl.
+log_bot_move(['pass']) :- write('The bot passed.'), nl, nl.
+log_bot_move(['slide',StartX, StartY, X, Y]) :- write('The bot slided a tile from '), print_bot_play_coordinates(StartX, StartY), write(' to '),  print_bot_play_coordinates(X, Y), nl, nl.
+log_bot_move(['sink',X,Y]) :- write('The bot sinked a tile in '), print_bot_play_coordinates(X, Y), nl, nl.
+
+make_action(['move',StartX,StartY,X,Y]) :- move_tower_aux(StartX,StartY,X,Y).
+make_action(['pass']) :- pass.
+make_action(['slide',StartX, StartY, X, Y]) :- slide_tile_aux(StartX,StartY,X,Y).
+make_action(['sink',X,Y]) :- sink_tile_aux(X,Y).
+
 
 % Prints on screen coordinates with the format (Character,Number)
 print_bot_play_coordinates(X, Y) :- Charcode is 97 + Y, char_code(Character, Charcode), Number is X + 1, write('('), write(Character), write(' '), write(Number), write(')').
@@ -281,9 +290,9 @@ player_tower('black', 'T').
 
 % Check end game condition
 check_winning_condition(Winner) :- sink_streak(Winner, 4), assert(win_condition('quicksand')).
-check_winning_condition(Winner) :- completed_island(Player1), completed_island(Player2), Player1 \= Player2, !, resolve_initiative(Winner), assert(win_condition('initiative')).
+check_winning_condition(Winner) :- completed_island(Player1), completed_island(Player2), Player1 \= Player2, !, resolve_initiative(Winner), assert(win_condition('double island initiative')).
 check_winning_condition(Winner) :- completed_island(Winner), assert(win_condition('completed_island')), !.
-check_winning_condition(Winner) :- number_pass(Player1, 1), number_pass(Player2, 1), Player1 \= Player2, !, resolve_initiative(Winner), assert(win_condition('initiative')).
+check_winning_condition(Winner) :- number_pass(Player1, Pass1), Pass1 > 0, number_pass(Player2, Pass2), Pass2 > 0, Player1 \= Player2, !, resolve_initiative(Winner), assert(win_condition('double pass initiative')).
 check_winning_condition(Winner) :- number_pass(_, 4), number_pass(Winner, 0), assert(win_condition('four_passes')), !. 
 
 completed_island('white') :- completed_light_island.
@@ -493,7 +502,7 @@ remove_invalid_moves(StartX, StartY, [[StartX, StartY]|T], T1) :-
 	!, remove_invalid_moves(StartX, StartY, T, T1).
 remove_invalid_moves(StartX, StartY, [[X, Y]|T], [[X,Y]|T1]) :-
 	board_cell(X, Y, [' ',_,_]), !, remove_invalid_moves(StartX, StartY, T, T1).
-remove_invalid_moves(StartX, StartY, [[X, Y]|T], T1) :-
+remove_invalid_moves(StartX, StartY, [[_, _]|T], T1) :-
 	!, remove_invalid_moves(StartX, StartY, T, T1).
 list_moves(_, _, [], []).
 list_moves(StartX, StartY, [[X, Y]|EndList], [['move',StartX,StartY,X,Y]|MoveList]) :-
@@ -597,3 +606,14 @@ evaluate_action(Player, ['slide', X, Y, NX, NY], Score) :-
 evaluate_action(Player, ['sink', X, Y], Score) :-
 	board_cell(X, Y, Cell), remove_tile(X, Y),
 	evaluate_board(Player, Score), add_tile(X, Y, Cell).
+
+%Predicados para LAIG
+
+format_board(Board) :- board_length(Length), format_board_aux(Board, Length).
+format_board_aux(Board, Length) :- format_rows(Length, 0, Board).
+format_rows(Length, Length, []).
+format_rows(Length, I, [CurrRow|Rows]) :- format_row(Length, 0, I, CurrRow), X is I+1, format_rows(Length, X, Rows).
+format_row(Length, Length, _, []).
+format_row(Length, Col, Row, [[Colour, Shape]|CurrRow]) :- board_cell(Row, Col, [_,Colour,Shape]), X is Col + 1, format_row(Length, X, Row, CurrRow).
+player_possible_moves(Actions) :- current_player(Player), available_actions(Player, Actions).
+update_game(Action, Board) :- make_action(Action), format_board(Board).
