@@ -202,6 +202,32 @@ MyLSXScene.prototype.display = function () {
 	}	
 };
 
+/* Handle the prolog connection */
+MyLSXScene.prototype.handleReply = function(data){
+	response=JSON.parse(data.target.response);
+	document.querySelector("#reply").innerHTML=response.answer;		// Access message and show
+}
+
+MyLSXScene.prototype.makeRequest = function(){
+	var v_x = document.querySelector("#x").value;
+	var v_y = document.querySelector("#y").value;
+
+	var requestString = "[play_test," + v_x + "," + v_y + "]";
+	postGameRequest(requestString, handleReplyTest);
+}
+
+MyLSXScene.prototype.postGameRequest = function(requestString, onSuccess, onError)
+{
+	var request = new XMLHttpRequest();
+	request.open('POST', '../../game', true);
+
+	request.onload = onSuccess || function(data){console.log("Request successful. Reply: " + data.target.response);};
+	request.onerror = onError || function(){console.log("Error waiting for response");};
+
+	request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+	request.send('requestString='+encodeURIComponent(requestString));			
+}
+
 /**
  * Draws the scene elements represented in the SceneGraph.
  */
