@@ -49,16 +49,22 @@ processString([_Par=Val], R) :-
 		Term.
 %---------------------------------------------
 
+/* Nota, as chamadas as funcoes auxiliares pressupoem que todos os X e Y sao numeros de 0 a length-1.
+Tranformacoes necessarias devem ser feitas no javascript */
 sink(X,Y, Answer) :-
+	%sink_tile_aux(X,Y),
 	Answer = "Sink Tile: ACK".
 
 slide(StartX, StartY, EndX, EndY, Answer) :-
+	%sink_tile_aux(StartX, StartY, EndX, EndY),
 	Answer = "Slide Tile: ACK".
 
 move(StartX, StartY, EndX, EndY, Answer) :-
+	%move_tower_aux(StartX,StartY,EndX,EndY),
 	Answer = "Move tower: ACK".
 
 pass(Answer) :-
+	%pass,
 	Answer = "Pass: ACK".
 	
 next(1,2).
