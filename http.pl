@@ -63,11 +63,24 @@ move(StartX, StartY, EndX, EndY, Answer) :-
 	%move_tower_aux(StartX,StartY,EndX,EndY),
 	Answer = "Move tower: ACK".
 
+undo(Answer) :-
+	%pop_move(Answer).
+	Answer = "Undo: ACK".
+
 pass(Answer) :-
 	%pass,
 	Answer = "Pass: ACK".
 	
-next(1,2).
-next(2,1).
+sinkstreak([Player, Streak]) :-
+	(sink_streak(Player, Streak) -> true ; Player ='white', Streak = 0).
+
+startgame(BoardType, Board) :-
+	(board_length(Length) -> purge_database(Length);true), 
+	(BoardType is 0 -> create_database(5), randomize_board_minor;create_database(7), randomize_board_major),
+	format_board(Board).
+
+botmove(Difficulty, Move) :-
+	%current_player(Player), bot_action(Difficulty, Player, Move).
+	Move = "I still don't do what I'm supposed to do :( Just uncomment my Prolog code once a funcional board exists to teach me what to do :D".
 
 :- server(8081).

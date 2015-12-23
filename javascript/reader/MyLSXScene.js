@@ -44,6 +44,7 @@ MyLSXScene.prototype.init = function (application) {
  */
 MyLSXScene.prototype.setInterface = function(myinterface) {
 	this.myinterface = myinterface;
+	this.initUserOptions();
 }
 
 /**
@@ -202,30 +203,44 @@ MyLSXScene.prototype.display = function () {
 	}	
 };
 
-/* Handle the prolog connection */
-MyLSXScene.prototype.handleReply = function(data){
-	response=JSON.parse(data.target.response);
-	document.querySelector("#reply").innerHTML=response.answer;		// Access message and show
+MyLSXScene.prototype.initUserOptions = function() {
+	this.currentDifficulty = 0;
+	this.currentGameType = 0;
+	this.currentCameraAngle = 0;
+	this.currentBoardType = 0;
+
+	this.botDifficulty = ["Easy", "Hard"];
+	this.gameType = ["Human vs Bot", "Human vs Human", "Bot vs Bot"];
+	this.cameraAngle = ["Oblique View", "Upward View"];
+	this.boardType = ["Syrtis Minor", "Syrtis Major"];
 }
 
-MyLSXScene.prototype.makeRequest = function(){
-	var v_x = document.querySelector("#x").value;
-	var v_y = document.querySelector("#y").value;
+MyLSXScene.prototype.startGame = function() {
+	if(this.myinterface == null)
+		return;
 
-	var requestString = "[play_test," + v_x + "," + v_y + "]";
-	postGameRequest(requestString, handleReplyTest);
+	makeRequest('startgame');
 }
 
-MyLSXScene.prototype.postGameRequest = function(requestString, onSuccess, onError)
-{
-	var request = new XMLHttpRequest();
-	request.open('POST', '../../game', true);
+MyLSXScene.prototype.requestBotMove = function() {
+	if(this.myinterface == null)
+		return;
 
-	request.onload = onSuccess || function(data){console.log("Request successful. Reply: " + data.target.response);};
-	request.onerror = onError || function(){console.log("Error waiting for response");};
+	makeRequest('botmove');
+}
 
-	request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-	request.send('requestString='+encodeURIComponent(requestString));			
+MyLSXScene.prototype.undoLastMove = function() {
+	if(this.myinterface == null)
+		return;
+	
+	makeRequest('undo');
+}
+
+MyLSXScene.prototype.getSinkStreak = function(){
+	if(this.myinterface == null)
+		return;
+	
+	makeRequest('sinkstreak');
 }
 
 /**

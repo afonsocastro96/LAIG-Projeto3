@@ -18,7 +18,7 @@ serialInclude(['../lib/CGF.js',
 'LSXReader.js', 'data/SceneTexture.js', 'data/SceneGraphLeaf.js', 'data/SceneGraphLeafTerrain.js',
 'data/SceneGraphLeafCylinder.js', 'data/SceneGraphLeafRectangle.js', 'data/SceneGraphLeafVehicle.js',
 'data/SceneGraphLeafSphere.js', 'data/SceneGraphLeafPlane.js', 'data/SceneGraphLeafPatch.js', 'data/SceneGraphLeafTriangle.js', 'data/SceneMaterial.js',
-'data/SceneGraphNode.js', 'MyInterface.js',
+'data/SceneGraphNode.js', 'MyInterface.js', 'Connection.js',
 'animations/Animation.js', 'animations/LinearAnimation.js', 'animations/CircularAnimation.js',
 // PLOG Items
 'game/GameBoard.js','game/EmptyTile.js','game/BlackCircleTile.js',
