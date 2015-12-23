@@ -1,5 +1,5 @@
-CGFversion = "0.19";
-CGFdate = " (20151216)";
+CGFversion = "0.19.1";
+CGFdate = " (20151222)";
 console.log("WebCGF - Library for Computer Graphics @ FEUP (WebGL) - v" + CGFversion + CGFdate);
 var Detector = {
     canvas: !!window.CanvasRenderingContext2D,
@@ -3924,7 +3924,7 @@ CGFshader.prototype.setUniformsValues = function(a) {
     var c = function(a, b) {
         for (var d in a) {
             try {
-                if (b[d])
+                if (typeof b[d] != 'undefined')
                     if (typeof a[d] !== 'function') c(a[d], b[d]);
                     else a[d](b[d]);
             } catch (e) {
