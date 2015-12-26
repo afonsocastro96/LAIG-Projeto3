@@ -1,10 +1,11 @@
 function WhiteSquareTile(scene) {
-    this.scene = scene;
+    BoardTile.call(this, scene);
+    this.setDisplayFunction(this.defaulDisplay);
 }
 
-WhiteSquareTile.prototype = Object.create(Object.prototype);
+WhiteSquareTile.prototype = Object.create(BoardTile.prototype);
 WhiteSquareTile.prototype.constructor = WhiteSquareTile;
 
-WhiteSquareTile.prototype.display = function() {
+WhiteSquareTile.prototype.defaulDisplay = function() {
     this.scene.drawNode("whitesquare", "null", "null");
 }

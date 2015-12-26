@@ -21,7 +21,7 @@ serialInclude(['../lib/CGF.js',
 'data/SceneGraphNode.js', 'MyInterface.js', 'Connection.js',
 'animations/Animation.js', 'animations/LinearAnimation.js', 'animations/CircularAnimation.js',
 // PLOG Items
-'game/GameBoard.js','game/EmptyTile.js','game/BlackCircleTile.js',
+'game/GameBoard.js','game/BoardTile.js','game/EmptyTile.js','game/BlackCircleTile.js',
 'game/WhiteCircleTile.js','game/BlackSquareTile.js','game/WhiteSquareTile.js',
 'game/TileStack.js',
 

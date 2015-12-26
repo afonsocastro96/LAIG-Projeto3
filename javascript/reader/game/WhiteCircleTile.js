@@ -1,10 +1,11 @@
 function WhiteCircleTile(scene) {
-    this.scene = scene;
+    BoardTile.call(this, scene);
+	this.setDisplayFunction(this.defaultDisplay);
 }
 
-WhiteCircleTile.prototype = Object.create(Object.prototype);
+WhiteCircleTile.prototype = Object.create(BoardTile.prototype);
 WhiteCircleTile.prototype.constructor = WhiteCircleTile;
 
-WhiteCircleTile.prototype.display = function() {
+WhiteCircleTile.prototype.defaultDisplay = function() {
     this.scene.drawNode("whitecircle", "null", "null");
 }
