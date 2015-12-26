@@ -36,3 +36,11 @@ GameBoard.prototype.removeTile = function(row, col) {
 GameBoard.prototype.addTile = function(row, col, tile) {
     this.board[row][col] = tile;
 }
+
+GameBoard.prototype.placeObject = function(object, row, col) {
+	this.scene.pushMatrix();
+    this.scene.translate(-this.numCols/2 + 0.5, 0.1, -this.numRows/2 + 0.5);
+	this.scene.translate(col, 0, row);
+	this.object.display();
+	this.scene.popMatrix();
+}
