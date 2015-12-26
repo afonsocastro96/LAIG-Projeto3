@@ -1,6 +1,5 @@
 function WhiteCircleTile(scene) {
     BoardTile.call(this, scene);
-	this.setDisplayFunction(this.defaultDisplay);
 }
 
 WhiteCircleTile.prototype = Object.create(BoardTile.prototype);
