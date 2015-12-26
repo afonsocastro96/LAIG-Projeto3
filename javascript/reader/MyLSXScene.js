@@ -26,6 +26,11 @@ MyLSXScene.prototype.init = function (application) {
 
     this.initObjects();
 
+	this.transparencyShader = new CGFshader(this.gl, this.defaultShader.vertexURL, "shaders/alphaScaling.frag");
+	this.transparencyShader.setUniformsValues({uAlphaScaling: 1.0} );
+
+	this.setActiveShader(this.transparencyShader);
+
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     this.gl.clearDepth(100.0);
