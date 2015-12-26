@@ -1,7 +1,7 @@
 function BoardTile(scene) {
     this.scene = scene;
-	this.displayFunction = this.transparentDisplay;
 	this.alphaScaling = 1.0;
+	this.setTransparency(false);
 }
 
 BoardTile.prototype = Object.create(CGFobject.prototype);
@@ -24,7 +24,7 @@ BoardTile.prototype.transparentDisplay = function() {
 	this.scene.transparencyShader.setUniformsValues({uAlphaScaling: prevValue});
 }
 
-BoardTile.prototype.transparentTile = function(bTransparent) {
+BoardTile.prototype.setTransparency = function(bTransparent) {
 	if (bTransparent) {
 		this.displayFunction = this.transparentDisplay;
 	}
