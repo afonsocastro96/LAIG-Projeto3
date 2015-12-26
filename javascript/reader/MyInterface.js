@@ -23,18 +23,7 @@ MyInterface.prototype.init = function(application) {
  * Function to call when the SceneGraph is fully loaded.
  */
 MyInterface.prototype.onGraphLoaded = function(){
-    var group = this.gui.addFolder('Lights');
 	var self = this;
-	this.gui.close();
-
-	for(key in this.scene.lightsEnabled){
-	    var controller = group.add(this.scene.lightsEnabled,key);
-	    controller.onChange(function(enable) {
-	    	self.scene.updateLight(this.property, enable);
-	    });
-	}
-
-	this.gui.add(this.scene, "resetTimer").name("Reset Timer");
 
 	// Para efeitos de mostrar o que ja esta feito, vai ser tudo apagado
 	var play = this.gui.addFolder('Make play');
@@ -44,7 +33,10 @@ MyInterface.prototype.onGraphLoaded = function(){
 		this.sinkYCoord = 1;
 		sink.add(this, 'sinkXCoord', 1, 7).step(1).name('X Coord');
 		sink.add(this, 'sinkYCoord', 1, 7).step(1).name('Y Coord');
-		this.sinkConfirm = function() { makeRequest('sink'); };
+		this.sinkConfirm = function() { 
+			var requestString = "[sink," + this.sinkXCoord + "," + this.sinkYCoord + "]";
+			makeRequest(this.scene, requestString); 
+		};
 		sink.add(this, 'sinkConfirm').name('Make play');
 
 		var slide = play.addFolder('Slide Tile');
@@ -56,7 +48,10 @@ MyInterface.prototype.onGraphLoaded = function(){
 		slide.add(this, 'slideStartYCoord', 1, 7).step(1).name('Start Y Coord');
 		slide.add(this, 'slideEndXCoord', 1, 7).step(1).name('End X Coord');
 		slide.add(this, 'slideEndYCoord', 1, 7).step(1).name('End Y Coord');
-		this.slideConfirm = function() { makeRequest('slide'); };
+		this.slideConfirm = function() { 
+			var requestString = "[slide," + this.slideStartXCoord + "," + this.slideStartYCoord + "," + this.slideEndXCoord + "," + this.slideEndYCoord + "]";
+			makeRequest(this.scene, requestString);
+		};
 		slide.add(this, 'slideConfirm').name('Make play');
 
 		var movetower = play.addFolder('Move Tower');
@@ -68,12 +63,18 @@ MyInterface.prototype.onGraphLoaded = function(){
 		movetower.add(this, 'moveStartYCoord', 1, 7).step(1).name('Start Y Coord');
 		movetower.add(this, 'moveEndXCoord', 1, 7).step(1).name('End X Coord');
 		movetower.add(this, 'moveEndYCoord', 1, 7).step(1).name('End Y Coord');
-		this.moveConfirm = function() { makeRequest('move'); };
+		this.moveConfirm = function() {
+			var requestString = "[move," + this.moveStartXCoord + "," + this.moveStartYCoord + "," + this.moveEndXCoord + "," + this.moveEndYCoord + "]";
+			makeRequest(this.scene,requestString);
+		};
 		movetower.add(this, 'moveConfirm').name('Make play');
 
 
 		var pass = play.addFolder('Pass');
-		this.passConfirm = function() { makeRequest('pass'); };
+		this.passConfirm = function() {
+			var requestString = "[pass]";
+			makeRequest(this.scene, requestString);
+		};
 		pass.add(this, 'passConfirm').name('Make play');
 	/* END OF PLAYS */
 
@@ -81,6 +82,7 @@ MyInterface.prototype.onGraphLoaded = function(){
 	var options = this.gui.addFolder("Change Options");
 	options.add(this.scene, "currentCameraAngle", this.scene.cameraAngle).name("Current Camera Angle");
 	options.add(this.scene, "currentDifficulty", this.scene.botDifficulty).name("Current Difficulty");
+	options.add(this.scene, "currentTheme", this.scene.themes).name("Theme");
 	options.add(this.scene, "requestBotMove").name("Request Bot Move"); // Para efeitos de mostrar o que ja esta feito, vai ser apagado
 
 	/* A new game is started with the following options after clicking Start Game. Only the board type is sent to prolog. */
@@ -92,6 +94,8 @@ MyInterface.prototype.onGraphLoaded = function(){
 	newGame.add(this.scene, "startGame").name("Start Game");
 	this.gui.add(this.scene, "undoLastMove").name("Undo Last Move");
 	this.gui.add(this.scene, "getSinkStreak").name("Get Sink Streak");
+
+	this.interfaceLoaded = true;
 }
 
 /**

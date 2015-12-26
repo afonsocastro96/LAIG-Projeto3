@@ -609,12 +609,16 @@ evaluate_action(Player, ['sink', X, Y], Score) :-
 	evaluate_board(Player, Score), add_tile(X, Y, Cell).
 
 %Predicados para LAIG
-
+lettertonumber('B', 1).
+lettertonumber('P', 2).
+lettertonumber('C', 3).
+lettertonumber('Q', 4).
+lettertonumber(' ', 0).
 format_board(Board) :- board_length(Length), format_rows(Length, 0, Board).
 format_rows(Length, Length, []).
 format_rows(Length, I, [CurrRow|Rows]) :- format_row(Length, 0, I, CurrRow), X is I+1, format_rows(Length, X, Rows).
 format_row(Length, Length, _, []).
-format_row(Length, Col, Row, [[Colour, Shape]|CurrRow]) :- board_cell(Row, Col, [_,Colour,Shape]), X is Col + 1, format_row(Length, X, Row, CurrRow).
+format_row(Length, Col, Row, [[Colour, Shape]|CurrRow]) :- board_cell(Row, Col, [_,ColourL,ShapeL]), lettertonumber(ColourL,Colour), lettertonumber(ShapeL,Shape), X is Col + 1, format_row(Length, X, Row, CurrRow).
 get_towers(Towers) :- tower_positions('T', DarkTowers), tower_positions('L', LightTowers), append(DarkTowers, LightTowers, Towers).
 player_possible_moves(Actions) :- current_player(Player), available_actions(Player, Actions).
 get_board(Board, Towers) :- format_board(Board), get_towers(Towers).

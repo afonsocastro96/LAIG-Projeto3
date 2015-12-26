@@ -18,6 +18,7 @@ MyLSXScene.prototype.init = function (application) {
 
     this.myinterface = null;
     this.graph = null;
+    this.themeLoaded = "Wave";
 
     this.initCameras();
 
@@ -52,15 +53,7 @@ MyLSXScene.prototype.setInterface = function(myinterface) {
  */
 MyLSXScene.prototype.initObjects = function() {
 	this.primitives = [];
-
-	this.tile = new GameBoard(this,
-		[[new WhiteSquareTile(this), new WhiteSquareTile(this), new BlackCircleTile(this)],
-		 [new EmptyTile(), new WhiteCircleTile(this), new BlackSquareTile(this)],
-		 [new EmptyTile(), new EmptyTile(), new BlackSquareTile(this)],
-		 [new WhiteSquareTile(this), new WhiteSquareTile(this), new BlackCircleTile(this)],
-		 [new WhiteSquareTile(this), new WhiteSquareTile(this), new BlackCircleTile(this)],
-		 [new WhiteSquareTile(this), new WhiteSquareTile(this), new BlackCircleTile(this)]]);
-
+	this.startGame();
 	this.stack = new TileStack(this);
 
 	this.stack.incBlackSquares();
@@ -154,8 +147,9 @@ MyLSXScene.prototype.onGraphLoaded = function ()
     this.timer = 0;
     this.setUpdatePeriod(100/6);
 
-	if (this.myinterface != null)
+	if (this.myinterface != null && !this.myinterface.interfaceLoaded){
 	    this.myinterface.onGraphLoaded();
+	}
 };
 
 /**
@@ -195,58 +189,117 @@ MyLSXScene.prototype.display = function () {
 	   	// Draw objects
 		this.setDefaultAppearance();
 
-		this.tile.display();
+		if(this.tile != undefined)
+			this.tile.display();
 
 		//this.stack.display();
 
-		//this.drawSceneGraph();
+		this.drawSceneGraph();
 	}	
 };
 
 MyLSXScene.prototype.initUserOptions = function() {
-	this.currentDifficulty = 0;
-	this.currentGameType = 0;
-	this.currentCameraAngle = 0;
-	this.currentBoardType = 0;
+	this.currentDifficulty = "Easy";
+	this.currentGameType = "Human vs Bot";
+	this.currentCameraAngle = "Oblique View";
+	this.currentBoardType = "Syrtis Minor";
+	this.currentTheme = "Wave";
 
 	this.botDifficulty = ["Easy", "Hard"];
 	this.gameType = ["Human vs Bot", "Human vs Human", "Bot vs Bot"];
 	this.cameraAngle = ["Oblique View", "Upward View"];
 	this.boardType = ["Syrtis Minor", "Syrtis Major"];
+	this.themes = ["Wave", "Sandbar"];
 }
 
 MyLSXScene.prototype.startGame = function() {
 	if(this.myinterface == null)
 		return;
 
-	makeRequest('startgame');
+	var currentBoardType;
+
+	if(this.currentBoardType == "Syrtis Minor")
+		currentBoardType = 0;
+	else currentBoardType = 1;
+
+	var requestString = "[startgame," + currentBoardType + "]";
+	makeRequest(this, requestString,this.startGameHandler);
+}
+
+
+MyLSXScene.prototype.startGameHandler = function(target, request) {
+	var board = JSON.parse(request);
+	var gameBoard = [];
+	for(var row = 0; row < board.length; ++row){
+		var currentRow = [];
+		for(var col = 0; col < board[row].length; ++col){
+			switch(board[row][col][0]){
+				case 0:
+					currentRow.push(new EmptyTile());
+					break;
+				case 1:
+					if(board[row][col][1] == 3)
+						currentRow.push(new WhiteCircleTile(target));
+					else
+						currentRow.push(new WhiteSquareTile(target));
+					break;
+				case 2:
+					if(board[row][col][1] == 3)
+						currentRow.push(new BlackCircleTile(target));
+					else
+						currentRow.push(new BlackSquareTile(target));
+					break;
+				default:
+					break;
+			}
+		}
+		gameBoard.push(currentRow);
+	}
+	target.tile = new GameBoard(target, gameBoard);
 }
 
 MyLSXScene.prototype.requestBotMove = function() {
 	if(this.myinterface == null)
 		return;
 
-	makeRequest('botmove');
+	var requestString = "[botmove," + this.currentDifficulty + "]";
+
+	makeRequest(this, requestString);
 }
 
 MyLSXScene.prototype.undoLastMove = function() {
 	if(this.myinterface == null)
 		return;
+
+	var requestString = "[undo]";
 	
-	makeRequest('undo');
+	makeRequest(this, requestString);
 }
 
 MyLSXScene.prototype.getSinkStreak = function(){
 	if(this.myinterface == null)
 		return;
-	
-	makeRequest('sinkstreak');
+
+	var requestString = "[sinkstreak]";
+	makeRequest(this, requestString);
 }
 
 /**
  * Draws the scene elements represented in the SceneGraph.
  */
 MyLSXScene.prototype.drawSceneGraph = function() {
+	if(this.currentTheme != this.themeLoaded){
+		this.themeLoaded = this.currentTheme;
+		switch(this.themeLoaded){
+			case 'Wave':
+				graph = new LSXSceneGraph("wave.lsx", this);
+				break;
+			case 'Sandbar':
+				graph = new LSXSceneGraph("sandbar.lsx", this);
+				break;
+		}
+	}
+
 	this.drawNode(this.graph.root, "null", "clear");
 	this.setDefaultAppearance();
 }

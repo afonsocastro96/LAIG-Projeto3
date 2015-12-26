@@ -28,22 +28,22 @@
 
 <TEXTURES>
     <TEXTURE id="whiteCircle">
-        <file path="textures/whitecircle.png" />
+        <file path="textures/whitecirclesandbar.png" />
         <amplif_factor s="1" t="1" />
     </TEXTURE>
 
     <TEXTURE id="whiteSquare">
-        <file path="textures/whitesquare.png" />
+        <file path="textures/whitesquaresandbar.png" />
         <amplif_factor s="1" t="1" />
     </TEXTURE>
 
     <TEXTURE id="blackCircle">
-        <file path="textures/blackcircle.png" />
+        <file path="textures/blackcirclesandbar.png" />
         <amplif_factor s="1" t="1" />
     </TEXTURE>
 
     <TEXTURE id="blackSquare">
-        <file path="textures/blacksquare.png" />
+        <file path="textures/blacksquaresandbar.png" />
         <amplif_factor s="1" t="1" />
     </TEXTURE>
 
@@ -54,6 +54,11 @@
 
     <TEXTURE id="wood">
         <file path="textures/wood.png" />
+        <amplif_factor s="1" t="1" />
+    </TEXTURE>
+
+    <TEXTURE id="fractal">
+        <file path="textures/sandbarfractal.png" />
         <amplif_factor s="1" t="1" />
     </TEXTURE>
 </TEXTURES>
@@ -73,32 +78,30 @@
 
 
 <LEAVES>
-	<LEAF id="square" type="rectangle" args="-0.5 0.5 0.5 -0.5" />
-	<LEAF id="cylinder" type="cylinder" args="1.0 0.5 0.5 20 20" /> 
-	<LEAF id="sphere" type="sphere" args="0.5 20 20" />
+    <LEAF id="square" type="rectangle" args="-0.5 0.5 0.5 -0.5" />
+    <LEAF id="cylinder" type="cylinder" args="1.0 0.5 0.5 20 20" /> 
+    <LEAF id="sphere" type="sphere" args="0.5 20 20" />
 </LEAVES>
 
 
 <NODES>
-    <ROOT id="root" />
+    <ROOT id="carpet" />
 
-    <NODE id="root">
-    	<MATERIAL id="null" />
-        <TEXTURE id="null" />
+    <!-- Tapete -->
+
+    <NODE id="carpet">
+        <MATERIAL id="branco" />
+        <TEXTURE id="fractal" />
+
+        <SCALE sx="10" sy="0.1" sz="10" />
+        <ROTATION axis="x" angle="-90" />
 
         <DESCENDANTS>
-        	<DESCENDANT id="blackcircle1" />
-        	<DESCENDANT id="blacksquare1" />
-        	<DESCENDANT id="whitecircle1" />
-        	<DESCENDANT id="whitesquare1" />
-        	<DESCENDANT id="blacktower1" />
-        	<DESCENDANT id="blacktower2" />
-        	<DESCENDANT id="whitetower1" />
-        	<DESCENDANT id="whitetower2" />
+            <DESCENDANT id="sphere" />
         </DESCENDANTS>
     </NODE>
 
-	 <!-- CUBO -->
+     <!-- CUBO -->
 
     <NODE id="cubesquareFront">
 
@@ -225,7 +228,7 @@
     <!-- PECAS JOGO -->
 
     <NODE id="blacktower">
-    	<MATERIAL id="branco" />
+        <MATERIAL id="branco" />
         <TEXTURE id="wood" />
 
         <TRANSLATION x="0" y="0.75" z="0" />
@@ -238,58 +241,58 @@
     </NODE>
 
     <NODE id="whitetower">
-    	<MATERIAL id="branco" />
+        <MATERIAL id="branco" />
         <TEXTURE id="lightwood" />
 
         <SCALE sx="0.65" sy="1.5" sz="0.65" />
-		
+        
         <DESCENDANTS>
             <DESCENDANT id="whitetowerbody" />
-			<DESCENDANT id="whitetowerbottomcover" />
-			<DESCENDANT id="whitetowertopcover" />
+            <DESCENDANT id="whitetowerbottomcover" />
+            <DESCENDANT id="whitetowertopcover" />
         </DESCENDANTS>
     </NODE>
-	
-	<NODE id="whitetowerbody">
-		<MATERIAL id="null" />
-		<TEXTURE id="null" />
-		
+    
+    <NODE id="whitetowerbody">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        
         <ROTATION axis="x" angle="-90" />
-		
-		<DESCENDANTS>
-			<DESCENDANT id="cylinder" />
-		</DESCENDANTS>
-	</NODE>
-	
-	<NODE id="whitetowerbottomcover">
-		<MATERIAL id="null" />
-		<TEXTURE id="null" />
-		
-		<DESCENDANTS>
-			<DESCENDANT id="whitetowercover" />
-		</DESCENDANTS>
-	</NODE>
-	
-	<NODE id="whitetowertopcover">
-		<MATERIAL id="null" />
-		<TEXTURE id="null" />
-		
-		<TRANSLATION x="0" y="1" z="0" />
-		
-		<DESCENDANTS>
-			<DESCENDANT id="whitetowercover" />
-		</DESCENDANTS>
-	</NODE>
-	
-	<NODE id="whitetowercover">
-		<MATERIAL id="null" />
-		<TEXTURE id="null" />
-		
-		<DESCENDANTS>
-			<DESCENDANT id="circle" />
-		</DESCENDANTS>
-	</NODE>
-	
+        
+        <DESCENDANTS>
+            <DESCENDANT id="cylinder" />
+        </DESCENDANTS>
+    </NODE>
+    
+    <NODE id="whitetowerbottomcover">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        
+        <DESCENDANTS>
+            <DESCENDANT id="whitetowercover" />
+        </DESCENDANTS>
+    </NODE>
+    
+    <NODE id="whitetowertopcover">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        
+        <TRANSLATION x="0" y="1" z="0" />
+        
+        <DESCENDANTS>
+            <DESCENDANT id="whitetowercover" />
+        </DESCENDANTS>
+    </NODE>
+    
+    <NODE id="whitetowercover">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        
+        <DESCENDANTS>
+            <DESCENDANT id="circle" />
+        </DESCENDANTS>
+    </NODE>
+    
 
     <NODE id="blacksquare">
         <MATERIAL id="branco" />
@@ -338,17 +341,17 @@
             <DESCENDANT id="cubesquareTop" /> 
         </DESCENDANTS>
     </NODE>
-	
-	<NODE id="circle">
-		<MATERIAL id="null" />
-		<TEXTURE id="null" />
-		
-		<SCALE sx="1" sy="0" sz="1" />
-		
-		<DESCENDANTS>
-			<DESCENDANT id="sphere" />
-		</DESCENDANTS>
-	</NODE>
+    
+    <NODE id="circle">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        
+        <SCALE sx="1" sy="0" sz="1" />
+        
+        <DESCENDANTS>
+            <DESCENDANT id="sphere" />
+        </DESCENDANTS>
+    </NODE>
 
 
     <!-- FIM PECAS JOGO -->
@@ -356,7 +359,7 @@
     <!-- PECAS DE TESTE -->
 
     <NODE id="whitetower1">
-    	<MATERIAL id="null" />
+        <MATERIAL id="null" />
         <TEXTURE id="null" />
 
         <TRANSLATION x="1" y="0" z="0" />
@@ -367,7 +370,7 @@
     </NODE>
 
      <NODE id="whitetower2">
-    	<MATERIAL id="null" />
+        <MATERIAL id="null" />
         <TEXTURE id="null" />
 
         <TRANSLATION x="2" y="0" z="0" />
@@ -378,7 +381,7 @@
     </NODE>
 
     <NODE id="blacktower1">
-    	<MATERIAL id="null" />
+        <MATERIAL id="null" />
         <TEXTURE id="null" />
 
         <TRANSLATION x="0" y="0" z="0" />
@@ -389,7 +392,7 @@
     </NODE>
 
      <NODE id="blacktower2">
-    	<MATERIAL id="null" />
+        <MATERIAL id="null" />
         <TEXTURE id="null" />
 
         <TRANSLATION x="3" y="0" z="0" />
@@ -440,26 +443,9 @@
             <DESCENDANT id="whitecircle" />
         </DESCENDANTS>
     </NODE>
-
 </NODES>
 
 <ANIMATIONS>
-	<ANIMATION id="aguardar" span="5" type="linear">
-		<CONTROLPOINT xx="0" yy="0" zz="0" />
-	</ANIMATION>
-    <ANIMATION id="descolagem" span="5" type="linear">
-		<CONTROLPOINT xx="0" yy="0" zz="0" />
-        <CONTROLPOINT xx="10" yy="0" zz="0" />
-    </ANIMATION>
-	<ANIMATION id="orientacao" span="5" type="circular" center="10 0 5" radius="5" startang="90" rotang="-90"/>
-	<ANIMATION id="orbita" span="10" type="linear">
-		<CONTROLPOINT xx="15" yy="00" zz="5" />
-		<CONTROLPOINT xx="15" yy="0" zz="20" />
-	</ANIMATION>
-	<ANIMATION id="afastamento" span="5" type="linear">
-		<CONTROLPOINT xx="0" yy="0" zz="0" />
-		<CONTROLPOINT xx="0" yy="-5" zz="0" />
-	</ANIMATION>
 </ANIMATIONS>
 
 </SCENE>

@@ -34,20 +34,18 @@ main=function()
 
     app.init();
 
-    app.setInterface(myInterface);
     app.setScene(myScene);
-	myScene.setInterface(myInterface);
-	myInterface.setScene(myScene);
+    app.setInterface(myInterface);
+	   myScene.setInterface(myInterface);
+	   myInterface.setScene(myScene);
 
     myInterface.setActiveCamera(myScene.camera);
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor) 
-	
-	var filename=getUrlVars()['file'] || "test.lsx";
 
-	// create and load graph, and associate it to scene. 
-	// Check console for loading errors
-	var myGraph = new LSXSceneGraph(filename, myScene);
+    // create and load graph, and associate it to scene. 
+    // Check console for loading errors
+    var graph = new LSXSceneGraph("wave.lsx", myScene);
 	
 	// start
     app.run();
