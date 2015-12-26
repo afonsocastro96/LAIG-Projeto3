@@ -30,7 +30,11 @@ GameBoard.prototype.moveTile = function(startRow, startCol, endRow, endCol) {
 }
 
 GameBoard.prototype.removeTile = function(row, col) {
-    this.board[row][col] = this.emptyTile;
+	this.board[row][col] = this.emptyTile;
+}
+
+GameBoard.prototype.getTile = function(row, col) {
+	return this.board[row][col];
 }
 
 GameBoard.prototype.addTile = function(row, col, tile) {

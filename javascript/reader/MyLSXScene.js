@@ -59,14 +59,6 @@ MyLSXScene.prototype.setInterface = function(myinterface) {
 MyLSXScene.prototype.initObjects = function() {
 	this.primitives = [];
 	this.startGame();
-	this.stack = new TileStack(this);
-
-	this.stack.incBlackSquares();
-	this.stack.incBlackSquares();
-	this.stack.incBlackSquares();
-	this.stack.incBlackCircles();
-	this.stack.incWhiteCircles();
-	this.stack.incWhiteSquares();
 }
 
 /**
@@ -194,10 +186,8 @@ MyLSXScene.prototype.display = function () {
 	   	// Draw objects
 		this.setDefaultAppearance();
 
-		if(this.tile != undefined)
-			this.tile.display();
-
-		//this.stack.display();
+		if(this.gameSet != undefined)
+			this.gameSet.display();
 
 		this.drawSceneGraph();
 	}	
@@ -260,7 +250,8 @@ MyLSXScene.prototype.startGameHandler = function(target, request) {
 		}
 		gameBoard.push(currentRow);
 	}
-	target.tile = new GameBoard(target, gameBoard);
+	target.gameSet = new GameSet(target);
+	target.gameSet.init(new GameBoard(target, gameBoard));
 }
 
 MyLSXScene.prototype.requestBotMove = function() {
