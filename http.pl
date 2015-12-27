@@ -55,33 +55,54 @@ sink(X,Y, Answer) :-
 	push_move(['sink', X, Y]),
 	push_sinked_tile(X, Y),
 	sink_tile_aux(X,Y),
+	push_sink_streak,
+	push_number_passes,
 	Answer = "Sink Tile: ACK".
 
 slide(StartX, StartY, EndX, EndY, Answer) :-
 	push_move(['slide', StartX, StartY, EndX, EndY]),
 	slide_tile_aux(StartX, StartY, EndX, EndY),
+	push_sink_streak,
+	push_number_passes,
 	Answer = "Slide Tile: ACK".
 
 move(StartX, StartY, EndX, EndY, Answer) :-
 	push_move(['movetower', StartX, StartY, EndX, EndY]),
 	move_tower_aux(StartX,StartY,EndX,EndY),
+	push_sink_streak,
+	push_number_passes,
 	Answer = "Move tower: ACK".
 
 undo(Answer) :-
-	undo_move(Answer).
+	undo_move(Answer),
+	pop_sink_streak,
+	pop_number_passes.
 	%Answer = "Undo: ACK".
 
 pass(Answer) :-
 	pass,
 	push_move(['pass']),
+	push_sink_streak,
+	push_number_passes,
 	Answer = "Pass: ACK".
-	
-sinkstreak([Player, Streak]) :-
-	(sink_streak(Player, Streak) -> true ; Player ='white', Streak = 0).
+
+
+available_moves(Answer) :- current_player(Player), available_actions(Player, Answer).
+
+sinkstreak(Answer) :-
+	sink_streak(Answer).
+
+numberpasses(Answer) :- number_pass(Answer).
+
+sinkstreakstack(Answer) :- sink_streak_stack(Answer).
+
+numberpassesstack(Answer) :- number_passes_stack(Answer).
 
 startgame(BoardType, Board) :-
 	(board_length(Length) -> purge_database(Length);true), 
 	(BoardType is 0 -> create_database(5), randomize_board_minor;create_database(7), randomize_board_major),
+	push_sink_streak,
+	push_
 	format_board(Board).
 
 botmove(Difficulty, Move) :-
