@@ -164,11 +164,15 @@ MyLSXScene.prototype.display = function () {
 	// Initialize Model-View matrix as identity (no transformation
 	this.updateProjectionMatrix();
     this.loadIdentity();
+
+	this.setDefaultAppearance();
 	
+	this.pushMatrix();
 	if (this.graph != null && this.graph.loadedOk) {
 		if(this.gameSet != undefined)
 			this.gameSet.displayHUD();
 	}
+	this.popMatrix();
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
@@ -192,11 +196,12 @@ MyLSXScene.prototype.display = function () {
 
 	   	// Draw objects
 		this.setDefaultAppearance();
-
+		
 		this.drawSceneGraph();
 		
 		if(this.gameSet != undefined)
 			this.gameSet.display();
+		
 	}	
 };
 

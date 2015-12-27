@@ -20,7 +20,10 @@ GameSet.prototype.display = function() {
 }
 
 GameSet.prototype.displayHUD = function() {
+	this.scene.pushMatrix();
+	this.scene.translate(-1,3.0,-20);
 	this.marker.display();
+	this.scene.popMatrix();
 }
 
 GameSet.prototype.displayPicking = function() {
