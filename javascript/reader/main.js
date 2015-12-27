@@ -23,7 +23,7 @@ serialInclude(['../lib/CGF.js',
 // PLOG Items
 'game/GameBoard.js','game/BoardTile.js','game/EmptyTile.js','game/BlackCircleTile.js',
 'game/WhiteCircleTile.js','game/BlackSquareTile.js','game/WhiteSquareTile.js',
-'game/TileStack.js','game/GameSet.js', 'animations/FadeAnimation.js',
+'game/TileStack.js','game/GameSet.js', 'game/Marker.js', 'animations/FadeAnimation.js',
 
 main=function()
 {

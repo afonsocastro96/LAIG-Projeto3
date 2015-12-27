@@ -12,10 +12,16 @@ GameSet.prototype.constructor = GameSet;
 GameSet.prototype.init = function(board) {
 	this.board = board;
 	this.stack = new TileStack(this.scene);
+	this.marker = new Marker(this.scene, "White0");
 }
 
 GameSet.prototype.display = function() {
 	this.displayFunction();
+	this.displayHUD();
+}
+
+GameSet.prototype.displayHUD = function() {
+	this.marker.display();
 }
 
 GameSet.prototype.displayPicking = function() {
