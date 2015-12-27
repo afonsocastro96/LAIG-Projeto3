@@ -188,10 +188,10 @@ MyLSXScene.prototype.display = function () {
 	   	// Draw objects
 		this.setDefaultAppearance();
 
+		this.drawSceneGraph();
+		
 		if(this.gameSet != undefined)
 			this.gameSet.display();
-
-		this.drawSceneGraph();
 	}	
 };
 
@@ -254,8 +254,10 @@ MyLSXScene.prototype.startGameHandler = function(target, request) {
 	}
 	target.gameSet = new GameSet(target);
 	target.gameSet.init(new GameBoard(target, gameBoard));
-	target.gameSet.stack.addTile(new BlackSquareTile(target));
-	target.gameSet.rise(0,0, new BlackSquareTile(target));
+	var tile = target.gameSet.board.getTile(1,1);
+	target.gameSet.slide(1,1,0,1);
+	target.gameSet.sink(0, 1);
+	target.gameSet.rise(0, 1, tile);
 }
 
 MyLSXScene.prototype.requestBotMove = function() {

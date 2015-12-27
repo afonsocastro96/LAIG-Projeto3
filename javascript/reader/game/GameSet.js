@@ -2,7 +2,8 @@ function GameSet(scene) {
 	CGFobject.call(this, scene);
 	this.displayFunction = this.displayPicking;
 	this.selectableTiles = [];
-	this.changeable = true;
+	this.animating = false;
+	this.animationQueue = [];
 }
 
 GameSet.prototype = Object.create(CGFobject.prototype);
@@ -26,7 +27,6 @@ GameSet.prototype.displayPicking = function() {
 	this.scene.popMatrix();
 }
 
-
 GameSet.prototype.displayNoPicking = function() {
 	this.board.display();
 	
@@ -36,35 +36,47 @@ GameSet.prototype.displayNoPicking = function() {
 	this.scene.popMatrix();
 }
 
+GameSet.prototype.displayNextAnimation = function() {
+	if (this.animating) {
+		return;
+	}
+	
+	if (this.animationQueue.length == 0) {
+		this.displayFunction = this.displayPicking;
+		return;
+	}
+	
+	var animation = this.animationQueue.shift();
+	animation();
+}
+
 /*
  * Move tower
  */
 GameSet.prototype.move = function(startRow, startCol, endRow, endCol) {
-	if (this.changeable) {
-		
-	}
+	
 }
 
 /*
  * Slide tower and tile
  */
 GameSet.prototype.slide = function(startRow, startCol, endRow, endCol) {
-	if (this.changeable) {
-		this.animateSlide(startRow, startCol, endRow, endCol, 4000);
-	}
+	var gameSet = this;
+	this.animationQueue.push(function() {gameSet.animateSlide(startRow, startCol, endRow, endCol, 4000)});
+	this.displayNextAnimation();
 }
  
  /*
   * Sink tile
   */
 GameSet.prototype.sink = function(row, col) {
-	if (this.changeable) {
-		this.animateSink(row, col, 4000);
-	}
+	var gameSet = this;
+	this.animationQueue.push(function() { gameSet.animateSink(row, col, 4000);});
+	this.displayNextAnimation();
 }
 
 GameSet.prototype.animateSink = function(row, col, span) {
-	this.changeable = false;
+	this.animating = true;
 	
 	var tile = this.board.getTile(row, col);
 	var fadeOutAnimation = new FadeAnimation(tile, span/2, 1.0, 0.0);
@@ -79,8 +91,8 @@ GameSet.prototype.animateSink = function(row, col, span) {
 		if (fadeInAnimation.finished) {
 			this.scene.removeUpdatable(fadeInAnimation);
 			tile.setTransparency(false);
-			this.displayFunction = this.displayPicking;
-			this.changeable = true;
+			this.animating = false;
+			this.displayNextAnimation();
 		}
 	}
 	
@@ -103,7 +115,7 @@ GameSet.prototype.animateSink = function(row, col, span) {
 
 // TODO: Include tower animation
 GameSet.prototype.animateSlide = function(startRow, startCol, endRow, endCol, span) {
-	this.changeable = false;
+	this.animating = true;
 
 	var tile = this.board.getTile(startRow, startCol);
 	var fadeOutAnimation = new FadeAnimation(tile, span/2, 1.0, 0.0);
@@ -118,8 +130,8 @@ GameSet.prototype.animateSlide = function(startRow, startCol, endRow, endCol, sp
 		if (fadeInAnimation.finished) {
 			this.scene.removeUpdatable(fadeInAnimation);
 			tile.setTransparency(false);
-			this.displayFunction = this.displayPicking;
-			this.changeable = true;
+			this.animating = false;
+			this.displayNextAnimation();
 		}
 	}
 	
@@ -144,13 +156,13 @@ GameSet.prototype.animateSlide = function(startRow, startCol, endRow, endCol, sp
  * Rise tile
  */
 GameSet.prototype.rise = function(row, col, tile) {
-	if (this.changeable) {
-		this.animateRise(row, col, tile, 4000);
-	}
+	var gameSet = this;
+	this.animationQueue.push(function () { gameSet.animateRise(row, col, tile, 4000) } );
+	this.displayNextAnimation();
 }
 
 GameSet.prototype.animateRise = function(row, col, tile, span) {
-	this.changeable = false;	
+	this.animating = true;	
 	
 	var fadeOutAnimation = new FadeAnimation(tile, span/2, 1.0, 0.0);
 	var fadeInAnimation = new FadeAnimation(tile, span/2, 0.0, 1.0);
@@ -167,8 +179,8 @@ GameSet.prototype.animateRise = function(row, col, tile, span) {
 		if (fadeInAnimation.finished) {
 			this.scene.removeUpdatable(fadeInAnimation);
 			tile.setTransparency(false);
-			this.displayFunction = this.displayPicking;
-			this.changeable = true;
+			this.animating = false;
+			this.displayNextAnimation();
 		}
 	}
 	
