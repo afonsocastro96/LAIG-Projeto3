@@ -43,10 +43,81 @@ GameSet.prototype.slide = function(startRow, startCol, endRow, endCol) {
   * Sink tile
   */
 GameSet.prototype.sink = function(row, col) {
-	var tile = this.board.getTile(row, col);
-	this.board.removeTile(row, col);
-	this.stack.addTile(tile);
+	this.animateSink(row, col);
 }
+
+GameSet.prototype.animateSink = function(row, col) {
+	var tile = this.board.getTile(row, col);
+	var fadeOutAnimation = new FadeAnimation(tile, 2000, 1.0, 0.0);
+	var fadeInAnimation = new FadeAnimation(tile, 2000, 0.0, 1.0);
+	fadeOutAnimation.start();
+	this.scene.addUpdatable(fadeOutAnimation);
+	tile.setTransparency(true);
+	
+	var fadeIn = function() {
+		this.displayPicking();
+	
+		if (fadeInAnimation.finished) {
+			this.scene.removeUpdatable(fadeInAnimation);
+			tile.setTransparency(false);
+			this.displayFunction = this.displayPicking;
+		}
+	}
+	
+	var fadeOut = function () {
+		this.displayPicking();
+		
+		if (fadeOutAnimation.finished) {
+			this.board.removeTile(row, col);
+			this.scene.removeUpdatable(fadeOutAnimation);
+			this.stack.addTile(tile);
+			fadeInAnimation.start();
+			this.scene.addUpdatable(fadeInAnimation);
+			this.displayFunction = fadeIn;
+		}
+	}
+	
+	this.displayFunction = fadeOut;
+}
+
+
+GameSet.prototype.animateSlideFadeOut = function(row, col) {
+	var tile = this.board.getTile(row, col);
+	var animation = new FadeAnimation(tile, 2000, 1.0, 0.0);
+	animation.start();
+	this.scene.addUpdatable(animation);
+	tile.setTransparency(true);
+	
+	this.displayFunction = function () {
+		this.displayPicking();
+		
+		if (animation.finished) {
+			this.board.removeTile(row, col);
+			this.animateSinkFadeIn(tile);
+			this.scene.removeUpdatable(animation);
+		}
+	}
+}
+
+GameSet.prototype.animateSlideFadeIn = function(tile) {
+	this.stack.addTile(tile);
+	var animation = new FadeAnimation(tile, 2000, 0.0, 1.0);
+	animation.start();
+	this.scene.addUpdatable(animation);
+	tile.setTransparency(true);
+	
+	this.displayFunction = function () {
+		this.displayPicking();
+		
+		if (animation.finished) {
+			this.scene.removeUpdatable(animation);
+			this.displayFunction = this.displayPicking;
+			tile.setTransparency(false);
+		}
+	}
+}
+
+
 
 /*
  * Rise tile

@@ -16,6 +16,8 @@ MyLSXScene.prototype.constructor = MyLSXScene;
 MyLSXScene.prototype.init = function (application) {
     CGFscene.prototype.init.call(this, application);
 
+	this.updatables = [];
+	
     this.myinterface = null;
     this.graph = null;
     this.themeLoaded = "Wave";
@@ -252,6 +254,7 @@ MyLSXScene.prototype.startGameHandler = function(target, request) {
 	}
 	target.gameSet = new GameSet(target);
 	target.gameSet.init(new GameBoard(target, gameBoard));
+	target.gameSet.sink(1,1);
 }
 
 MyLSXScene.prototype.requestBotMove = function() {
@@ -379,6 +382,20 @@ MyLSXScene.prototype.resetTimer = function() {
 MyLSXScene.prototype.update = function(currTime) {
 	if (this.lastUpdate != 0)
 		this.timer += (currTime - this.lastUpdate) / 1000;
+	
+	for (var i = 0; i < this.updatables.length; ++i)
+		this.updatables[i].update(currTime);
+}
+
+MyLSXScene.prototype.addUpdatable = function(updatable) {
+	this.updatables.push(updatable);
+}
+
+MyLSXScene.prototype.removeUpdatable = function(updatable) {
+	var index = this.updatables.indexOf(updatable);
+	if(index != -1) {
+		this.updatables.splice(index, 1);
+	}
 }
 
 /**

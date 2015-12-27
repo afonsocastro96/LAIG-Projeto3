@@ -21,7 +21,7 @@ FadeAnimation.prototype.update = function(currentTime) {
 }
 
 FadeAnimation.prototype.updateObject = function(currentTime) {
-	var delta = this.startTime - currentTime;
+	var delta = currentTime - this.startTime;
 	if (delta > this.span) {
 		this.object.setAlphaScaling(this.endScale);
 		this.finished = true;
