@@ -52,23 +52,28 @@ processString([_Par=Val], R) :-
 /* Nota, as chamadas as funcoes auxiliares pressupoem que todos os X e Y sao numeros de 0 a length-1.
 Tranformacoes necessarias devem ser feitas no javascript */
 sink(X,Y, Answer) :-
-	%sink_tile_aux(X,Y),
+	push_move(['sink', X, Y]),
+	push_sinked_tile(X, Y),
+	sink_tile_aux(X,Y),
 	Answer = "Sink Tile: ACK".
 
 slide(StartX, StartY, EndX, EndY, Answer) :-
-	%sink_tile_aux(StartX, StartY, EndX, EndY),
+	push_move(['slide', StartX, StartY, EndX, EndY]),
+	slide_tile_aux(StartX, StartY, EndX, EndY),
 	Answer = "Slide Tile: ACK".
 
 move(StartX, StartY, EndX, EndY, Answer) :-
-	%move_tower_aux(StartX,StartY,EndX,EndY),
+	push_move(['movetower', StartX, StartY, EndX, EndY]),
+	move_tower_aux(StartX,StartY,EndX,EndY),
 	Answer = "Move tower: ACK".
 
 undo(Answer) :-
-	%pop_move(Answer).
-	Answer = "Undo: ACK".
+	undo_move(Answer).
+	%Answer = "Undo: ACK".
 
 pass(Answer) :-
-	%pass,
+	pass,
+	push_move(['pass']),
 	Answer = "Pass: ACK".
 	
 sinkstreak([Player, Streak]) :-

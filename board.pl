@@ -24,7 +24,7 @@ purge_database_aux(Row, _) :- board_length(Row).
 
 create_database(N) :- 	N > 0, assert(number_squares(0)), assert(number_circles(0)), assert(number_blacks(0)), assert(number_whites(0)),
 assert(sink_streak('white', 0)), assert(current_player('white')), assert(number_pass('white', 0)), assert(number_pass('black', 0)),
-assert(board_length(N)), assert(moves_stack([])), create_database_aux(0, 0).
+assert(board_length(N)), assert(moves_stack([])), assert(sinked_tiles([])), create_database_aux(0, 0).
 create_database_aux(Row, Col) :- board_length(Length), Row < Length, Col < Length, !, assert(board_cell(Row, Col, [' ', ' ', ' '])), NCol is Col + 1, create_database_aux(Row,NCol).
 create_database_aux(Row, _) :- board_length(Length), Row < Length, !, NRow is Row + 1, create_database_aux(NRow, 0).
 create_database_aux(Row, _) :- board_length(Row).
@@ -618,10 +618,24 @@ format_board(Board) :- board_length(Length), format_rows(Length, 0, Board).
 format_rows(Length, Length, []).
 format_rows(Length, I, [CurrRow|Rows]) :- format_row(Length, 0, I, CurrRow), X is I+1, format_rows(Length, X, Rows).
 format_row(Length, Length, _, []).
-format_row(Length, Col, Row, [[Colour, Shape]|CurrRow]) :- board_cell(Row, Col, [_,ColourL,ShapeL]), lettertonumber(ColourL,Colour), lettertonumber(ShapeL,Shape), X is Col + 1, format_row(Length, X, Row, CurrRow).
+format_row(Length, Col, Row, [[Colour, Shape]|CurrRow]) :- board_cell(Row, Col, [_,ColourL,ShapeL]),
+														lettertonumber(ColourL,Colour), lettertonumber(ShapeL,Shape),
+														X is Col + 1, format_row(Length, X, Row, CurrRow).
 get_towers(Towers) :- tower_positions('T', DarkTowers), tower_positions('L', LightTowers), append(DarkTowers, LightTowers, Towers).
 player_possible_moves(Actions) :- current_player(Player), available_actions(Player, Actions).
 get_board(Board, Towers) :- format_board(Board), get_towers(Towers).
 update_game(Action, Board, Towers) :- make_action(Action), push_move(Action), get_board(Board, Towers).
 push_move(Action) :- moves_stack(Actions), retract(moves_stack(_)), assert(moves_stack([Action|Actions])).
 pop_move(Action) :- moves_stack([Action|Actions]), retract(moves_stack(_)), assert(moves_stack([Actions])).
+push_sinked_tile(X,Y) :- board_cell(X,Y,[_, Colour, Shape]), 
+						lettertonumber(Colour, NumberC), lettertonumber(Shape, NumberS), 
+sinked_tiles(Tiles), retract(sinked_tiles(_)), assert(sinked_tiles([[X,Y,[NumberC, NumberS]]|Tiles])).
+pop_sinked_tile([Colour, Shape]) :- sinked_tiles([[_,_,[Colour, Shape]]|Tiles]), retract(sinked_tiles(_)), assert(sinked_tiles(Tiles)). 
+undo_move(['raise', X, Y, Colour, Shape]) :- pop_move(['sink', X, Y]), pop_sinked_tile([Colour, Shape]),
+											lettertonumber(ColourL, Colour), lettertonumber(ShapeL, Shape),
+											change_tile(X,Y,[' ', ColourL, ShapeL]), change_player.
+undo_move(['movetower', EndX, EndY, StartX, StartY]) :- pop_move(['movetower', StartX, StartY, EndX, EndY]), change_player,
+														move_tower_aux(EndX, EndY, StartX, StartY), change_player.
+undo_move(['slide', EndX, EndY, StartX, StartY]) :- pop_move(['slide', StartX, StartY, EndX, EndY]), change_player,
+													slide_tile_aux(EndX, EndY, StartX, StartY), change_player.
+undo_move(['pass']) :- pop_move(['pass']), change_player.
