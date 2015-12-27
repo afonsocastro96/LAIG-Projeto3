@@ -22,6 +22,7 @@ MyTerrain.prototype.constructor = MyTerrain;
  * Display function of the scene to render this object.
  */
 MyTerrain.prototype.display = function() {
+	var prevShader = this.scene.activeShader;
     this.scene.setActiveShader(this.shader);
 
     this.texture.bind();
@@ -32,7 +33,7 @@ MyTerrain.prototype.display = function() {
     this.heightmap.unbind(1);
     this.texture.unbind();
 
-	this.scene.setActiveShader(this.scene.defaultShader);
+	this.scene.setActiveShader(prevShader);
 }
 
 /**
