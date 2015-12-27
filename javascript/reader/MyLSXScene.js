@@ -254,7 +254,8 @@ MyLSXScene.prototype.startGameHandler = function(target, request) {
 	}
 	target.gameSet = new GameSet(target);
 	target.gameSet.init(new GameBoard(target, gameBoard));
-	target.gameSet.sink(1,1);
+	target.gameSet.stack.addTile(new BlackSquareTile(target));
+	target.gameSet.rise(0,0, new BlackSquareTile(target));
 }
 
 MyLSXScene.prototype.requestBotMove = function() {
