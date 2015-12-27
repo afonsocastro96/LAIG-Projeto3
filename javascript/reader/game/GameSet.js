@@ -17,7 +17,6 @@ GameSet.prototype.init = function(board) {
 
 GameSet.prototype.display = function() {
 	this.displayFunction();
-	this.displayHUD();
 }
 
 GameSet.prototype.displayHUD = function() {

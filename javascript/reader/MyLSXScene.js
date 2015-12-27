@@ -164,6 +164,11 @@ MyLSXScene.prototype.display = function () {
 	// Initialize Model-View matrix as identity (no transformation
 	this.updateProjectionMatrix();
     this.loadIdentity();
+	
+	if (this.graph != null && this.graph.loadedOk) {
+		if(this.gameSet != undefined)
+			this.gameSet.displayHUD();
+	}
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
