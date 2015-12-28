@@ -631,14 +631,14 @@ push_sinked_tile(X,Y) :- board_cell(X,Y,[_, Colour, Shape]),
 						lettertonumber(Colour, NumberC), lettertonumber(Shape, NumberS), 
 						sinked_tiles(Tiles), retract(sinked_tiles(_)), assert(sinked_tiles([[X,Y,[NumberC, NumberS]]|Tiles])).
 pop_sinked_tile([Colour, Shape]) :- sinked_tiles([[_,_,[Colour, Shape]]|Tiles]), retract(sinked_tiles(_)), assert(sinked_tiles(Tiles)). 
-push_sink_streak() :- sink_streak(SinkStreak), sink_streak_stack(Stack), retract(sink_streak_stack(_)), assert(sink_streak_stack([SinkStreak|Stack])).
-pop_sink_streak() :- sink_streak_stack([SinkStreak,NewSinkStreak|Stack]]),
-					 retract(sink_streak(_)), assert(sink_streak(NewSinkStreak)),
-					 retract(sink_streak_stack(_)), assert(sink_streak_stack([NewSinkStreak|Stack])).
+push_sink_streak() :- sink_streak(Player,SinkStreak), sink_streak_stack(Stack), retract(sink_streak_stack(_)), assert(sink_streak_stack([[Player,SinkStreak]|Stack])).
+pop_sink_streak() :- sink_streak_stack([_,[Player,NewSinkStreak]|Stack]]),
+					 retract(sink_streak(_)), assert(sink_streak(Player,NewSinkStreak)),
+					 retract(sink_streak_stack(_)), assert(sink_streak_stack([Player,NewSinkStreak|Stack])).
 push_number_passes() :- current_player(Player), number_pass(Player, NumberPass), number_passes_stack(Stack), retract(number_passes_stack(_)), assert(number_passes_stack([[Player,NumberPass]|Stack])).					 
-pop_number_passes() :- number_passes_stack([NumberPass,NewNumberPass|Stack]]),
-					   retract(number_pass(_)), assert(number_pass(NewNumberPass)),
-					   retract(number_passes_stack(_)), assert(number_passes_stack([NewNumberPass|Stack])).
+pop_number_passes() :- number_passes_stack([_,[NewPlayer,NewNumberPass]|Stack]]),
+					   retract(number_pass(_)), assert(number_pass(NewPlayer, NewNumberPass)),
+					   retract(number_passes_stack(_)), assert(number_passes_stack([[NewPlayer,NewNumberPass]|Stack])).
 undo_move(['raise', X, Y, Colour, Shape]) :- pop_move(['sink', X, Y]), pop_sinked_tile([Colour, Shape]),
 											lettertonumber(ColourL, Colour), lettertonumber(ShapeL, Shape),
 											change_tile(X,Y,[' ', ColourL, ShapeL]), change_player.
