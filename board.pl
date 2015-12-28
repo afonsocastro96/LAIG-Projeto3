@@ -13,18 +13,23 @@
 :- dynamic bot_colour/1.
 :- dynamic win_condition/1.
 :- dynamic moves_stack/1.
+:- dynamic sinked_tiles/1.
+:- dynamic sink_streak_stack/1.
+:- dynamic number_passes_stack/1.
 
 %Database manipulation
 purge_database(N) :-	N > 0, purge_database_aux(0,0), retract(board_length(N)), retract(sink_streak(_,_)), retract(current_player(_)),
 retract(number_circles(_)), retract(number_squares(_)), retract(number_blacks(_)), retract(number_whites(_)),
-retract(number_pass('white',_)), retract(number_pass('black',_)), retract(moves_stack(_)), (bot_colour(_) -> retract(bot_colour(_)); true), (win_condition(_) -> retract(win_condition(_));true).
+retract(number_pass('white',_)), retract(number_pass('black',_)), retract(moves_stack(_)), retract(sinked_tiles(_)), retract(sink_streak_stack(_)), retract(number_passes_stack(_)),
+(bot_colour(_) -> retract(bot_colour(_)); true), (win_condition(_) -> retract(win_condition(_));true).
 purge_database_aux(Row, Col) :- board_length(Length), Row < Length, Col < Length, !, retract(board_cell(Row, Col, _)), NCol is Col + 1, purge_database_aux(Row,NCol).
 purge_database_aux(Row, _) :- board_length(Length), Row < Length, !, NRow is Row + 1, purge_database_aux(NRow, 0).
 purge_database_aux(Row, _) :- board_length(Row).
 
 create_database(N) :- 	N > 0, assert(number_squares(0)), assert(number_circles(0)), assert(number_blacks(0)), assert(number_whites(0)),
 assert(sink_streak('white', 0)), assert(current_player('white')), assert(number_pass('white', 0)), assert(number_pass('black', 0)),
-assert(board_length(N)), assert(moves_stack([])), assert(sinked_tiles([])), assert(sink_streak_stack([])), assert(number_passes_stack([])), create_database_aux(0, 0).
+assert(board_length(N)), assert(moves_stack([])), assert(sinked_tiles([])), assert(sink_streak_stack([])), assert(number_passes_stack([])),
+create_database_aux(0, 0).
 create_database_aux(Row, Col) :- board_length(Length), Row < Length, Col < Length, !, assert(board_cell(Row, Col, [' ', ' ', ' '])), NCol is Col + 1, create_database_aux(Row,NCol).
 create_database_aux(Row, _) :- board_length(Length), Row < Length, !, NRow is Row + 1, create_database_aux(NRow, 0).
 create_database_aux(Row, _) :- board_length(Row).
@@ -614,6 +619,8 @@ lettertonumber('P', 2).
 lettertonumber('C', 3).
 lettertonumber('Q', 4).
 lettertonumber(' ', 0).
+waiting_player('white', 'black').
+waiting_player('black', 'white').
 format_board(Board) :- board_length(Length), format_rows(Length, 0, Board).
 format_rows(Length, Length, []).
 format_rows(Length, I, [CurrRow|Rows]) :- format_row(Length, 0, I, CurrRow), X is I+1, format_rows(Length, X, Rows).
@@ -632,11 +639,11 @@ push_sinked_tile(X,Y) :- board_cell(X,Y,[_, Colour, Shape]),
 						sinked_tiles(Tiles), retract(sinked_tiles(_)), assert(sinked_tiles([[X,Y,[NumberC, NumberS]]|Tiles])).
 pop_sinked_tile([Colour, Shape]) :- sinked_tiles([[_,_,[Colour, Shape]]|Tiles]), retract(sinked_tiles(_)), assert(sinked_tiles(Tiles)). 
 push_sink_streak() :- sink_streak(Player,SinkStreak), sink_streak_stack(Stack), retract(sink_streak_stack(_)), assert(sink_streak_stack([[Player,SinkStreak]|Stack])).
-pop_sink_streak() :- sink_streak_stack([_,[Player,NewSinkStreak]|Stack]]),
+pop_sink_streak() :- sink_streak_stack([_,[Player,NewSinkStreak]|Stack]),
 					 retract(sink_streak(_)), assert(sink_streak(Player,NewSinkStreak)),
 					 retract(sink_streak_stack(_)), assert(sink_streak_stack([Player,NewSinkStreak|Stack])).
-push_number_passes() :- current_player(Player), number_pass(Player, NumberPass), number_passes_stack(Stack), retract(number_passes_stack(_)), assert(number_passes_stack([[Player,NumberPass]|Stack])).					 
-pop_number_passes() :- number_passes_stack([_,[NewPlayer,NewNumberPass]|Stack]]),
+push_number_passes() :- current_player(Player), waiting_player(Player, WaitingPlayer), number_pass(WaitingPlayer, NumberPass), number_passes_stack(Stack), retract(number_passes_stack(_)), assert(number_passes_stack([[WaitingPlayer,NumberPass]|Stack])).					 
+pop_number_passes() :- number_passes_stack([_,[NewPlayer,NewNumberPass]|Stack]),
 					   retract(number_pass(_)), assert(number_pass(NewPlayer, NewNumberPass)),
 					   retract(number_passes_stack(_)), assert(number_passes_stack([[NewPlayer,NewNumberPass]|Stack])).
 undo_move(['raise', X, Y, Colour, Shape]) :- pop_move(['sink', X, Y]), pop_sinked_tile([Colour, Shape]),
