@@ -44,6 +44,9 @@ MyLSXScene.prototype.init = function (application) {
 	this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     this.enableTextures(true);
+	
+	this.nextPickId = 1;
+	this.setPickEnabled(true);
 };
 
 /**
@@ -156,6 +159,8 @@ MyLSXScene.prototype.onGraphLoaded = function ()
  */
 MyLSXScene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
+	
+	this.clearPickRegistration();
 	
 	// Clear image and depth buffer everytime we update the scene
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
@@ -431,4 +436,14 @@ MyLSXScene.prototype.applyAnimation = function(node) {
 	var animationMatrix = animation.calculateMatrix(t);
 
 	this.multMatrix(animationMatrix);
+}
+
+MyLSXScene.clearPickRegistration = function() {
+	CGFscene.prototype.clearPickRegistration.call(this);
+	this.nextPickId = 1;
+}
+
+MyLSXScene.registerNextPick = function(object) {
+	CGFscene.prototype.registerForPick(this.nextPickId, object);
+	++this.nextPickId;
 }
