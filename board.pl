@@ -628,7 +628,16 @@ format_row(Length, Length, _, []).
 format_row(Length, Col, Row, [[Colour, Shape]|CurrRow]) :- board_cell(Row, Col, [_,ColourL,ShapeL]),
 														lettertonumber(ColourL,Colour), lettertonumber(ShapeL,Shape),
 														X is Col + 1, format_row(Length, X, Row, CurrRow).
-get_towers(Towers) :- tower_positions('T', DarkTowers), tower_positions('L', LightTowers), append(DarkTowers, LightTowers, Towers).
+get_towers(Towers) :- findall(['T',Row, Col], board_cell(Row, Col, ['T',_,_]), DarkTowers),
+					  findall(['L',Row, Col], board_cell(Row, Col, ['L',_,_]), LightTowers),
+					  append(DarkTowers, LightTowers, Towers).
+
+get_available_tower_positions('L', Positions) :- findall([Row, Col], board_cell(Row, Col, [' ', 'B', _]), Whites),
+												 findall([Row, Col], board_cell(Row, Col, [' ', _, 'C']), Circles),
+												 append(Whites, Circles, Positions).
+get_available_tower_positions('T', Positions) :- findall([Row, Col], board_cell(Row, Col, [' ', 'P', _]), Blacks),
+												 findall([Row, Col], board_cell(Row, Col, [' ', _, 'Q']), Squares),
+												 append(Blacks, Squares, Positions).
 player_possible_moves(Actions) :- current_player(Player), available_actions(Player, Actions).
 get_board(Board, Towers) :- format_board(Board), get_towers(Towers).
 update_game(Action, Board, Towers) :- make_action(Action), push_move(Action), get_board(Board, Towers).
@@ -655,3 +664,6 @@ undo_move(['movetower', EndX, EndY, StartX, StartY]) :- pop_move(['movetower', S
 undo_move(['slide', EndX, EndY, StartX, StartY]) :- pop_move(['slide', StartX, StartY, EndX, EndY]), change_player,
 													slide_tile_aux(EndX, EndY, StartX, StartY), change_player.
 undo_move(['pass']) :- pop_move(['pass']), change_player.
+get_towers_status(Status) :- get_towers(Towers), length(Towers, 4), Status = "Towers ready".
+get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 2, Status = ['ask', 'light'].
+get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 4, Status = ['ask', 'dark'].

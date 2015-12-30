@@ -109,4 +109,8 @@ botmove(Difficulty, Answer) :-
 	%current_player(Player), bot_action(Difficulty, Player, Move).
 	Answer = "I still don't do what I'm supposed to do :( Just uncomment my Prolog code once a funcional board exists to teach me what to do :D".
 
+setuptowers(Answer) :- get_towers_status(Answer).
+
+gettowers(Answer) :- get_towers(Answer).
+
 :- server(8081).
