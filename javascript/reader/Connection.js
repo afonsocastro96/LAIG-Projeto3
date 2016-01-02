@@ -32,9 +32,17 @@ Connection = new Object();
 
 Connection.minorBoard = 0;
 Connection.majorBoard = 1;
+Connection.humanVsHumanMode = "'HvH'";
+Connection.humanVsMachineMode = "'HvM'";
+Connection.machineVsMachineMode = "'MvM'";
 
 Connection.startgame = function(target, handler, boardType) {
 	var requestString = "[startgame," + boardType + "]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.gamemode = function(target, handler, mode) {
+	var requestString = "[gamemode," + mode + "]";
 	makeRequest(target, requestString, handler);
 }
 

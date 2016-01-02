@@ -16,6 +16,7 @@
 :- dynamic sinked_tiles/1.
 :- dynamic sink_streak_stack/1.
 :- dynamic number_passes_stack/1.
+:- dynamic game_mode/1.
 
 %Database manipulation
 purge_database(N) :-	N > 0, purge_database_aux(0,0), retract(board_length(N)), retract(sink_streak(_,_)), retract(current_player(_)),
@@ -628,6 +629,7 @@ format_row(Length, Length, _, []).
 format_row(Length, Col, Row, [[Colour, Shape]|CurrRow]) :- board_cell(Row, Col, [_,ColourL,ShapeL]),
 														lettertonumber(ColourL,Colour), lettertonumber(ShapeL,Shape),
 														X is Col + 1, format_row(Length, X, Row, CurrRow).
+
 get_towers(Towers) :- findall(['T',Row, Col], board_cell(Row, Col, ['T',_,_]), DarkTowers),
 					  findall(['L',Row, Col], board_cell(Row, Col, ['L',_,_]), LightTowers),
 					  append(DarkTowers, LightTowers, Towers).
@@ -667,7 +669,6 @@ undo_move(['pass']) :- pop_move(['pass']), change_player.
 get_towers_status(Status) :- get_towers(Towers), length(Towers, 4), Status = "Towers ready".
 get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 2, Status = ['ask', 'light'].
 get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 4, Status = ['ask', 'dark'].
-validate_mode("MvM").
-validate_mode("PvM").
-validade_mode("PvP").
-set_mode(Mode) :- retract(game_mode(_)), assert(game_mode(Mode)).
+
+set_mode(Mode) :- game_mode(_), retract(game_mode(_)), assert(game_mode(Mode)).
+set_mode(Mode) :- assert(game_mode(Mode)).

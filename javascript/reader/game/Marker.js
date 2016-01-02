@@ -1,14 +1,18 @@
-function Marker(scene, string) {
+function Marker(scene) {
 	CGFobject.call(this, scene);
-	this.string = string;
 	this.shader = new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
 	this.shader.setUniformsValues({'dims': [16, 16]});
 	this.fontTexture = new CGFtexture(this.scene, "fonts/oolite-font.png");
 	this.plane = new MyPlane(this.scene, 100);
+	this.setText("");
 }
 
 Marker.prototype = Object.create(CGFobject.prototype);
 Marker.prototype.constructor = Marker;
+
+Marker.prototype.setText = function(string) {
+	this.string = string;
+}
 
 Marker.prototype.charToCoords = function(c){
 	var pos = c.charCodeAt();
