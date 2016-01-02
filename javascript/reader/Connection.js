@@ -34,5 +34,26 @@ Connection.minorBoard = 0;
 Connection.majorBoard = 1;
 
 Connection.startgame = function(target, handler, boardType) {
-	makeRequest(target, "[startgame," + boardType + "]", handler);
+	var requestString = "[startgame," + boardType + "]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.sink = function(target, handler, row, col) {	
+	var requestString = "[sink," + row + "," + col + "]";
+	makeRequest(target, requestString, handler); 
+}
+
+Connection.slide = function(target, handler, startRow, startCol, finalRow, finalCol) {
+	var requestString = "[slide," + startRow + "," + startCol + "," + finalRow + "," + finalCol + "]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.move = function(target, handler, startRow, startCol, finalRow, finalCol) {
+	var requestString = "[move," + startRow + "," + startCol + "," + finalRow + "," + finalCol + "]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.pass = function(target, handler) {
+	var requestString = "[pass]";
+	makeRequest(target, requestString, handler);
 }

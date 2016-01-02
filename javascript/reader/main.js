@@ -24,7 +24,7 @@ serialInclude(['../lib/CGF.js',
 'game/GameBoard.js','game/BoardTile.js','game/EmptyTile.js','game/BlackCircleTile.js',
 'game/WhiteCircleTile.js','game/BlackSquareTile.js','game/WhiteSquareTile.js',
 'game/TileStack.js','game/GameSet.js', 'game/Marker.js', 'animations/FadeAnimation.js',
-'game/GameState.js', 'game/states/BoardSelectionState.js',
+'game/GameState.js', 'game/states/BoardSelectionState.js', 'game/states/ModeSelectionState.js',
 
 main=function()
 {

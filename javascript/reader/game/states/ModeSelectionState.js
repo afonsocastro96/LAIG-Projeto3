@@ -10,13 +10,15 @@ ModeSelectionState.prototype.init = function(gameSet) {
 }
 
 ModeSelectionState.prototype.display = function(gameSet) {
-	// nothing to display
+	gameSet.board.display();
+	
+	gameSet.scene.pushMatrix();
+		gameSet.scene.translate(0,0,-5);
+		gameSet.stack.display();
+	gameSet.scene.popMatrix();
 }
 
 ModeSelectionState.prototype.displayHUD = function(gameSet) {
-	this.minorPick.gameSet = gameSet;
-	this.majorPick.gameSet = gameSet;
-	
 	gameSet.scene.pushMatrix();
 	gameSet.scene.translate(0,1,-20);
 	gameSet.scene.scale(0.75, 0.75, 0.75);
