@@ -47,6 +47,9 @@ MyLSXScene.prototype.init = function (application) {
 	
 	this.nextPickId = 1;
 	this.setPickEnabled(true);
+	
+	this.gameSet = new GameSet(this);
+	this.gameSet.init();
 };
 
 /**
@@ -63,7 +66,6 @@ MyLSXScene.prototype.setInterface = function(myinterface) {
  */
 MyLSXScene.prototype.initObjects = function() {
 	this.primitives = [];
-	this.startGame();
 }
 
 /**
@@ -154,13 +156,31 @@ MyLSXScene.prototype.onGraphLoaded = function ()
 	}
 };
 
+
+MyLSXScene.prototype.logPicking = function ()
+{
+	if (this.pickMode == false) {
+		if (this.pickResults != null && this.pickResults.length > 0) {
+			for (var i=0; i< this.pickResults.length; i++) {
+				var obj = this.pickResults[i][0];
+				if (obj)
+				{
+					obj.onPick();
+				}
+			}
+			this.pickResults.splice(0,this.pickResults.length);
+		}		
+	}
+}
+
 /**
  * Display the scene elements.
  */
 MyLSXScene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
 	
-	this.clearPickRegistration();
+	this.logPicking();
+	this.resetPickRegistration();
 	
 	// Clear image and depth buffer everytime we update the scene
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
@@ -222,20 +242,6 @@ MyLSXScene.prototype.initUserOptions = function() {
 	this.cameraAngle = ["Oblique View", "Upward View"];
 	this.boardType = ["Syrtis Minor", "Syrtis Major"];
 	this.themes = ["Wave", "Sandbar"];
-}
-
-MyLSXScene.prototype.startGame = function() {
-	if(this.myinterface == null)
-		return;
-
-	var currentBoardType;
-
-	if(this.currentBoardType == "Syrtis Minor")
-		currentBoardType = 0;
-	else currentBoardType = 1;
-
-	var requestString = "[startgame," + currentBoardType + "]";
-	makeRequest(this, requestString,this.startGameHandler);
 }
 
 
@@ -438,12 +444,12 @@ MyLSXScene.prototype.applyAnimation = function(node) {
 	this.multMatrix(animationMatrix);
 }
 
-MyLSXScene.clearPickRegistration = function() {
+MyLSXScene.prototype.resetPickRegistration = function() {
 	CGFscene.prototype.clearPickRegistration.call(this);
 	this.nextPickId = 1;
 }
 
-MyLSXScene.registerNextPick = function(object) {
-	CGFscene.prototype.registerForPick(this.nextPickId, object);
+MyLSXScene.prototype.registerNextPick = function(object) {
+	CGFscene.prototype.registerForPick.call(this,this.nextPickId, object);
 	++this.nextPickId;
 }

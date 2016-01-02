@@ -86,23 +86,9 @@ MyInterface.prototype.onGraphLoaded = function(){
 	options.add(this.scene, "requestBotMove").name("Request Bot Move"); // Para efeitos de mostrar o que ja esta feito, vai ser apagado
 
 	/* A new game is started with the following options after clicking Start Game. Only the board type is sent to prolog. */
-	var newGame = this.gui.addFolder("Start New Game");
-	newGame.add(this.scene, "currentGameType", this.scene.gameType).name("Current Game Type"); //Eu nao sou mandado para o prolog.
-																							   //apenas determino qunado e que um requestBotMove e feito,
-																							   //mas isso e decidido pelo JavaScript
-	newGame.add(this.scene, "currentBoardType", this.scene.boardType).name("Board Type");
-	newGame.add(this.scene, "startGame").name("Start Game");
 	this.gui.add(this.scene, "undoLastMove").name("Undo Last Move");
 	this.gui.add(this.scene, "getSinkStreak").name("Get Sink Streak");
 
 	this.interfaceLoaded = true;
-}
-
-/**
- * Scene setter.
- * @param scene {CGFscene} Scene to set.
- */
-MyInterface.prototype.setScene = function(scene) {
-    this.scene = scene;
 }
 

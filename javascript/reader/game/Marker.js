@@ -21,7 +21,7 @@ Marker.prototype.display = function(){
 	
 	this.scene.pushMatrix();
 		this.fontTexture.bind();
-		this.scene.translate(-this.string.length/2, 0,0);
+		this.scene.translate(-(this.string.length - 1)/2, 0,0);
 		this.scene.rotate(Math.PI/2,1,0,0);
 		for(var c = 0; c < this.string.length; ++c){
 			var pos = this.charToCoords(this.string[c]);

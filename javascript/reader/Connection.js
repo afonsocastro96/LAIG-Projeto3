@@ -1,5 +1,4 @@
 /* Handle the prolog connection */
-
 function handleReply(data){
 	response=JSON.parse(data.target.response); // Access message and show	
 	console.log(response.answer);
@@ -12,33 +11,6 @@ function handleReply(data){
 }
 
 function makeRequest(target, request, handler){
-	/*switch(request){
-		case 'startgame':
-			this.startGameHandler();
-			break;
-		case 'undo':
-			var requestString = "[undo]";
-			break;
-		case 'sinkstreak':
-
-			break;
-		case 'botmove':
-			
-			break;
-		case 'sink':
-			
-			break;
-		case 'slide':
-			
-			break;
-		case 'move':
-			
-			break;
-		case 'pass':
-			
-		default:
-			return;
-	}*/
 	window.replyHandler = handler;
 	window.targ = target;
 	postGameRequest(request, handleReply);	
@@ -54,5 +26,13 @@ function postGameRequest(requestString, onSuccess, onError)
 
 	request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	request.send('requestString='+encodeURIComponent(requestString));
+}
 
+Connection = new Object();
+
+Connection.minorBoard = 0;
+Connection.majorBoard = 1;
+
+Connection.startgame = function(target, handler, boardType) {
+	makeRequest(target, "[startgame," + boardType + "]", handler);
 }

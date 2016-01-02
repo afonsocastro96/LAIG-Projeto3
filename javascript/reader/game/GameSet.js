@@ -9,21 +9,25 @@ function GameSet(scene) {
 GameSet.prototype = Object.create(CGFobject.prototype);
 GameSet.prototype.constructor = GameSet;
 
-GameSet.prototype.init = function(board) {
-	this.board = board;
-	this.stack = new TileStack(this.scene);
-	this.marker = new Marker(this.scene, "White0");
+GameSet.prototype.init = function() {
+	this.setState(new BoardSelectionState());
+}
+
+GameSet.prototype.setState = function(state) {
+	this.state = state;
+	this.state.init(this);
 }
 
 GameSet.prototype.display = function() {
-	this.displayFunction();
+	this.state.display(this);
 }
 
 GameSet.prototype.displayHUD = function() {
-	this.scene.pushMatrix();
-	this.scene.translate(-1,3.0,-20);
-	this.marker.display();
-	this.scene.popMatrix();
+	this.state.displayHUD(this);
+}
+
+GameSet.prototype.update = function(currenTime) {
+	this.state.update(this, currenTime);
 }
 
 GameSet.prototype.displayPicking = function() {
