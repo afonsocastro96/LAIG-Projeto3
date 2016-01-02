@@ -244,43 +244,6 @@ MyLSXScene.prototype.initUserOptions = function() {
 	this.themes = ["Wave", "Sandbar"];
 }
 
-
-MyLSXScene.prototype.startGameHandler = function(target, request) {
-	var board = JSON.parse(request);
-	var gameBoard = [];
-	for(var row = 0; row < board.length; ++row){
-		var currentRow = [];
-		for(var col = 0; col < board[row].length; ++col){
-			switch(board[row][col][0]){
-				case 0:
-					currentRow.push(new EmptyTile());
-					break;
-				case 1:
-					if(board[row][col][1] == 3)
-						currentRow.push(new WhiteCircleTile(target));
-					else
-						currentRow.push(new WhiteSquareTile(target));
-					break;
-				case 2:
-					if(board[row][col][1] == 3)
-						currentRow.push(new BlackCircleTile(target));
-					else
-						currentRow.push(new BlackSquareTile(target));
-					break;
-				default:
-					break;
-			}
-		}
-		gameBoard.push(currentRow);
-	}
-	target.gameSet = new GameSet(target);
-	target.gameSet.init(new GameBoard(target, gameBoard));
-	var tile = target.gameSet.board.getTile(1,1);
-	target.gameSet.slide(1,1,0,1);
-	target.gameSet.sink(0, 1);
-	target.gameSet.rise(0, 1, tile);
-}
-
 MyLSXScene.prototype.requestBotMove = function() {
 	if(this.myinterface == null)
 		return;

@@ -18,6 +18,11 @@ GameSet.prototype.setState = function(state) {
 	this.state.init(this);
 }
 
+GameSet.prototype.setBoard = function(gameBoard) {
+	this.board = gameBoard;
+	this.stack = new TileStack(this.scene);
+}
+
 GameSet.prototype.display = function() {
 	this.state.display(this);
 }

@@ -23,61 +23,6 @@ MyInterface.prototype.init = function(application) {
  * Function to call when the SceneGraph is fully loaded.
  */
 MyInterface.prototype.onGraphLoaded = function(){
-	var self = this;
-
-	// Para efeitos de mostrar o que ja esta feito, vai ser tudo apagado
-	var play = this.gui.addFolder('Make play');
-	/* PLAYS */
-		var sink = play.addFolder('Sink Tile');
-		this.sinkXCoord = 1;
-		this.sinkYCoord = 1;
-		sink.add(this, 'sinkXCoord', 1, 7).step(1).name('X Coord');
-		sink.add(this, 'sinkYCoord', 1, 7).step(1).name('Y Coord');
-		this.sinkConfirm = function() { 
-			var requestString = "[sink," + this.sinkXCoord + "," + this.sinkYCoord + "]";
-			makeRequest(this.scene, requestString); 
-		};
-		sink.add(this, 'sinkConfirm').name('Make play');
-
-		var slide = play.addFolder('Slide Tile');
-		this.slideStartXCoord = 1;
-		this.slideStartYCoord = 1;
-		this.slideEndXCoord = 1;
-		this.slideEndYCoord = 1;
-		slide.add(this, 'slideStartXCoord', 1, 7).step(1).name('Start X Coord');
-		slide.add(this, 'slideStartYCoord', 1, 7).step(1).name('Start Y Coord');
-		slide.add(this, 'slideEndXCoord', 1, 7).step(1).name('End X Coord');
-		slide.add(this, 'slideEndYCoord', 1, 7).step(1).name('End Y Coord');
-		this.slideConfirm = function() { 
-			var requestString = "[slide," + this.slideStartXCoord + "," + this.slideStartYCoord + "," + this.slideEndXCoord + "," + this.slideEndYCoord + "]";
-			makeRequest(this.scene, requestString);
-		};
-		slide.add(this, 'slideConfirm').name('Make play');
-
-		var movetower = play.addFolder('Move Tower');
-		this.moveStartXCoord = 1;
-		this.moveStartYCoord = 1;
-		this.moveEndXCoord = 1;
-		this.moveEndYCoord = 1;
-		movetower.add(this, 'moveStartXCoord', 1, 7).step(1).name('Start X Coord');
-		movetower.add(this, 'moveStartYCoord', 1, 7).step(1).name('Start Y Coord');
-		movetower.add(this, 'moveEndXCoord', 1, 7).step(1).name('End X Coord');
-		movetower.add(this, 'moveEndYCoord', 1, 7).step(1).name('End Y Coord');
-		this.moveConfirm = function() {
-			var requestString = "[move," + this.moveStartXCoord + "," + this.moveStartYCoord + "," + this.moveEndXCoord + "," + this.moveEndYCoord + "]";
-			makeRequest(this.scene,requestString);
-		};
-		movetower.add(this, 'moveConfirm').name('Make play');
-
-
-		var pass = play.addFolder('Pass');
-		this.passConfirm = function() {
-			var requestString = "[pass]";
-			makeRequest(this.scene, requestString);
-		};
-		pass.add(this, 'passConfirm').name('Make play');
-	/* END OF PLAYS */
-
 	/* These options may be changed on the fly during the game */
 	var options = this.gui.addFolder("Change Options");
 	options.add(this.scene, "currentCameraAngle", this.scene.cameraAngle).name("Current Camera Angle");

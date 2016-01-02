@@ -29,7 +29,7 @@ BoardSelectionState.prototype.init = function(gameSet) {
 }
 
 BoardSelectionState.prototype.display = function(gameSet) {
-	// nothing to display
+	// Nothing to display
 }
 
 BoardSelectionState.prototype.displayHUD = function(gameSet) {
@@ -56,18 +56,14 @@ BoardSelectionState.prototype.update = function(gameSet, currentTime) {
 	// nothing to update
 }
 
-BoardSelectionState.prototype.onPick = function(gameset, boardType) {
+BoardSelectionState.prototype.onPick = function(gameSet, boardType) {
 	console.log("Selected board: " + boardType);
 	
-	Connection.startgame(this, function(target, request) {
-		this.gameStarted(gameSet, target, request);
-	},
-	boardType);
-	
+	Connection.startgame(gameSet, this.gameStarted, boardType);
 }
 
-BoardSelectionState.prototype.gameStarted = function(gameset, target, request) {
-	var board = JSON.parse(request);
+BoardSelectionState.prototype.gameStarted = function(gameSet, requestData) {
+	var board = JSON.parse(requestData);
 	var gameBoard = [];
 	for(var row = 0; row < board.length; ++row){
 		var currentRow = [];
@@ -78,15 +74,15 @@ BoardSelectionState.prototype.gameStarted = function(gameset, target, request) {
 					break;
 				case 1:
 					if(board[row][col][1] == 3)
-						currentRow.push(new WhiteCircleTile(target));
+						currentRow.push(new WhiteCircleTile(gameSet.scene));
 					else
-						currentRow.push(new WhiteSquareTile(target));
+						currentRow.push(new WhiteSquareTile(gameSet.scene));
 					break;
 				case 2:
 					if(board[row][col][1] == 3)
-						currentRow.push(new BlackCircleTile(target));
+						currentRow.push(new BlackCircleTile(gameSet.scene));
 					else
-						currentRow.push(new BlackSquareTile(target));
+						currentRow.push(new BlackSquareTile(gameSet.scene));
 					break;
 				default:
 					break;
@@ -94,10 +90,6 @@ BoardSelectionState.prototype.gameStarted = function(gameset, target, request) {
 		}
 		gameBoard.push(currentRow);
 	}
-	target.gameSet = new GameSet(target);
-	target.gameSet.init(new GameBoard(target, gameBoard));
-	var tile = target.gameSet.board.getTile(1,1);
-	target.gameSet.slide(1,1,0,1);
-	target.gameSet.sink(0, 1);
-	target.gameSet.rise(0, 1, tile);
+	gameSet.setBoard(new GameBoard(gameSet.scene, gameBoard));
+	gameSet.setState(new ModeSelectionState());
 }
