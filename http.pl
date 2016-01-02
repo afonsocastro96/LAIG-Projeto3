@@ -118,8 +118,8 @@ validate_mode("PvM").
 validade_mode("PvP").
 
 
-gamemode(Mode, "Gamemode: ACK") :- Mode is "MvM", set_mode(Mode), randomize_towers.
-gamemode(Mode, "Gamemode: ACK") :- Mode is "PvM", set_mode(Mode).
-gamemode(Mode, "Gamemode: ACK") :- Mode is "PvP", set_mode(Mode).
+gamemode(Mode, "Gamemode: ACK") :- Mode == "MvM", set_mode(Mode), randomize_towers.
+gamemode(Mode, "Gamemode: ACK") :- Mode == "PvM", set_mode(Mode).
+gamemode(Mode, "Gamemode: ACK") :- Mode == "PvP", set_mode(Mode).
 
 :- server(8081).\
