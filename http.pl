@@ -113,4 +113,8 @@ setuptowers(Answer) :- get_towers_status(Answer).
 
 gettowers(Answer) :- get_towers(Answer).
 
+gamemode("MvM", "Gamemode: ACK") :- randomize_towers.
+gamemode("PvM", "Gamemode: ACK").
+gamemode("PvP", "Gamemode: ACK").
+
 :- server(8081).
