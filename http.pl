@@ -113,8 +113,8 @@ setuptowers(Answer) :- get_towers_status(Answer).
 
 gettowers(Answer) :- get_towers(Answer).
 
-gamemode("MvM", "Gamemode: ACK") :- randomize_towers.
-gamemode("PvM", "Gamemode: ACK").
-gamemode("PvP", "Gamemode: ACK").
+gamemode(Mode, "Gamemode: ACK") :- validate_mode(Mode), set_mode(Mode), randomize_towers.
+gamemode(Mode, "Gamemode: ACK") :- validate_mode(Mode), set_mode(Mode).
+gamemode(Mode, "Gamemode: ACK") :- validate_mode(Mode), set_mode(Mode).
 
-:- server(8081).
+:- server(8081).\

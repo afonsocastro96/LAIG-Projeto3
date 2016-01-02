@@ -28,7 +28,7 @@ purge_database_aux(Row, _) :- board_length(Row).
 
 create_database(N) :- 	N > 0, assert(number_squares(0)), assert(number_circles(0)), assert(number_blacks(0)), assert(number_whites(0)),
 assert(sink_streak('white', 0)), assert(current_player('white')), assert(number_pass('white', 0)), assert(number_pass('black', 0)),
-assert(board_length(N)), assert(moves_stack([])), assert(sinked_tiles([])), assert(sink_streak_stack([])), assert(number_passes_stack([])),
+assert(board_length(N)), assert(moves_stack([])), assert(sinked_tiles([])), assert(sink_streak_stack([])), assert(number_passes_stack([])), assert(game_mode("")),
 create_database_aux(0, 0).
 create_database_aux(Row, Col) :- board_length(Length), Row < Length, Col < Length, !, assert(board_cell(Row, Col, [' ', ' ', ' '])), NCol is Col + 1, create_database_aux(Row,NCol).
 create_database_aux(Row, _) :- board_length(Length), Row < Length, !, NRow is Row + 1, create_database_aux(NRow, 0).
@@ -667,3 +667,7 @@ undo_move(['pass']) :- pop_move(['pass']), change_player.
 get_towers_status(Status) :- get_towers(Towers), length(Towers, 4), Status = "Towers ready".
 get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 2, Status = ['ask', 'light'].
 get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 4, Status = ['ask', 'dark'].
+validate_mode("MvM").
+validate_mode("PvM").
+validade_mode("PvP").
+set_mode(Mode) :- retract(game_mode(_)), assert(game_mode(Mode)).
