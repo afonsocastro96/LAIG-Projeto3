@@ -113,8 +113,13 @@ setuptowers(Answer) :- get_towers_status(Answer).
 
 gettowers(Answer) :- get_towers(Answer).
 
-gamemode(Mode, "Gamemode: ACK") :- validate_mode(Mode), set_mode(Mode), randomize_towers.
-gamemode(Mode, "Gamemode: ACK") :- validate_mode(Mode), set_mode(Mode).
-gamemode(Mode, "Gamemode: ACK") :- validate_mode(Mode), set_mode(Mode).
+validate_mode("MvM").
+validate_mode("PvM").
+validade_mode("PvP").
+
+
+gamemode(Mode, "Gamemode: ACK") :- Mode is "MvM", set_mode(Mode), randomize_towers.
+gamemode(Mode, "Gamemode: ACK") :- Mode is "PvM", set_mode(Mode).
+gamemode(Mode, "Gamemode: ACK") :- Mode is "PvP", set_mode(Mode).
 
 :- server(8081).\
