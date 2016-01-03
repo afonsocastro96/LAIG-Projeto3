@@ -65,7 +65,6 @@ slide(StartX, StartY, EndX, EndY, Answer) :-
 	slide_tile_aux(StartX, StartY, EndX, EndY),
 	push_sink_streak,
 	push_number_passes,
-	Answer = "Slide Tile: ACK",
 	Move = lettertonumber('slide'),
 	Answer = [Move, StartX, StartY, EndX, EndY].
 
@@ -74,7 +73,6 @@ move(StartX, StartY, EndX, EndY, Answer) :-
 	move_tower_aux(StartX,StartY,EndX,EndY),
 	push_sink_streak,
 	push_number_passes,
-	Answer = "Move tower: ACK",
 	Move = lettertonumber('move'),
 	Answer = [Move, StartX, StartY, EndX, EndY].
 
