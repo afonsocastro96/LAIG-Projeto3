@@ -667,15 +667,23 @@ push_sinked_tile(X,Y) :- board_cell(X,Y,[_, Colour, Shape]),
 						lettertonumber(Colour, NumberC), lettertonumber(Shape, NumberS), 
 						sinked_tiles(Tiles), retract(sinked_tiles(_)), assert(sinked_tiles([[X,Y,[NumberC, NumberS]]|Tiles])).
 pop_sinked_tile([Colour, Shape]) :- sinked_tiles([[_,_,[Colour, Shape]]|Tiles]), retract(sinked_tiles(_)), assert(sinked_tiles(Tiles)). 
-push_sink_streak() :- sink_streak(Player,SinkStreak), sink_streak_stack(Stack),
+push_sink_streak :- sink_streak(Player,SinkStreak), sink_streak_stack(Stack),
 					  retract(sink_streak_stack(_)), assert(sink_streak_stack([[Player,SinkStreak]|Stack])).
-pop_sink_streak() :- sink_streak_stack([_,[Player,NewSinkStreak]|Stack]),
+pop_sink_streak :- sink_streak_stack([_,[Player,NewSinkStreak]|Stack]),
 					 retract(sink_streak(_,_)), assert(sink_streak(Player,NewSinkStreak)),
 					 retract(sink_streak_stack(_)), assert(sink_streak_stack([[Player,NewSinkStreak]|Stack])).
-push_number_passes() :- current_player(Player), waiting_player(Player, WaitingPlayer), number_pass(WaitingPlayer, NumberPass), number_passes_stack(Stack), retract(number_passes_stack(_)), assert(number_passes_stack([[WaitingPlayer,NumberPass]|Stack])).					 
-pop_number_passes() :- number_passes_stack([_,[NewPlayer,NewNumberPass]|Stack]),
-					   retract(number_pass(_,_)), assert(number_pass(NewPlayer, NewNumberPass)),
-					   retract(number_passes_stack(_)), assert(number_passes_stack([[NewPlayer,NewNumberPass]|Stack])).
+
+push_number_passes :-
+	number_pass('white', WPasses), number_pass('black', BPasses),
+	number_passes_stack(Stack), retract(number_passes_stack(_)),
+	assert(number_passes_stack([[WPasses,BPasses]|Stack])).					 
+pop_number_passes :-
+	number_passes_stack([_,[NewWPasses,NewBPasses]|Stack]), retract(number_pass('white',_)),
+	retract(number_pass('black',_)),assert(number_pass('white', NewWPasses)),
+	assert(number_pass('black', NewBPasses)), retract(number_passes_stack(_)),
+	
+	assert(number_passes_stack([[NewWPasses,NewBPasses]|Stack])).
+
 undo_move([MoveN, X, Y, Colour, Shape]) :- pop_move(['sink', X, Y]), lettertonumber('raise', MoveN), pop_sinked_tile([Colour, Shape]),
 											lettertonumber(ColourL, Colour), lettertonumber(ShapeL, Shape),
 											change_tile(X,Y,[' ', ColourL, ShapeL]), change_player.
@@ -695,9 +703,7 @@ set_difficulty(Difficulty) :- validate_difficulty(Difficulty), (difficulty(_) ->
 convert_actions(Actions, Answers) :- convert_actions_aux(Actions, Answers).
 convert_actions_aux([],[]).
 convert_actions_aux([[Action|_]|Actions], [[Answer|_]|Answers]) :- lettertonumber(Action, Answer), convert_actions_aux(Actions, Answers).
+
 convert_sink_streak_stack(Answer) :- sink_streak_stack(Stack), convert_sink_streak_stack_aux(Stack, Answer).
 convert_sink_streak_stack_aux([], []).
-convert_sink_streak_stack_aux([[First|_]|Stack], [[Answer|_]|Answers]) :- lettertonumber(First, Answer), convert_sink_streak_stack_aux(Stack, Answers).
-convert_number_passes_stack(Answer) :- number_passes_stack(Stack), convert_number_passes_stack_aux(Stack, Answer).
-convert_number_passes_stack_aux([], []).
-convert_number_passes_stack_aux([[First|_]|Stack], [[Answer|_]|Answers]) :- lettertonumber(First, Answer), convert_number_passes_stack_aux(Stack, Answers).
+convert_sink_streak_stack_aux([[Player,Streak]|Stack], [[Number,Streak]|Answers]) :- lettertonumber(Player, Number), convert_sink_streak_stack_aux(Stack, Answers).
