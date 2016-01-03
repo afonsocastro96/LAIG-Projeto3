@@ -67,7 +67,7 @@ slide(StartX, StartY, EndX, EndY, Answer) :-
 	Answer = "Slide Tile: ACK".
 
 move(StartX, StartY, EndX, EndY, Answer) :-
-	push_move(['movetower', StartX, StartY, EndX, EndY]),
+	push_move(['move', StartX, StartY, EndX, EndY]),
 	move_tower_aux(StartX,StartY,EndX,EndY),
 	push_sink_streak,
 	push_number_passes,

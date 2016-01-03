@@ -663,7 +663,7 @@ player_possible_moves(Actions) :- current_player(Player), available_actions(Play
 get_board(Board, Towers) :- format_board(Board), get_towers(Towers).
 update_game(Action, Board, Towers) :- make_action(Action), push_move(Action), get_board(Board, Towers).
 push_move(Action) :- moves_stack(Actions), retract(moves_stack(_)), assert(moves_stack([Action|Actions])).
-pop_move(Action) :- moves_stack([Action|Actions]), retract(moves_stack(_)), assert(moves_stack([Actions])).
+pop_move(Action) :- moves_stack([Action|Actions]), retract(moves_stack(_)), assert(moves_stack(Actions)).
 push_sinked_tile(X,Y) :- board_cell(X,Y,[_, Colour, Shape]), 
 						lettertonumber(Colour, NumberC), lettertonumber(Shape, NumberS), 
 						sinked_tiles(Tiles), retract(sinked_tiles(_)), assert(sinked_tiles([[X,Y,[NumberC, NumberS]]|Tiles])).
@@ -688,7 +688,7 @@ pop_number_passes :-
 undo_move([MoveN, X, Y, Colour, Shape]) :- pop_move(['sink', X, Y]), lettertonumber('raise', MoveN), pop_sinked_tile([Colour, Shape]),
 											lettertonumber(ColourL, Colour), lettertonumber(ShapeL, Shape),
 											change_tile(X,Y,[' ', ColourL, ShapeL]), change_player.
-undo_move([MoveN, EndX, EndY, StartX, StartY]) :- pop_move(['movetower', StartX, StartY, EndX, EndY]), lettertonumber('movetower', MoveN), change_player,
+undo_move([MoveN, EndX, EndY, StartX, StartY]) :- pop_move(['move', StartX, StartY, EndX, EndY]), lettertonumber('move', MoveN), change_player,
 														move_tower_aux(EndX, EndY, StartX, StartY), change_player.
 undo_move([MoveN, EndX, EndY, StartX, StartY]) :- pop_move(['slide', StartX, StartY, EndX, EndY]), lettertonumber('slide', MoveN), change_player,
 													slide_tile_aux(EndX, EndY, StartX, StartY), change_player.
