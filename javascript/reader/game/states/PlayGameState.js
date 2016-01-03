@@ -6,10 +6,21 @@ PlayGameState.prototype = Object.create(GameState.prototype);
 PlayGameState.prototype.constructor = PlayGameState;
 
 PlayGameState.prototype.init = function(gameSet) {
+	this.undoButton = new Marker(gameSet.scene);
+	this.undoButton.setText("Undo");
+	this.cancelButton = new Marker(gameSet.scene);
+	this.cancelButton.setText("Cancel");
+	this.sinkStreakPanel = new Marker(gameSet.scene);
+	this.numPassLightPanel = new Marker(gameSet.scene);
+	this.numPassDarkPanel = new Marker(gameSet.scene);
+	this.timerPanel = new Marker(gameSet.scene);
 	
-	this.actionButton = new Marker(gameSet.scene);
 	
-	Connection.finishSetup(gameSet, this.finishedSetup);
+	this.turnDuration = 30;
+	this.lastPlayTime = Time.now();
+	
+	var gameState = this;
+	Connection.finishSetup(gameSet, function(gameSet, request) { gameState.setScore(gameSet, request)});
 }
 
 PlayGameState.prototype.display = function(gameSet) {
@@ -31,7 +42,14 @@ PlayGameState.prototype.display = function(gameSet) {
 	}
 }
 
+PlayGameState.prototype.displayScoresHUD = function(gameSet) {
+	
+}
 
-PlayGameState.prototype.finishedSetup = function(gameSet, request) {
-	console.log(request);
+PlayGameState.prototype.update = function(gameSet, currentTime) {
+	this.timerPanel.setText(Math.trunc((this.lastPlayTime - currentTime) / 1000).toString());
+}
+
+PlayGameState.prototype.setScore = function(gameSet, request) {
+	
 }
