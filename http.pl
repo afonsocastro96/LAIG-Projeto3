@@ -125,6 +125,7 @@ finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvM'
 finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('MvM'), difficulty(_), assert(is_bot('white'), assert(is_bot('black'))), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
 finishsetup('Finish Setup: REJ').
 
+nextplay([GameOver, Winner, Condition]) :- check_winning_condition(Winner), GameOver = 2, win_condition(Condition).
 nextplay([CurrentPlayer,Moves]) :- current_player(CurrentPlayer), is_bot(CurrentPlayer), Moves = 0.
 nextplay([CurrentPlayer,Moves]) :- current_player(CurrentPlayer), available_moves(Moves).
 
