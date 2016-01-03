@@ -637,6 +637,12 @@ lettertonumber('raise', 4).
 lettertonumber('white', 0).
 lettertonumber('black', 1).
 
+lettertonumber('quicksand', 0).
+lettertonumber('double island initiative', 1).
+lettertonumber('completed_island', 2).
+lettertonumber('double pass initiative', 3).
+lettertonumber('four_passes', 4).
+
 waiting_player('white', 'black').
 waiting_player('black', 'white').
 format_board(Board) :- board_length(Length), format_rows(Length, 0, Board).
