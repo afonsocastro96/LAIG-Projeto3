@@ -94,9 +94,8 @@ sinkstreak(Answer) :-
 
 numberpasses(Answer) :- number_pass(Answer).
 
-sinkstreakstack(Answer) :- sink_streak_stack(Answer).
-
-numberpassesstack(Answer) :- number_passes_stack(Answer).
+sinkstreakstack(Answer) :- convert_sink_streak_stack(Answer).
+numberpassesstack(Answer) :- convert_number_passes_stack(Answer).
 
 startgame(BoardType, Answer) :-
 	(board_length(Length) -> purge_database(Length);true), 
@@ -110,7 +109,6 @@ botmove(Difficulty, Answer) :-
 	Answer = "I still don't do what I'm supposed to do :( Just uncomment my Prolog code once a funcional board exists to teach me what to do :D".
 
 setuptowers(Answer) :- get_towers_status(Answer).
-
 gettowers(Answer) :- get_towers(Answer).
 
 addtower('light', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'L').
@@ -123,8 +121,8 @@ gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvH', set_mode(Mode).
 setDifficulty(Difficulty, 'Difficulty: ACK') :- set_difficulty(Difficulty).
 
 finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvH'), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
-finishsetup(Answer) :- sink_streak_stack(_), game_mode('HvM'), difficulty(BotDifficulty), bot_pick_colour(BotDifficulty, Colour), assert(is_bot(Colour)), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
-finishsetup(Answer) :- sink_streak_stack(_), game_mode('MvM'), difficulty(BotDifficulty), assert(is_bot('white'), assert(is_bot('black'))), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
+finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvM'), difficulty(BotDifficulty), bot_pick_colour(BotDifficulty, Colour), assert(is_bot(Colour)), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
+finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('MvM'), difficulty(_), assert(is_bot('white'), assert(is_bot('black'))), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
 finishsetup('Finish Setup: REJ').
 
 nextplay([CurrentPlayer,Moves]) :- current_player(CurrentPlayer), is_bot(CurrentPlayer), Moves = 0.

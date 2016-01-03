@@ -694,4 +694,4 @@ set_mode(Mode) :- (game_mode(_) -> retract(game_mode(_)); true), assert(game_mod
 set_difficulty(Difficulty) :- validate_difficulty(Difficulty), (difficulty(_) -> retract(difficulty(_)); true), assert(difficulty(Difficulty)).
 convert_actions(Actions, Answers) :- convert_actions_aux(Actions, Answers).
 convert_actions_aux([],[]).
-convert_actions_aux([[Action|_]|Actions], [[Answer|_]|Answers]) :- lettertonumber(Action, Answer)), convert_actions_aux(Actions, Answers).
+convert_actions_aux([[Action|_]|Actions], [[Answer|_]|Answers]) :- lettertonumber(Action, Answer), convert_actions_aux(Actions, Answers).
