@@ -87,7 +87,7 @@ pass(Answer) :-
 	Answer = "Pass: ACK".
 
 
-available_moves(Answer) :- current_player(Player), available_actions(Player, Answer).
+available_moves(Answer) :- current_player(Player), available_actions(Player, Actions), convert_actions(Actions, Answer).
 
 sinkstreak(Answer) :-
 	sink_streak(Answer).
@@ -121,5 +121,13 @@ gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvM', set_mode(Mode).
 gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvH', set_mode(Mode).
 
 setDifficulty(Difficulty, 'Difficulty: ACK') :- set_difficulty(Difficulty).
+
+finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvH'), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
+finishsetup(Answer) :- sink_streak_stack(_), game_mode('HvM'), difficulty(BotDifficulty), bot_pick_colour(BotDifficulty, Colour), assert(is_bot(Colour)), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
+finishsetup(Answer) :- sink_streak_stack(_), game_mode('MvM'), difficulty(BotDifficulty), assert(is_bot('white'), assert(is_bot('black'))), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
+finishsetup('Finish Setup: REJ').
+
+nextplay([CurrentPlayer,Moves]) :- current_player(CurrentPlayer), is_bot(CurrentPlayer), Moves = 0.
+nextplay([CurrentPlayer,Moves]) :- current_player(CurrentPlayer), available_moves(Moves).
 
 :- server(8081).

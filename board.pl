@@ -23,6 +23,7 @@
 purge_database(N) :-	N > 0, purge_database_aux(0,0), retract(board_length(N)), retract(sink_streak(_,_)), retract(current_player(_)),
 retract(number_circles(_)), retract(number_squares(_)), retract(number_blacks(_)), retract(number_whites(_)),
 retract(number_pass('white',_)), retract(number_pass('black',_)), retract(moves_stack(_)), retract(sinked_tiles(_)), retract(sink_streak_stack(_)), retract(number_passes_stack(_)),
+(is_bot(_) -> retract(is_bot(_));true), (is_bot(_) -> retract(is_bot(_));true), 
 (bot_colour(_) -> retract(bot_colour(_)); true), (win_condition(_) -> retract(win_condition(_));true).
 purge_database_aux(Row, Col) :- board_length(Length), Row < Length, Col < Length, !, retract(board_cell(Row, Col, _)), NCol is Col + 1, purge_database_aux(Row,NCol).
 purge_database_aux(Row, _) :- board_length(Length), Row < Length, !, NRow is Row + 1, purge_database_aux(NRow, 0).
@@ -626,6 +627,15 @@ lettertonumber(' ', 0).
 lettertonumber('L', 0).
 lettertonumber('T', 1).
 
+lettertonumber('sink', 0).
+lettertonumber('slide', 1).
+lettertonumber('movetower', 2).
+lettertonumber('pass', 3).
+lettertonumber('raise', 4).
+
+lettertonumber('white', 0).
+lettertonumber('black', 1).
+
 waiting_player('white', 'black').
 waiting_player('black', 'white').
 format_board(Board) :- board_length(Length), format_rows(Length, 0, Board).
@@ -666,14 +676,14 @@ push_number_passes() :- current_player(Player), waiting_player(Player, WaitingPl
 pop_number_passes() :- number_passes_stack([_,[NewPlayer,NewNumberPass]|Stack]),
 					   retract(number_pass(_,_)), assert(number_pass(NewPlayer, NewNumberPass)),
 					   retract(number_passes_stack(_)), assert(number_passes_stack([[NewPlayer,NewNumberPass]|Stack])).
-undo_move(['raise', X, Y, Colour, Shape]) :- pop_move(['sink', X, Y]), pop_sinked_tile([Colour, Shape]),
+undo_move([MoveN, X, Y, Colour, Shape]) :- pop_move(['sink', X, Y]), lettertonumber('raise', MoveN), pop_sinked_tile([Colour, Shape]),
 											lettertonumber(ColourL, Colour), lettertonumber(ShapeL, Shape),
 											change_tile(X,Y,[' ', ColourL, ShapeL]), change_player.
-undo_move(['movetower', EndX, EndY, StartX, StartY]) :- pop_move(['movetower', StartX, StartY, EndX, EndY]), change_player,
+undo_move([MoveN, EndX, EndY, StartX, StartY]) :- pop_move(['movetower', StartX, StartY, EndX, EndY]), lettertonumber('movetower', MoveN), change_player,
 														move_tower_aux(EndX, EndY, StartX, StartY), change_player.
-undo_move(['slide', EndX, EndY, StartX, StartY]) :- pop_move(['slide', StartX, StartY, EndX, EndY]), change_player,
+undo_move([MoveN, EndX, EndY, StartX, StartY]) :- pop_move(['slide', StartX, StartY, EndX, EndY]), lettertonumber('slide', MoveN), change_player,
 													slide_tile_aux(EndX, EndY, StartX, StartY), change_player.
-undo_move(['pass']) :- pop_move(['pass']), change_player.
+undo_move([MoveN]) :- pop_move(['pass']), lettertonumber('pass', MoveN), change_player.
 
 get_towers_status(Status) :- get_towers(Towers), length(Towers, 4), Status = "Towers ready".
 get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 2, get_available_tower_positions('L', Positions), lettertonumber('L',Number), Status = [Number, Positions].
@@ -682,3 +692,6 @@ get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 4, get_a
 set_mode(Mode) :- (game_mode(_) -> retract(game_mode(_)); true), assert(game_mode(Mode)).
 
 set_difficulty(Difficulty) :- validate_difficulty(Difficulty), (difficulty(_) -> retract(difficulty(_)); true), assert(difficulty(Difficulty)).
+convert_actions(Actions, Answers) :- convert_actions_aux(Actions, Answers).
+convert_actions_aux([],[]).
+convert_actions_aux([[Action|_]|Actions], [[Answer|_]|Answers]) :- lettertonumber(Action, Answer)), convert_actions_aux(Actions, Answers).
