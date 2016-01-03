@@ -78,6 +78,11 @@ Connection.getTowers = function(target, handler) {
 	makeRequest(target, requestString, handler);
 }
 
+Connection.finishSetup = function(target, handler) {
+	var requestString = "[finishsetup]";
+	makeRequest(target, requestString, handler);
+}
+
 Connection.sink = function(target, handler, row, col) {	
 	var requestString = "[sink," + row + "," + col + "]";
 	makeRequest(target, requestString, handler); 

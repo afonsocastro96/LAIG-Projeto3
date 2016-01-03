@@ -695,9 +695,9 @@ set_difficulty(Difficulty) :- validate_difficulty(Difficulty), (difficulty(_) ->
 convert_actions(Actions, Answers) :- convert_actions_aux(Actions, Answers).
 convert_actions_aux([],[]).
 convert_actions_aux([[Action|_]|Actions], [[Answer|_]|Answers]) :- lettertonumber(Action, Answer), convert_actions_aux(Actions, Answers).
-convert_sink_streak_stack(Answer) :- sink_streak_stack_aux(Stack), convert_sink_streak_stack_aux(Stack, Answer).
+convert_sink_streak_stack(Answer) :- sink_streak_stack(Stack), convert_sink_streak_stack_aux(Stack, Answer).
 convert_sink_streak_stack_aux([], []).
 convert_sink_streak_stack_aux([[First|_]|Stack], [[Answer|_]|Answers]) :- lettertonumber(First, Answer), convert_sink_streak_stack_aux(Stack, Answers).
-convert_number_passes_stack(Answer) :- number_passes_stack_aux(Stack), convert_number_passes_stack_aux(Stack, Answer).
+convert_number_passes_stack(Answer) :- number_passes_stack(Stack), convert_number_passes_stack_aux(Stack, Answer).
 convert_number_passes_stack_aux([], []).
 convert_number_passes_stack_aux([[First|_]|Stack], [[Answer|_]|Answers]) :- lettertonumber(First, Answer), convert_number_passes_stack_aux(Stack, Answers).

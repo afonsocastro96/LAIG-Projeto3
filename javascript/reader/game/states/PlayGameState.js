@@ -7,6 +7,9 @@ PlayGameState.prototype.constructor = PlayGameState;
 
 PlayGameState.prototype.init = function(gameSet) {
 	
+	this.actionButton = new Marker(gameSet.scene);
+	
+	Connection.finishSetup(gameSet, this.finishedSetup);
 }
 
 PlayGameState.prototype.display = function(gameSet) {
@@ -28,3 +31,7 @@ PlayGameState.prototype.display = function(gameSet) {
 	}
 }
 
+
+PlayGameState.prototype.finishedSetup = function(gameSet, request) {
+	console.log(request);
+}
