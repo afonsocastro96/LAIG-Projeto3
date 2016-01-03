@@ -121,7 +121,7 @@ gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvH', set_mode(Mode).
 setDifficulty(Difficulty, 'Difficulty: ACK') :- set_difficulty(Difficulty).
 
 finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvH'), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
-finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvM'), difficulty(BotDifficulty), bot_pick_colour(BotDifficulty, Colour), assert(is_bot(Colour)), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
+finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvM'), difficulty(BotDifficulty), bot_pick_colour(BotDifficulty, Colour), assert(is_bot(Colour)), sinkstreakstack([SinkStreak]), numberpassesstack([NumberPasses]).
 finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('MvM'), difficulty(_), assert(is_bot('white'), assert(is_bot('black'))), sinkstreakstack(SinkStreak), numberpassesstack(NumberPasses).
 finishsetup('Finish Setup: REJ').
 
