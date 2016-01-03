@@ -57,7 +57,7 @@ sink(X,Y, Answer) :-
 	sink_tile_aux(X,Y),
 	push_sink_streak,
 	push_number_passes,
-	Move = lettertonumber('sink'),
+	lettertonumber('sink', Move),
 	Answer = [Move, X, Y].
 
 slide(StartX, StartY, EndX, EndY, Answer) :-
@@ -65,7 +65,7 @@ slide(StartX, StartY, EndX, EndY, Answer) :-
 	slide_tile_aux(StartX, StartY, EndX, EndY),
 	push_sink_streak,
 	push_number_passes,
-	Move = lettertonumber('slide'),
+	lettertonumber('slide', Move),
 	Answer = [Move, StartX, StartY, EndX, EndY].
 
 move(StartX, StartY, EndX, EndY, Answer) :-
@@ -73,7 +73,7 @@ move(StartX, StartY, EndX, EndY, Answer) :-
 	move_tower_aux(StartX,StartY,EndX,EndY),
 	push_sink_streak,
 	push_number_passes,
-	Move = lettertonumber('move'),
+	lettertonumber('move', Move),
 	Answer = [Move, StartX, StartY, EndX, EndY].
 
 undo(Answer) :-
@@ -86,7 +86,7 @@ pass(Answer) :-
 	push_move(['pass']),
 	push_sink_streak,
 	push_number_passes,
-	Move = lettertonumber('pass'),
+	lettertonumber('pass', Move),
 	Answer = [Move].
 
 
