@@ -92,11 +92,6 @@ pass(Answer) :-
 
 available_moves(Answer) :- current_player(Player), available_actions(Player, Actions), convert_actions(Actions, Answer).
 
-sinkstreak(Answer) :-
-	sink_streak(Answer).
-
-numberpasses(Answer) :- number_pass(Answer).
-
 sinkstreakstack(Answer) :- convert_sink_streak_stack(Answer).
 numberpassesstack(Answer) :- number_passes_stack(Answer).
 
@@ -124,8 +119,10 @@ finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvM'
 finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('MvM'), difficulty(_), assert(is_bot('white')), assert(is_bot('black')), sinkstreakstack([SinkStreak]), numberpassesstack([NumberPasses]).
 finishsetup('Finish Setup: REJ').
 
-nextplay([GameOver, Winner, Condition]) :- check_winning_condition(Winner), GameOver = 2, win_condition(Condition).
+nextplay([GameOver, Winner, Condition]) :- check_winning_condition(Winner), GameOver = 2, win_condition(ConditionL), lettertonumber(ConditionL, Condition).
 nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), is_bot(CurrentPlayer), Moves = 0.
 nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), available_moves(Moves).
+
+gamefilm([Plays,SinkStreaks,Passes,[Winner, Condition]]) :- moves_stack(Moves), convert_actions(Moves, Plays), convert_sink_streak_stack(SinkStreaks), number_passes_stack(Passes), check_winning_condition(Winner), win_condition(ConditionL), lettertonumber(ConditionL, Condition).
 
 :- server(8081).
