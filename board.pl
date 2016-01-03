@@ -18,6 +18,7 @@
 :- dynamic number_passes_stack/1.
 :- dynamic game_mode/1.
 :- dynamic difficulty/1.
+:- dynamic is_bot/1.
 
 %Database manipulation
 purge_database(N) :-	N > 0, purge_database_aux(0,0), retract(board_length(N)), retract(sink_streak(_,_)), retract(current_player(_)),
@@ -629,7 +630,7 @@ lettertonumber('T', 1).
 
 lettertonumber('sink', 0).
 lettertonumber('slide', 1).
-lettertonumber('movetower', 2).
+lettertonumber('move', 2).
 lettertonumber('pass', 3).
 lettertonumber('raise', 4).
 
@@ -702,7 +703,7 @@ set_mode(Mode) :- (game_mode(_) -> retract(game_mode(_)); true), assert(game_mod
 set_difficulty(Difficulty) :- validate_difficulty(Difficulty), (difficulty(_) -> retract(difficulty(_)); true), assert(difficulty(Difficulty)).
 convert_actions(Actions, Answers) :- convert_actions_aux(Actions, Answers).
 convert_actions_aux([],[]).
-convert_actions_aux([[Action|_]|Actions], [[Answer|_]|Answers]) :- lettertonumber(Action, Answer), convert_actions_aux(Actions, Answers).
+convert_actions_aux([[Action|Args]|Actions], [[Answer|Args]|Answers]) :- lettertonumber(Action, Answer), convert_actions_aux(Actions, Answers).
 
 convert_sink_streak_stack(Answer) :- sink_streak_stack(Stack), convert_sink_streak_stack_aux(Stack, Answer).
 convert_sink_streak_stack_aux([], []).

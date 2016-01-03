@@ -121,7 +121,7 @@ finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('MvM'
 finishsetup('Finish Setup: REJ').
 
 nextplay([GameOver, Winner, Condition]) :- check_winning_condition(Winner), GameOver = 2, win_condition(Condition).
-nextplay([CurrentPlayer,Moves]) :- current_player(CurrentPlayer), is_bot(CurrentPlayer), Moves = 0.
-nextplay([CurrentPlayer,Moves]) :- current_player(CurrentPlayer), available_moves(Moves).
+nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), is_bot(CurrentPlayer), Moves = 0.
+nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), available_moves(Moves).
 
 :- server(8081).
