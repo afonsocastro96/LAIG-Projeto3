@@ -57,21 +57,26 @@ sink(X,Y, Answer) :-
 	sink_tile_aux(X,Y),
 	push_sink_streak,
 	push_number_passes,
-	Answer = "Sink Tile: ACK".
+	Move = lettertonumber('sink'),
+	Answer = [Move, X, Y].
 
 slide(StartX, StartY, EndX, EndY, Answer) :-
 	push_move(['slide', StartX, StartY, EndX, EndY]),
 	slide_tile_aux(StartX, StartY, EndX, EndY),
 	push_sink_streak,
 	push_number_passes,
-	Answer = "Slide Tile: ACK".
+	Answer = "Slide Tile: ACK",
+	Move = lettertonumber('slide'),
+	Answer = [Move, StartX, StartY, EndX, EndY].
 
 move(StartX, StartY, EndX, EndY, Answer) :-
 	push_move(['move', StartX, StartY, EndX, EndY]),
 	move_tower_aux(StartX,StartY,EndX,EndY),
 	push_sink_streak,
 	push_number_passes,
-	Answer = "Move tower: ACK".
+	Answer = "Move tower: ACK",
+	Move = lettertonumber('move'),
+	Answer = [Move, StartX, StartY, EndX, EndY].
 
 undo(Answer) :-
 	undo_move(Answer),
@@ -83,7 +88,8 @@ pass(Answer) :-
 	push_move(['pass']),
 	push_sink_streak,
 	push_number_passes,
-	Answer = "Pass: ACK".
+	Move = lettertonumber('pass'),
+	Answer = [Move].
 
 
 available_moves(Answer) :- current_player(Player), available_actions(Player, Actions), convert_actions(Actions, Answer).
