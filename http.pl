@@ -113,8 +113,13 @@ setuptowers(Answer) :- get_towers_status(Answer).
 
 gettowers(Answer) :- get_towers(Answer).
 
+addtower('light', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'L').
+addtower('dark', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'T').
+
 gamemode(Mode, 'Gamemode: ACK') :- Mode == 'MvM', set_mode(Mode), randomize_towers.
 gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvM', set_mode(Mode).
 gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvH', set_mode(Mode).
+
+setDifficulty(Difficulty, 'Difficulty: ACK') :- set_difficulty(Difficulty).
 
 :- server(8081).

@@ -70,10 +70,6 @@ GameBoard.prototype.addTile = function(row, col, tile) {
     this.board[row][col] = tile;
 }
 
-GameBoard.prototype.placeObject = function(object, row, col) {
-	this.scene.pushMatrix();
-    this.scene.translate(-this.numCols/2 + 0.5, 0.1, -this.numRows/2 + 0.5);
-	this.scene.translate(col, 0, row);
-	this.object.display();
-	this.scene.popMatrix();
+GameBoard.prototype.getBoardCoordinates = function(row, col) {
+	return [-(this.numCols-1)/2 + col, 0.2, -(this.numRows-1)/2 + row];
 }

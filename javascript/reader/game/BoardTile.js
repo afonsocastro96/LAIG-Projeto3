@@ -16,12 +16,12 @@ BoardTile.prototype.defaultDisplay = function() {
 }
 
 BoardTile.prototype.transparentDisplay = function() {
-	var prevValue = this.scene.transparencyShader.getUniformValue("uAlphaScaling");
-	this.scene.transparencyShader.setUniformsValues({uAlphaScaling: this.alphaScaling});
+	var prevValue = this.scene.active.getUniformValue("uAlphaScaling");
+	this.scene.activeShader.setUniformsValues({uAlphaScaling: this.alphaScaling});
 	
 	this.defaultDisplay();
 	
-	this.scene.transparencyShader.setUniformsValues({uAlphaScaling: prevValue});
+	this.scene.activeShader.setUniformsValues({uAlphaScaling: prevValue});
 }
 
 BoardTile.prototype.setTransparency = function(bTransparent) {

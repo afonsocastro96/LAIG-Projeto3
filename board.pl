@@ -17,6 +17,7 @@
 :- dynamic sink_streak_stack/1.
 :- dynamic number_passes_stack/1.
 :- dynamic game_mode/1.
+:- dynamic difficulty/1.
 
 %Database manipulation
 purge_database(N) :-	N > 0, purge_database_aux(0,0), retract(board_length(N)), retract(sink_streak(_,_)), retract(current_player(_)),
@@ -167,8 +168,9 @@ randomize(N) :- random(0,4,N).
 ask_board :- write('Please state the board you want (major/minor): '), read(X), create_board(X), !.
 
 %Asks the bot difficulty
-validate_bot_difficulty(0).
-validate_bot_difficulty(1).
+validate_difficulty(0).
+validate_difficulty(1).
+validate_bot_difficulty(X) :- validate_difficulty(X).
 validate_bot_difficulty(_) :- nl, write('Invalid difficulty'), nl, ask_bot_difficulty(_).
 ask_bot_difficulty(X) :- nl, write('Please state the bot difficulty you want (0: easy/1: difficult)'), read(X), validate_bot_difficulty(X), nl, !.
 
@@ -620,6 +622,10 @@ lettertonumber('P', 2).
 lettertonumber('C', 3).
 lettertonumber('Q', 4).
 lettertonumber(' ', 0).
+
+lettertonumber('L', 0).
+lettertonumber('T', 1).
+
 waiting_player('white', 'black').
 waiting_player('black', 'white').
 format_board(Board) :- board_length(Length), format_rows(Length, 0, Board).
@@ -630,16 +636,18 @@ format_row(Length, Col, Row, [[Colour, Shape]|CurrRow]) :- board_cell(Row, Col, 
 														lettertonumber(ColourL,Colour), lettertonumber(ShapeL,Shape),
 														X is Col + 1, format_row(Length, X, Row, CurrRow).
 
-get_towers(Towers) :- findall(['T',Row, Col], board_cell(Row, Col, ['T',_,_]), DarkTowers),
-					  findall(['L',Row, Col], board_cell(Row, Col, ['L',_,_]), LightTowers),
+get_towers(Towers) :- findall([Number, Row, Col], (board_cell(Row, Col, ['T',_,_]), lettertonumber('T', Number)), DarkTowers),
+					  findall([Number, Row, Col], (board_cell(Row, Col, ['L',_,_]), lettertonumber('L', Number)), LightTowers),
 					  append(DarkTowers, LightTowers, Towers).
 
 get_available_tower_positions('L', Positions) :- findall([Row, Col], board_cell(Row, Col, [' ', 'B', _]), Whites),
 												 findall([Row, Col], board_cell(Row, Col, [' ', _, 'C']), Circles),
-												 append(Whites, Circles, Positions).
+												 append(Whites, Circles, PositionsList),
+												 list_to_set(PositionsList, Positions).
 get_available_tower_positions('T', Positions) :- findall([Row, Col], board_cell(Row, Col, [' ', 'P', _]), Blacks),
 												 findall([Row, Col], board_cell(Row, Col, [' ', _, 'Q']), Squares),
-												 append(Blacks, Squares, Positions).
+												 append(Blacks, Squares, PositionsList),
+												 list_to_set(PositionsList, Positions).
 player_possible_moves(Actions) :- current_player(Player), available_actions(Player, Actions).
 get_board(Board, Towers) :- format_board(Board), get_towers(Towers).
 update_game(Action, Board, Towers) :- make_action(Action), push_move(Action), get_board(Board, Towers).
@@ -666,9 +674,11 @@ undo_move(['movetower', EndX, EndY, StartX, StartY]) :- pop_move(['movetower', S
 undo_move(['slide', EndX, EndY, StartX, StartY]) :- pop_move(['slide', StartX, StartY, EndX, EndY]), change_player,
 													slide_tile_aux(EndX, EndY, StartX, StartY), change_player.
 undo_move(['pass']) :- pop_move(['pass']), change_player.
-get_towers_status(Status) :- get_towers(Towers), length(Towers, 4), Status = "Towers ready".
-get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 2, Status = ['ask', 'light'].
-get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 4, Status = ['ask', 'dark'].
 
-set_mode(Mode) :- game_mode(_), retract(game_mode(_)), assert(game_mode(Mode)).
-set_mode(Mode) :- assert(game_mode(Mode)).
+get_towers_status(Status) :- get_towers(Towers), length(Towers, 4), Status = "Towers ready".
+get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 2, get_available_tower_positions('L', Positions), lettertonumber('L',Number), Status = [Number, Positions].
+get_towers_status(Status) :- get_towers(Towers), length(Towers, N), N < 4, get_available_tower_positions('T', Positions), lettertonumber('T',Number), Status = [Number, Positions].
+
+set_mode(Mode) :- (game_mode(_) -> retract(game_mode(_)); true), assert(game_mode(Mode)).
+
+set_difficulty(Difficulty) :- validate_difficulty(Difficulty), (difficulty(_) -> retract(difficulty(_)); true), assert(difficulty(Difficulty)).

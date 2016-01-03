@@ -1,19 +1,15 @@
 /* Handle the prolog connection */
-function handleReply(data){
+function handleReply(data, target, handler){
 	response=JSON.parse(data.target.response); // Access message and show	
 	console.log(response.answer);
 	
-	if(replyHandler != undefined){	
-		replyHandler(window.targ, response.answer);
-		replyHandler = undefined;
-		window.targ = undefined;
+	if(handler != undefined){
+		handler(target, response.answer);
 	}
 }
 
 function makeRequest(target, request, handler){
-	window.replyHandler = handler;
-	window.targ = target;
-	postGameRequest(request, handleReply);	
+	postGameRequest(request, function (data) { handleReply(data, target, handler); });	
 }
 
 function postGameRequest(requestString, onSuccess, onError)
@@ -32,9 +28,25 @@ Connection = new Object();
 
 Connection.minorBoard = 0;
 Connection.majorBoard = 1;
+
 Connection.humanVsHumanMode = "'HvH'";
 Connection.humanVsMachineMode = "'HvM'";
 Connection.machineVsMachineMode = "'MvM'";
+
+Connection.easyDifficulty = 0;
+Connection.hardDifficulty = 1;
+
+Connection.tileEmpty = 0;
+Connection.tileBlack = 1;
+Connection.tileWhite = 2;
+Connection.tileCircle = 3;
+Connection.tileSquare = 4;
+
+Connection.lightTower = 0;
+Connection.darkTower = 1;
+
+Connection.light = "'light'";
+Connection.dark = "'dark'";
 
 Connection.startgame = function(target, handler, boardType) {
 	var requestString = "[startgame," + boardType + "]";
@@ -43,6 +55,26 @@ Connection.startgame = function(target, handler, boardType) {
 
 Connection.gamemode = function(target, handler, mode) {
 	var requestString = "[gamemode," + mode + "]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.setDifficulty = function(target, handler, difficulty) {
+	var requestString = "[setDifficulty," + difficulty + "]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.setupTowers = function(target, handler) {
+	var requestString = "[setuptowers]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.addTower = function(tower, row, col, target, handler) {
+	var requestString = "[addtower," + tower + "," + row + "," + col + "]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.getTowers = function(target, handler) {
+	var requestString = "[gettowers]";
 	makeRequest(target, requestString, handler);
 }
 

@@ -1,9 +1,5 @@
 function GameSet(scene) {
 	CGFobject.call(this, scene);
-	this.displayFunction = this.displayPicking;
-	this.selectableTiles = [];
-	this.animating = false;
-	this.animationQueue = [];
 }
 
 GameSet.prototype = Object.create(CGFobject.prototype);
@@ -23,6 +19,10 @@ GameSet.prototype.setBoard = function(gameBoard) {
 	this.stack = new TileStack(this.scene);
 }
 
+GameSet.prototype.setTowers = function(towers) {
+	this.towers = towers;
+}
+
 GameSet.prototype.display = function() {
 	this.state.display(this);
 }
@@ -35,23 +35,7 @@ GameSet.prototype.update = function(currenTime) {
 	this.state.update(this, currenTime);
 }
 
-GameSet.prototype.displayPicking = function() {
-	this.board.display();
-	
-	this.scene.pushMatrix();
-		this.scene.translate(0,0,-5);
-		this.stack.display();
-	this.scene.popMatrix();
-}
 
-GameSet.prototype.displayNoPicking = function() {
-	this.board.display();
-	
-	this.scene.pushMatrix();
-		this.scene.translate(0,0,-5);
-		this.stack.display();
-	this.scene.popMatrix();
-}
 
 GameSet.prototype.displayNextAnimation = function() {
 	if (this.animating) {
