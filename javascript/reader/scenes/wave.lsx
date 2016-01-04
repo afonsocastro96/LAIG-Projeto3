@@ -81,11 +81,33 @@
     <LEAF id="square" type="rectangle" args="-0.5 0.5 0.5 -0.5" />
     <LEAF id="cylinder" type="cylinder" args="1.0 0.5 0.5 20 20" /> 
     <LEAF id="sphere" type="sphere" args="0.5 20 20" />
+    <LEAF id="gameset" type="gameset" />
 </LEAVES>
 
 
 <NODES>
-    <ROOT id="carpet" />
+    <ROOT id="room" />
+
+    <NODE id="room">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="carpet" />
+            <DESCENDANT id="gameset1" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="gameset1">
+        <MATERIAL id="branco" />
+        <TEXTURE id="null" />
+
+        <TRANSLATION x="0" y="10" z="0" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="gameset" />
+        </DESCENDANTS>
+    </NODE>
 
     <!-- Tapete -->
 

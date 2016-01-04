@@ -40,6 +40,9 @@ Theme.prototype.onGraphLoaded = function()
 			case "terrain":
 				this.primitives[key] = new MyTerrain(this.scene, leaf.textureUrl, leaf.heightmapUrl);
 				break;
+			case "gameset":
+				this.primitives[key] = this.scene.gameSet;
+				break;
 			default:
 				console.warn("Unknown primitive: " + leaf.type);
 				break;

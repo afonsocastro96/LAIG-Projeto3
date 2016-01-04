@@ -530,6 +530,9 @@ LSXSceneGraph.prototype.parseLeaves = function(rootElement) {
 				var heightmapUrl = baseUrl + '/' + this.reader.getString(leaf, "heightmap");
 				this.leaves[id] = new SceneGraphLeafTerrain(id, textureUrl, heightmapUrl);
 				break;
+			case "gameset":
+				this.leaves[id] = new SceneGraphLeafGameSet(id);
+				break;
 			default:
 				return "Unknown LEAF type: " + type;
 		}
