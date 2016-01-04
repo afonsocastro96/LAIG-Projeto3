@@ -80,7 +80,12 @@ MyLSXScene.prototype.initThemes = function () {
  * Initializes scene cameras.
  */
 MyLSXScene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+	
+	this.cameras = [];
+	this.cameras["Oblique View"] = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+	this.cameras["Upward View"] = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+	
+    this.setCamera(Object.keys(this.cameras)[0]);
 };
 
 /**
@@ -98,9 +103,21 @@ MyLSXScene.prototype.addTheme = function(theme) {
 	this.themes[theme.id] = theme;
 }
 
-MyLSXScene.prototype.setTheme = function(theme) {
-	this.currentTheme = theme.id;
+MyLSXScene.prototype.setCamera = function(cameraId) {
+	if (this.camera == this.cameras[cameraId]) {
+		return;
+	}
+	
+	this.camera = this.cameras[cameraId];
+}
+
+MyLSXScene.prototype.setTheme = function(themeId) {
+	if (this.theme != null && this.theme.id == themeId) {
+		return;
+	}
+	var theme = this.themes[themeId];
 	this.theme = theme;
+	this.currentTheme = theme.id;
 	this.camera.near = theme.graph.initials.frustum.near;
 	this.camera.far = theme.graph.initials.frustum.far;
 
@@ -195,10 +212,8 @@ MyLSXScene.prototype.display = function () {
 };
 
 MyLSXScene.prototype.initUserOptions = function() {
-	this.currentCameraAngle = "Oblique View";
+	this.currentCamera = "Oblique View";
 	this.currentTheme = "Wave";
-	this.cameraAngle = ["Oblique View", "Upward View"];
-	this.gameThemes = ["Wave", "Sandbar"];
 }
 
 /**
