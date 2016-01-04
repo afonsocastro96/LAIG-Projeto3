@@ -7,7 +7,7 @@
     <rotation axis="y" angle="0" />
     <rotation axis="z" angle="0" /> 
     <scale sx="1" sy="1" sz="1" />
-    <reference length="5" />
+    <reference length="0" />
 </INITIALS>
 
 <ILLUMINATION>
@@ -115,8 +115,6 @@
     <NODE id="gameset1">
         <MATERIAL id="branco" />
         <TEXTURE id="null" />
-
-        <TRANSLATION x="0" y="10" z="0" />
 
         <DESCENDANTS>
             <DESCENDANT id="gameset" />
