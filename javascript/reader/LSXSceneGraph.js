@@ -4,11 +4,7 @@
  * @param filename {string} The lsx url name.
  * @param scene {CGFScene} The scene to which the SceneGraph belongs.
  */
-function LSXSceneGraph(filename, scene) {
-    if (typeof scene.onGraphLoaded !== 'function') {
-		console.error("onGraphLoaded not defined in scene");
-		return;
-	}
+function LSXSceneGraph(filename, scene, onGraphLoaded) {
 	this.loadedOk = null;
 	this.filename = 'scenes/'+filename;
 	
@@ -21,11 +17,9 @@ function LSXSceneGraph(filename, scene) {
     this.nodes = [];
     this.animations = [];
 
-
-	// Establish bidirectional references between scene and graph
 	this.scene = scene;
-	scene.graph=this;
-		
+	this.onGraphLoaded = onGraphLoaded;
+	
 	// File reading 
 	this.reader = new LSXReader();
 
@@ -75,7 +69,7 @@ LSXSceneGraph.prototype.onXMLReady=function()
 	this.loadedOk=true;
 	
 	// As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
-	this.scene.onGraphLoaded();
+	this.onGraphLoaded();
 };
 
 /**

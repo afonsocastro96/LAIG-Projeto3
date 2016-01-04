@@ -52,7 +52,14 @@ main=function()
 
     myScene.availableThemes.push(theme1);
     myScene.availableThemes.push(theme2);
-    myScene.theme = theme1;
+    myScene.addUpdatable({
+		update: function() {
+			if (theme1.loaded) {
+				myScene.setTheme(theme1);
+				myScene.removeUpdatable(this);
+			}
+		}
+	});
 
 	// start
     app.run();

@@ -42,6 +42,8 @@ MyLSXScene.prototype.init = function (application) {
 
     this.enableTextures(true);
 	
+    this.setUpdatePeriod(100/6);
+	
 	this.nextPickId = 1;
 	this.setPickEnabled(true);
 	
@@ -100,6 +102,31 @@ MyLSXScene.prototype.onGraphLoaded = function ()
 			this.themes[id].onGraphLoaded();
 };
 
+MyLSXScene.prototype.setTheme = function(theme) {
+	this.theme = theme;
+	this.camera.near = theme.graph.initials.frustum.near;
+	this.camera.far = theme.graph.initials.frustum.far;
+
+	if (theme.graph.initials.referenceLength > 0)
+		this.axis = new CGFaxis(this, theme.graph.initials.referenceLength);
+   
+	this.gl.clearColor(theme.graph.illumination.background[0],theme.graph.illumination.background[1],theme.graph.illumination.background[2],theme.graph.illumination.background[3]);
+	this.setGlobalAmbientLight(theme.graph.illumination.ambient[0],theme.graph.illumination.ambient[1],theme.graph.illumination.ambient[2],theme.graph.illumination.ambient[3]);
+
+	this.lights = [];
+
+	for (var i = 0; i < theme.graph.lights.length; ++i) {
+		this.lights.push(theme.graph.lights[i]);
+		this.lights[i].setVisible(false);
+		this.lightsEnabled[this.lights[i]._id] = this.lights[i].enabled;
+	}
+	
+    this.timer = 0;
+	
+	if (this.myinterface != null){
+		this.myinterface.onGraphLoaded();
+	}
+} 
 
 MyLSXScene.prototype.logPicking = function ()
 {
@@ -137,7 +164,7 @@ MyLSXScene.prototype.display = function () {
 	this.setDefaultAppearance();
 	
 	this.pushMatrix();
-	if (this.theme.graph != null && this.theme.graph.loadedOk) {
+	if (this.theme != null && this.theme.loaded) {
 		if(this.gameSet != undefined)
 			this.gameSet.displayHUD();
 	}
@@ -151,7 +178,7 @@ MyLSXScene.prototype.display = function () {
 	// it is important that things depending on the proper loading of the graph
 	// only get executed after the graph has loaded correctly.
 	// This is one possible way to do it
-	if (this.theme.graph != null && this.theme.graph.loadedOk)
+	if (this.theme != null && this.theme.loaded)
 	{	
 		this.multMatrix(this.theme.graph.initials.transformationMatrix);
 	
@@ -175,43 +202,10 @@ MyLSXScene.prototype.display = function () {
 };
 
 MyLSXScene.prototype.initUserOptions = function() {
-	this.currentDifficulty = "Easy";
-	this.currentGameType = "Human vs Bot";
 	this.currentCameraAngle = "Oblique View";
-	this.currentBoardType = "Syrtis Minor";
 	this.currentTheme = "Wave";
-
-	this.botDifficulty = ["Easy", "Hard"];
-	this.gameType = ["Human vs Bot", "Human vs Human", "Bot vs Bot"];
 	this.cameraAngle = ["Oblique View", "Upward View"];
-	this.boardType = ["Syrtis Minor", "Syrtis Major"];
 	this.gameThemes = ["Wave", "Sandbar"];
-}
-
-MyLSXScene.prototype.requestBotMove = function() {
-	if(this.myinterface == null)
-		return;
-
-	var requestString = "[botmove," + this.currentDifficulty + "]";
-
-	makeRequest(this, requestString);
-}
-
-MyLSXScene.prototype.undoLastMove = function() {
-	if(this.myinterface == null)
-		return;
-
-	var requestString = "[undo]";
-	
-	makeRequest(this, requestString);
-}
-
-MyLSXScene.prototype.getSinkStreak = function(){
-	if(this.myinterface == null)
-		return;
-
-	var requestString = "[sinkstreak]";
-	makeRequest(this, requestString);
 }
 
 /**

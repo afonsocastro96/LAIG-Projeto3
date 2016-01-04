@@ -26,13 +26,7 @@ MyInterface.prototype.onGraphLoaded = function(){
 	/* These options may be changed on the fly during the game */
 	var options = this.gui.addFolder("Change Options");
 	options.add(this.scene, "currentCameraAngle", this.scene.cameraAngle).name("Current Camera Angle");
-	options.add(this.scene, "currentDifficulty", this.scene.botDifficulty).name("Current Difficulty");
 	options.add(this.scene, "currentTheme", this.scene.gameThemes).name("Theme");
-	options.add(this.scene, "requestBotMove").name("Request Bot Move"); // Para efeitos de mostrar o que ja esta feito, vai ser apagado
-
-	/* A new game is started with the following options after clicking Start Game. Only the board type is sent to prolog. */
-	this.gui.add(this.scene, "undoLastMove").name("Undo Last Move");
-	this.gui.add(this.scene, "getSinkStreak").name("Get Sink Streak");
 
 	this.interfaceLoaded = true;
 }
