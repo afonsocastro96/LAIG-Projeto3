@@ -116,8 +116,6 @@
         <MATERIAL id="branco" />
         <TEXTURE id="null" />
 
-        <TRANSLATION x="0" y="10" z="0" />
-
         <DESCENDANTS>
             <DESCENDANT id="gameset" />
         </DESCENDANTS>
