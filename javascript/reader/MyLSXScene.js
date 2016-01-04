@@ -47,6 +47,8 @@ MyLSXScene.prototype.init = function (application) {
 	this.nextPickId = 1;
 	this.setPickEnabled(true);
 	
+	this.initUserOptions();
+	
 	this.gameSet = new GameSet(this);
 	this.gameSet.init();
 };
@@ -57,7 +59,7 @@ MyLSXScene.prototype.init = function (application) {
  */
 MyLSXScene.prototype.setInterface = function(myinterface) {
 	this.myinterface = myinterface;
-	this.initUserOptions();
+	this.myinterface.onSceneLoaded();
 }
 
 /**
@@ -71,7 +73,7 @@ MyLSXScene.prototype.initLights = function () {
  * Initializes scene themes.
  */
 MyLSXScene.prototype.initThemes = function () {
-	this.availableThemes = [];
+	this.themes = [];
 };
 
 /**
@@ -91,18 +93,13 @@ MyLSXScene.prototype.setDefaultAppearance = function () {
     this.setShininess(10.0);	
 };
 
-/**
- * Handler called when the graph is finally loaded.
- * As loading is asynchronous, this may be called already after the application has started the run loop
- */
-MyLSXScene.prototype.onGraphLoaded = function () 
-{
-	for(id in this.themes)
-		if(this.themes[id] == this.currentTheme)
-			this.themes[id].onGraphLoaded();
-};
+
+MyLSXScene.prototype.addTheme = function(theme) {
+	this.themes[theme.id] = theme;
+}
 
 MyLSXScene.prototype.setTheme = function(theme) {
+	this.currentTheme = theme.id;
 	this.theme = theme;
 	this.camera.near = theme.graph.initials.frustum.near;
 	this.camera.far = theme.graph.initials.frustum.far;
@@ -122,10 +119,6 @@ MyLSXScene.prototype.setTheme = function(theme) {
 	}
 	
     this.timer = 0;
-	
-	if (this.myinterface != null){
-		this.myinterface.onGraphLoaded();
-	}
 } 
 
 MyLSXScene.prototype.logPicking = function ()

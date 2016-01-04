@@ -22,12 +22,18 @@ MyInterface.prototype.init = function(application) {
 /**
  * Function to call when the SceneGraph is fully loaded.
  */
-MyInterface.prototype.onGraphLoaded = function(){
+MyInterface.prototype.onSceneLoaded = function(){
 	/* These options may be changed on the fly during the game */
 	var options = this.gui.addFolder("Change Options");
 	options.add(this.scene, "currentCameraAngle", this.scene.cameraAngle).name("Current Camera Angle");
-	options.add(this.scene, "currentTheme", this.scene.gameThemes).name("Theme");
-
+	
+	var scene = this.scene;
+	options.add(this.scene, "currentTheme", Object.keys(this.scene.themes))
+		.name("Theme")
+		.onFinishChange(function(value) {
+			scene.setTheme(scene.themes[value]);
+		}
+	);
 	this.interfaceLoaded = true;
 }
 

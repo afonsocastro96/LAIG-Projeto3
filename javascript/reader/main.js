@@ -39,7 +39,6 @@ main=function()
 
     app.setScene(myScene);
     app.setInterface(myInterface);
-	   myScene.setInterface(myInterface);
 
     myInterface.setActiveCamera(myScene.camera);
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
@@ -50,8 +49,8 @@ main=function()
     var theme1 = new Theme(myScene, "wave.lsx", "Wave");
     var theme2 = new Theme(myScene, "sandbar.lsx", "Sandbar");	
 
-    myScene.availableThemes.push(theme1);
-    myScene.availableThemes.push(theme2);
+    myScene.addTheme(theme1);
+    myScene.addTheme(theme2);
     myScene.addUpdatable({
 		update: function() {
 			if (theme1.loaded) {
@@ -61,6 +60,8 @@ main=function()
 		}
 	});
 
+	myScene.setInterface(myInterface);
+	
 	// start
     app.run();
 }
