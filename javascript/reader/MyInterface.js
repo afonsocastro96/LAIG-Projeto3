@@ -27,7 +27,7 @@ MyInterface.prototype.onGraphLoaded = function(){
 	var options = this.gui.addFolder("Change Options");
 	options.add(this.scene, "currentCameraAngle", this.scene.cameraAngle).name("Current Camera Angle");
 	options.add(this.scene, "currentDifficulty", this.scene.botDifficulty).name("Current Difficulty");
-	options.add(this.scene, "currentTheme", this.scene.themes).name("Theme");
+	options.add(this.scene, "currentTheme", this.scene.gameThemes).name("Theme");
 	options.add(this.scene, "requestBotMove").name("Request Bot Move"); // Para efeitos de mostrar o que ja esta feito, vai ser apagado
 
 	/* A new game is started with the following options after clicking Start Game. Only the board type is sent to prolog. */

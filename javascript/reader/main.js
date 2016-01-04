@@ -22,7 +22,7 @@ serialInclude(['../lib/CGF.js',
 'animations/Animation.js', 'animations/LinearAnimation.js', 'animations/CircularAnimation.js',
 // PLOG Items
 'game/GameBoard.js','game/BoardTile.js','game/EmptyTile.js','game/BlackCircleTile.js',
-'game/WhiteCircleTile.js','game/BlackSquareTile.js','game/WhiteSquareTile.js',
+'game/WhiteCircleTile.js','game/BlackSquareTile.js','game/WhiteSquareTile.js', 'game/Theme.js',
 'game/TileStack.js','game/GameSet.js', 'game/Marker.js', 'animations/FadeAnimation.js',
 'game/GameState.js', 'game/states/BoardSelectionState.js', 'game/states/ModeSelectionState.js',
 'game/states/TowerSelectionState.js', 'game/BoardTower.js', 'game/LightTower.js', 'game/DarkTower.js',
@@ -47,8 +47,13 @@ main=function()
 
     // create and load graph, and associate it to scene. 
     // Check console for loading errors
-    var graph = new LSXSceneGraph("wave.lsx", myScene);
-	
+    var theme1 = new Theme(myScene, "wave.lsx", "Wave");
+    var theme2 = new Theme(myScene, "sandbar.lsx", "Sandbar");	
+
+    myScene.availableThemes.push(theme1);
+    myScene.availableThemes.push(theme2);
+    myScene.theme = theme1;
+
 	// start
     app.run();
 }
