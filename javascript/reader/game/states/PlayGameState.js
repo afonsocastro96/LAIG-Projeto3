@@ -16,7 +16,7 @@ PlayGameState.prototype.init = function(gameSet) {
 	this.timerPanel = new Marker(gameSet.scene);
 	
 	
-	this.turnDuration = 30;
+	this.turnDuration = gameSet.turnDuration;
 	this.lastPlayTime = Date.now();
 	
 	var gameState = this;

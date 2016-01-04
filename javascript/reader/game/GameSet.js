@@ -6,6 +6,10 @@ GameSet.prototype = Object.create(CGFobject.prototype);
 GameSet.prototype.constructor = GameSet;
 
 GameSet.prototype.init = function() {
+	this.minTurnDuration = 15
+	this.turnDuration = 30;
+	this.maxTurnDuration = 60;
+	
 	this.setState(new BoardSelectionState());
 }
 

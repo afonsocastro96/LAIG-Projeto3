@@ -41,6 +41,9 @@ MyInterface.prototype.onSceneLoaded = function(){
 			scene.setTheme(value);
 		}
 	);
+	
+	options.add(this.scene.gameSet, "turnDuration", this.scene.gameSet.minTurnDuration, this.scene.gameSet.maxTurnDuration)
+		.name("Turn Duration");
 	this.interfaceLoaded = true;
 }
 
