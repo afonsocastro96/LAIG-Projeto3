@@ -227,10 +227,10 @@
 
 <LEAVES>
     <LEAF id="sphere" type="sphere" args="1.0 20 20" />
+    <LEAF id="cylinder" type="cylinder" args="1.0 0.5 0.5 20 20" /> 
     <LEAF id="lamp" type="cylinder" args="1.0 0.5 0.1 20 20" />
     <LEAF id="square" type="rectangle" args="-0.5 0.5 0.5 -0.5" />
     <LEAF id="square2" type="rectangle" args="0.0 1.0 1.0 0.0" />
-    <LEAF id="cylinder" type="cylinder" args="1.0 0.5 0.5 20 20" /> 
     <LEAF id="gameset" type="gameset" />
 </LEAVES>
 
@@ -1702,6 +1702,8 @@
     <NODE id="whitetowercover">
         <MATERIAL id="null" />
         <TEXTURE id="null" />
+
+        <SCALE sx="0.5" sy="0.5" sz="0.5" />
         
         <DESCENDANTS>
             <DESCENDANT id="circle" />
