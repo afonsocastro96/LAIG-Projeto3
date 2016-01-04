@@ -27,11 +27,10 @@ MyInterface.prototype.onSceneLoaded = function(){
 	var options = this.gui.addFolder("Change Options");
 	var scene = this.scene;
 	var myInterface = this;
-	options.add(this.scene, "currentCamera", Object.keys(this.scene.cameras))
+	options.add(this.scene, "currentCamera", Object.keys(this.scene.cameraPositions))
 		.name("Current Camera")
 		.onFinishChange(function(value) {
 			scene.setCamera(value);
-			//myInterface.setActiveCamera(scene.camera);
 		}
 	);
 	

@@ -81,11 +81,12 @@ MyLSXScene.prototype.initThemes = function () {
  */
 MyLSXScene.prototype.initCameras = function () {
 	
-	this.cameras = [];
-	this.cameras["Oblique View"] = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
-	this.cameras["Upward View"] = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(0.1, 25, 0), vec3.fromValues(0, 0, 0));
+	this.cameraPositions = [];
 	
-    this.setCamera(Object.keys(this.cameras)[0]);
+	this.cameraPositions["Oblique View"] = vec3.fromValues(15, 15,15);
+	this.cameraPositions["Upward View"] = vec3.fromValues(0.1, 25, 0);
+	
+	this.camera = new CGFcamera(0.4, 0.1, 500, this.cameraPositions["Oblique View"], vec3.fromValues(0, 0, 0))
 };
 
 /**
@@ -104,27 +105,39 @@ MyLSXScene.prototype.addTheme = function(theme) {
 }
 
 MyLSXScene.prototype.setCamera = function(cameraId) {
-	if (this.camera == this.cameras[cameraId]) {
+	var scene = this;
+	if (this.updatingCamera)
 		return;
-	}
-	if (this.camera != null) {
-		this.cameras[cameraId].near = this.camera.near;
-		this.cameras[cameraId].far = this.camera.far;
-		var scene = this;
-		this.addUpdatable({
-			startTime: Date.now(),
-			update : function(currTime) {
-				if (currTime - this.startTime > 1000) {
-					console.log("Camera changed");
-					scene.camera = scene.cameras[cameraId];
-					scene.removeUpdatable(this);
+	
+	this.updatingCamera = true;
+	
+	this.addUpdatable({
+		startTime: Date.now(),
+		startPosition: vec3.clone(scene.camera.position),
+		endPosition: vec3.clone(scene.cameraPositions[cameraId]),
+		span : 3000,
+		update : function(currTime) {
+			var delta = currTime - this.startTime;
+			if (delta >= this.span) {
+				console.log("Camera changed");
+				scene.camera.setPosition(this.endPosition);
+				scene.removeUpdatable(this);
+				scene.updatingCamera = false;
+				if (scene.camera.position[0] != scene.cameraPositions[scene.currentCamera][0] ||
+					scene.camera.position[1] != scene.cameraPositions[scene.currentCamera][1] ||
+					scene.camera.position[2] != scene.cameraPositions[scene.currentCamera][2]) {
+					console.log("another camera");
+					scene.setCamera(scene.currentCamera);
 				}
 			}
-		});
-	}
-	else {
-		this.camera = this.cameras[cameraId];
-	}
+			
+			var position = [];
+			position.push(this.startPosition[0] + (this.endPosition[0] - this.startPosition[0]) * delta / this.span);
+			position.push(this.startPosition[1] + (this.endPosition[1] - this.startPosition[1]) * delta / this.span);
+			position.push(this.startPosition[2] + (this.endPosition[2] - this.startPosition[2]) * delta / this.span);
+			scene.camera.setPosition(vec3.fromValues(position[0], position[1], position[2]));
+		}
+	});
 }
 
 MyLSXScene.prototype.setTheme = function(themeId) {
