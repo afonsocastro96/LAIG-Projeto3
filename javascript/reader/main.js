@@ -47,10 +47,14 @@ main=function()
     // create and load graph, and associate it to scene. 
     // Check console for loading errors
     var theme1 = new Theme(myScene, "wave.lsx", "Wave");
-    var theme2 = new Theme(myScene, "sandbar.lsx", "Sandbar");	
+    var theme2 = new Theme(myScene, "sandbar.lsx", "Sandbar");
+    var theme3 = new Theme(myScene, "test.lsx", "LAIG1");
+    var theme4 = new Theme(myScene, "test2.lsx", "LAIG2");
 
     myScene.addTheme(theme1);
     myScene.addTheme(theme2);
+    myScene.addTheme(theme3);
+    myScene.addTheme(theme4);
     myScene.addUpdatable({
 		update: function() {
 			if (theme1.loaded) {
