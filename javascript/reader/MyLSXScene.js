@@ -83,7 +83,7 @@ MyLSXScene.prototype.initCameras = function () {
 	
 	this.cameras = [];
 	this.cameras["Oblique View"] = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
-	this.cameras["Upward View"] = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+	this.cameras["Upward View"] = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(0.1, 25, 0), vec3.fromValues(0, 0, 0));
 	
     this.setCamera(Object.keys(this.cameras)[0]);
 };
@@ -110,9 +110,21 @@ MyLSXScene.prototype.setCamera = function(cameraId) {
 	if (this.camera != null) {
 		this.cameras[cameraId].near = this.camera.near;
 		this.cameras[cameraId].far = this.camera.far;
+		var scene = this;
+		this.addUpdatable({
+			startTime: Date.now(),
+			update : function(currTime) {
+				if (currTime - this.startTime > 1000) {
+					console.log("Camera changed");
+					scene.camera = scene.cameras[cameraId];
+					scene.removeUpdatable(this);
+				}
+			}
+		});
 	}
-	
-	this.camera = this.cameras[cameraId];
+	else {
+		this.camera = this.cameras[cameraId];
+	}
 }
 
 MyLSXScene.prototype.setTheme = function(themeId) {
@@ -301,11 +313,14 @@ MyLSXScene.prototype.resetTimer = function() {
  *	@param currTime {Float} The current time in milliseconds.
  */
 MyLSXScene.prototype.update = function(currTime) {
-	if (this.lastUpdate != 0)
+	if (this.lastUpdate != 0) {
 		this.timer += (currTime - this.lastUpdate) / 1000;
 	
-	for (var i = 0; i < this.updatables.length; ++i)
-		this.updatables[i].update(currTime);
+		this.gameSet.update(currTime);
+	
+		for (var i = 0; i < this.updatables.length; ++i)
+			this.updatables[i].update(currTime);
+	}
 }
 
 MyLSXScene.prototype.addUpdatable = function(updatable) {

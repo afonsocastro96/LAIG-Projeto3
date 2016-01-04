@@ -31,7 +31,7 @@ MyInterface.prototype.onSceneLoaded = function(){
 		.name("Current Camera")
 		.onFinishChange(function(value) {
 			scene.setCamera(value);
-			myInterface.setActiveCamera(scene.camera);
+			//myInterface.setActiveCamera(scene.camera);
 		}
 	);
 	

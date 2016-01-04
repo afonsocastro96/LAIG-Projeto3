@@ -43,13 +43,25 @@ PlayGameState.prototype.display = function(gameSet) {
 }
 
 PlayGameState.prototype.displayScoresHUD = function(gameSet) {
-	
+	gameSet.scene.pushMatrix();
+		gameSet.scene.translate(0, 3.5, -20);
+		gameSet.scene.scale(0.75, 0.75, 0.75);
+		this.timerPanel.display();
+	gameSet.scene.popMatrix();
 }
 
 PlayGameState.prototype.update = function(gameSet, currentTime) {
-	this.timerPanel.setText(Math.trunc((this.lastPlayTime - currentTime) / 1000).toString());
+	var timeLeft = this.turnDuration - Math.trunc((currentTime - this.lastPlayTime) / 1000);
+	if (timeLeft <= 0) {
+		timeLeft = 0;
+		console.log("Turn finished");
+	}
+	else {
+		console.log("Time Left: "  + timeLeft.toString());
+	}
+	this.timerPanel.setText(timeLeft.toString());
 }
 
 PlayGameState.prototype.setScore = function(gameSet, request) {
-	
+	this.displayHUD = this.displayScoresHUD;
 }
