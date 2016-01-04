@@ -129,6 +129,7 @@ MyLSXScene.prototype.setCamera = function(cameraId) {
 					console.log("another camera");
 					scene.setCamera(scene.currentCamera);
 				}
+				return;
 			}
 			
 			var position = [];
@@ -149,9 +150,12 @@ MyLSXScene.prototype.setTheme = function(themeId) {
 	this.currentTheme = theme.id;
 	this.camera.near = theme.graph.initials.frustum.near;
 	this.camera.far = theme.graph.initials.frustum.far;
-
+	this.updateCameraPositions();
+	
 	if (theme.graph.initials.referenceLength > 0)
 		this.axis = new CGFaxis(this, theme.graph.initials.referenceLength);
+	else
+		this.axis = null;
    
 	this.gl.clearColor(theme.graph.illumination.background[0],theme.graph.illumination.background[1],theme.graph.illumination.background[2],theme.graph.illumination.background[3]);
 	this.setGlobalAmbientLight(theme.graph.illumination.ambient[0],theme.graph.illumination.ambient[1],theme.graph.illumination.ambient[2],theme.graph.illumination.ambient[3]);
@@ -165,7 +169,39 @@ MyLSXScene.prototype.setTheme = function(themeId) {
 	}
 	
     this.timer = 0;
-} 
+}
+
+MyLSXScene.prototype.updateCameraPositions = function() {
+    this.loadIdentity();
+	this.multMatrix(this.theme.graph.initials.transformationMatrix);
+	this.updateCameraPositionsLoop(this.theme.graph.root);
+}
+
+MyLSXScene.prototype.updateCameraPositionsLoop = function(node) {
+	if (node in this.theme.primitives) {
+		if (this.theme.primitives[node] == this.gameSet) {
+			var target = vec3.fromValues(0, 0, 0);
+			var transformationMatrix = this.getMatrix();
+			vec3.transformMat4(target, target, transformationMatrix);
+			
+			this.cameraPositions["Oblique View"] = vec3.fromValues(15, 15,15);
+			vec3.transformMat4(this.cameraPositions["Oblique View"], this.cameraPositions["Oblique View"], transformationMatrix);
+			this.cameraPositions["Upward View"] = vec3.fromValues(0.1, 25, 0);
+			vec3.transformMat4(this.cameraPositions["Upward View"], this.cameraPositions["Upward View"], transformationMatrix);
+			
+			this.camera.setTarget(target);
+			this.camera.setPosition(this.cameraPositions[this.currentCamera]);
+		}
+		return;
+	}
+	this.pushMatrix();
+	this.multMatrix(this.theme.graph.nodes[node].transformationMatrix);
+	var descendants = this.theme.graph.nodes[node].descendants;
+	for (var i = 0; i < descendants.length; ++i) {
+		this.updateCameraPositionsLoop(descendants[i]);
+	}
+	this.popMatrix();
+}
 
 MyLSXScene.prototype.logPicking = function ()
 {
