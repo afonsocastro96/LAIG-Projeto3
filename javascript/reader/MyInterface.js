@@ -25,13 +25,20 @@ MyInterface.prototype.init = function(application) {
 MyInterface.prototype.onSceneLoaded = function(){
 	/* These options may be changed on the fly during the game */
 	var options = this.gui.addFolder("Change Options");
-	options.add(this.scene, "currentCameraAngle", this.scene.cameraAngle).name("Current Camera Angle");
-	
 	var scene = this.scene;
+	var myInterface = this;
+	options.add(this.scene, "currentCamera", Object.keys(this.scene.cameras))
+		.name("Current Camera")
+		.onFinishChange(function(value) {
+			scene.setCamera(value);
+			myInterface.setActiveCamera(scene.camera);
+		}
+	);
+	
 	options.add(this.scene, "currentTheme", Object.keys(this.scene.themes))
 		.name("Theme")
 		.onFinishChange(function(value) {
-			scene.setTheme(scene.themes[value]);
+			scene.setTheme(value);
 		}
 	);
 	this.interfaceLoaded = true;

@@ -54,7 +54,7 @@ main=function()
     myScene.addUpdatable({
 		update: function() {
 			if (theme1.loaded) {
-				myScene.setTheme(theme1);
+				myScene.setTheme(theme1.id);
 				myScene.removeUpdatable(this);
 			}
 		}
