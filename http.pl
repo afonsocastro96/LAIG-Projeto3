@@ -76,10 +76,26 @@ move(StartX, StartY, EndX, EndY, Answer) :-
 	lettertonumber('move', Move),
 	Answer = [Move, StartX, StartY, EndX, EndY].
 
-undo(Answer) :-
+undo([Answer]) :-
+	game_mode("HvH"),
+	length(moves_stack, Length),
+	Length > 0,
 	undo_move(Answer),
 	pop_sink_streak,
 	pop_number_passes.
+
+undo([Move,OtherMove]) :-
+	game_mode("HvM"),
+	length(moves_stack, Length),
+	Length > 1,
+	undo_move(Move),
+	undo_move(OtherMove),
+	pop_sink_streak,
+	pop_sink_streak,
+	pop_number_passes,
+	pop_number_passes.
+
+undo([]).
 
 pass(Answer) :-
 	pass,
