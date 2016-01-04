@@ -204,10 +204,6 @@ MyLSXScene.prototype.display = function () {
 		this.setDefaultAppearance();
 		
 		this.drawSceneGraph();
-		
-		if(this.gameSet != undefined)
-			this.gameSet.display();
-		
 	}	
 };
 

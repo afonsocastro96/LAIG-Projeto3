@@ -17,7 +17,7 @@ PlayGameState.prototype.init = function(gameSet) {
 	
 	
 	this.turnDuration = 30;
-	this.lastPlayTime = Time.now();
+	this.lastPlayTime = Date.now();
 	
 	var gameState = this;
 	Connection.finishSetup(gameSet, function(gameSet, request) { gameState.setScore(gameSet, request)});
