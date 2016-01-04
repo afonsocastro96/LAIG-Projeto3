@@ -107,6 +107,10 @@ MyLSXScene.prototype.setCamera = function(cameraId) {
 	if (this.camera == this.cameras[cameraId]) {
 		return;
 	}
+	if (this.camera != null) {
+		this.cameras[cameraId].near = this.camera.near;
+		this.cameras[cameraId].far = this.camera.far;
+	}
 	
 	this.camera = this.cameras[cameraId];
 }
