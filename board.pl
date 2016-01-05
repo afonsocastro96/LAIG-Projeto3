@@ -24,7 +24,7 @@
 purge_database(N) :-	N > 0, purge_database_aux(0,0), retract(board_length(N)), retract(sink_streak(_,_)), retract(current_player(_)),
 retract(number_circles(_)), retract(number_squares(_)), retract(number_blacks(_)), retract(number_whites(_)),
 retract(number_pass('white',_)), retract(number_pass('black',_)), retract(moves_stack(_)), retract(sinked_tiles(_)), retract(sink_streak_stack(_)), retract(number_passes_stack(_)),
-(is_bot(_) -> retract(is_bot(_));true), (is_bot(_) -> retract(is_bot(_));true), 
+(is_bot(_) -> retract(is_bot(_));true), (is_bot(_) -> retract(is_bot(_));true), (game_mode(_) -> retract(game_mode(_));true),
 (bot_colour(_) -> retract(bot_colour(_)); true), (win_condition(_) -> retract(win_condition(_));true).
 purge_database_aux(Row, Col) :- board_length(Length), Row < Length, Col < Length, !, retract(board_cell(Row, Col, _)), NCol is Col + 1, purge_database_aux(Row,NCol).
 purge_database_aux(Row, _) :- board_length(Length), Row < Length, !, NRow is Row + 1, purge_database_aux(NRow, 0).
@@ -32,7 +32,7 @@ purge_database_aux(Row, _) :- board_length(Row).
 
 create_database(N) :- 	N > 0, assert(number_squares(0)), assert(number_circles(0)), assert(number_blacks(0)), assert(number_whites(0)),
 assert(sink_streak('white', 0)), assert(current_player('white')), assert(number_pass('white', 0)), assert(number_pass('black', 0)),
-assert(board_length(N)), assert(moves_stack([])), assert(sinked_tiles([])), assert(sink_streak_stack([])), assert(number_passes_stack([])), assert(game_mode("")),
+assert(board_length(N)), assert(moves_stack([])), assert(sinked_tiles([])), assert(sink_streak_stack([])), assert(number_passes_stack([]))),
 create_database_aux(0, 0).
 create_database_aux(Row, Col) :- board_length(Length), Row < Length, Col < Length, !, assert(board_cell(Row, Col, [' ', ' ', ' '])), NCol is Col + 1, create_database_aux(Row,NCol).
 create_database_aux(Row, _) :- board_length(Length), Row < Length, !, NRow is Row + 1, create_database_aux(NRow, 0).
