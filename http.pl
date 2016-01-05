@@ -124,8 +124,8 @@ gettowers(Answer) :- get_towers(Answer).
 addtower('light', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'L').
 addtower('dark', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'T').
 
-botaction(Answer) :- difficulty(Difficulty), current_player(Player), is_bot(Player), bot_action(Difficulty, Player, Action),
-					processString(Action, Answer).
+botaction(Answer) :- difficulty(Difficulty), current_player(Player), is_bot(Player),
+					bot_action(Difficulty, Player, Action), processString(Action, Answer).
 
 getscore([SinkStreak, [NWhite,NBlack]]) :- convert_sink_streak_stack([SinkStreak|_), number_passes('white', NWhite), number_passes('black', NBlack),.
 
