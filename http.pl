@@ -146,6 +146,6 @@ nextplay([GameOver, Winner, Condition]) :- check_winning_condition(WinnerL), let
 nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), is_bot(CurrentPlayer), Moves = 0.
 nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), available_moves(Moves).
 
-gamefilm([Plays,SinkStreaks,Passes,[Winner, Condition]]) :- moves_stack(Moves), convert_actions(Moves, Plays), convert_sink_streak_stack(SinkStreaks), number_passes_stack(Passes), check_winning_condition(Winner), win_condition(ConditionL), lettertonumber(ConditionL, Condition).
+gamefilm([Plays,SinkStreaks,Passes,[Winner, Condition]]) :- moves_stack(Moves), convert_actions(Moves, Plays), convert_sink_streak_stack(SinkStreaks), number_passes_stack(Passes), check_winning_condition(Winner), retract(win_condition(_)), win_condition(ConditionL),lettertonumber(ConditionL, Condition).
 
 :- server(8081).

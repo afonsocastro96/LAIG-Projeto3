@@ -583,7 +583,8 @@ Score is 50*(((Length1 + Length2)/ Blacks) + ((Length3+Length4) / Squares)).
 sink_streak_criteria(Score) :- sink_streak('white', Sinks), !, Score is 20 * Sinks.
 sink_streak_criteria(Score) :- sink_streak('black', Sinks), !, Score is -20 * Sinks.
 
-winning_criteria(Score) :- check_winning_condition(Winner), !, 
+winning_criteria(Score) :- check_winning_condition(Winner), !,
+retract(win_condition(_)), 
 (Winner = 'white' -> Score is 10000; Score is -10000).
 winning_criteria(Score) :- Score is 0.
 							
