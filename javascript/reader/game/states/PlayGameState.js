@@ -26,7 +26,8 @@ PlayGameState.prototype.display = function(gameSet) {
 	gameSet.board.display();
 	
 	gameSet.scene.pushMatrix();
-		gameSet.scene.translate(0,0,-5);
+		gameSet.scene.translate(5,0,0);
+		gameSet.scene.rotate(Math.PI / 2, 0, 1, 0);
 		gameSet.stack.display();
 	gameSet.scene.popMatrix();
 	
@@ -45,17 +46,12 @@ PlayGameState.prototype.displayScoresHUD = function(gameSet) {
 	gameSet.scene.pushMatrix();
 		gameSet.scene.translate(0, 3.5, -20);
 		gameSet.scene.scale(0.75, 0.75, 0.75);
+		this.timerPanel.display();
 	gameSet.scene.popMatrix();
 }
 
-
 PlayGameState.prototype.displayTurnHUD = function(gameSet) {
 	this.displayScoresHUD(gameSet);
-	gameSet.scene.pushMatrix();
-		gameSet.scene.translate(0, 3.5, -20);
-		gameSet.scene.scale(0.75, 0.75, 0.75);
-		this.timerPanel.display();
-	gameSet.scene.popMatrix();
 }
 
 PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
@@ -64,7 +60,7 @@ PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
 		timeLeft = 0;
 		this.turnDurationFinished(gameSet);
 	}
-	this.timerPanel.setText(timeLeft.toString());
+	this.timerPanel.setText(this.currentPlayer + " " + timeLeft.toString());
 }
 
 PlayGameState.prototype.getScore = function(gameSet) {
@@ -99,6 +95,9 @@ PlayGameState.prototype.pickPlay = function(gameSet, request) {
 		return;
 	}
 	
+	
+	this.currentPlayer = Connection.players[nextPlayInfo[0]];
+	
 	if (nextPlayInfo[1] == Connection.botActionCode) {
 		var gameState = this;
 		Connection.botAction(gameSet, function(target, request) {gameState.animatePlay(target, request);});
@@ -117,6 +116,7 @@ PlayGameState.prototype.turnDurationFinished = function(gameSet) {
 }
 
 PlayGameState.prototype.animatePlay = function(gameSet, request) {
+	this.timerPanel.setText(this.currentPlayer);
 	this.displayHUD = this.displayScoresHUD;
 	var playInfo = JSON.parse(request);
 	

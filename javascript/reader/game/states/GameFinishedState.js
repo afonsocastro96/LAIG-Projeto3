@@ -37,7 +37,8 @@ GameFinishedState.prototype.display = function(gameSet) {
 	gameSet.board.display();
 	
 	gameSet.scene.pushMatrix();
-		gameSet.scene.translate(0,0,-5);
+		gameSet.scene.translate(5,0,0);
+		gameSet.scene.rotate(Math.PI / 2, 0, 1, 0);
 		gameSet.stack.display();
 	gameSet.scene.popMatrix();
 	
