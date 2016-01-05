@@ -2,11 +2,11 @@
 
 <INITIALS>
     <frustum near="0.1" far="500.0"/>
-    <translation x="-5" y="0" z="-5" />
+    <translation x="0" y="0" z="0" />
     <rotation axis="x" angle="0" />
     <rotation axis="y" angle="0" />
     <rotation axis="z" angle="0" /> 
-    <scale sx="0.5" sy="0.5" sz="0.5" />
+    <scale sx="1" sy="1" sz="1" />
     <reference length="0" />
 </INITIALS>
 
@@ -1236,7 +1236,7 @@
         <TEXTURE id="null" />
 
         <TRANSLATION x="0" y="1.75" z="0.15" />
-        <SCALE sx="0.35" sy="0.35" sz="0.35" />
+        <!--<SCALE sx="0.35" sy="0.35" sz="0.35" />-->
 
         <DESCENDANTS>
             <DESCENDANT id="gameset" />

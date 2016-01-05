@@ -124,6 +124,11 @@ gettowers(Answer) :- get_towers(Answer).
 addtower('light', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'L').
 addtower('dark', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'T').
 
+botaction([Number|Rest]) :- difficulty(Difficulty), current_player(Player), is_bot(Player), bot_action(Difficulty, Player, [Action|Rest]),
+					lettertonumber(Action, Number).
+
+getscore([SinkStreak, [NWhite,NBlack]]) :- convert_sink_streak_stack([SinkStreak|_), number_passes('white', NWhite), number_passes('black', NBlack),.
+
 gamemode(Mode, 'Gamemode: ACK') :- Mode == 'MvM', set_mode(Mode), randomize_towers.
 gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvM', set_mode(Mode).
 gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvH', set_mode(Mode).
