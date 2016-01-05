@@ -83,6 +83,11 @@ Connection.finishSetup = function(target, handler) {
 	makeRequest(target, requestString, handler);
 }
 
+Connection.nextPlay = function(target, handler) {
+	var requestString = "[nextplay]";
+	makeRequest(target, requestString, handler);
+}
+
 Connection.sink = function(target, handler, row, col) {	
 	var requestString = "[sink," + row + "," + col + "]";
 	makeRequest(target, requestString, handler); 

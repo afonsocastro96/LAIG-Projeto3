@@ -84,7 +84,7 @@ MyLSXScene.prototype.initCameras = function () {
 	this.cameraPositions = [];
 	
 	this.cameraPositions["Oblique View"] = vec3.fromValues(15, 15,15);
-	this.cameraPositions["Upward View"] = vec3.fromValues(0.1, 25, 0);
+	this.cameraPositions["Upward View"] = vec3.fromValues(0, 25, 0.1);
 	
 	this.camera = new CGFcamera(0.4, 0.1, 500, this.cameraPositions["Oblique View"], vec3.fromValues(0, 0, 0))
 };
@@ -194,7 +194,7 @@ MyLSXScene.prototype.updateCameraPositionsLoop = function(node) {
 			
 			this.cameraPositions["Oblique View"] = vec3.fromValues(15, 15,15);
 			vec3.transformMat4(this.cameraPositions["Oblique View"], this.cameraPositions["Oblique View"], transformationMatrix);
-			this.cameraPositions["Upward View"] = vec3.fromValues(0.1, 25, 0);
+			this.cameraPositions["Upward View"] = vec3.fromValues(0, 25, 0.1);
 			vec3.transformMat4(this.cameraPositions["Upward View"], this.cameraPositions["Upward View"], transformationMatrix);
 			
 			this.camera.setTarget(target);

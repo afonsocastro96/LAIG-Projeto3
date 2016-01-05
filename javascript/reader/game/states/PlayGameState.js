@@ -15,7 +15,6 @@ PlayGameState.prototype.init = function(gameSet) {
 	this.numPassDarkPanel = new Marker(gameSet.scene);
 	this.timerPanel = new Marker(gameSet.scene);
 	
-	
 	this.turnDuration = gameSet.turnDuration;
 	this.lastPlayTime = Date.now();
 	
@@ -50,18 +49,27 @@ PlayGameState.prototype.displayScoresHUD = function(gameSet) {
 	gameSet.scene.popMatrix();
 }
 
-PlayGameState.prototype.update = function(gameSet, currentTime) {
+PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
 	var timeLeft = this.turnDuration - Math.trunc((currentTime - this.lastPlayTime) / 1000);
 	if (timeLeft <= 0) {
 		timeLeft = 0;
 		console.log("Turn finished");
-	}
-	else {
-		console.log("Time Left: "  + timeLeft.toString());
 	}
 	this.timerPanel.setText(timeLeft.toString());
 }
 
 PlayGameState.prototype.setScore = function(gameSet, request) {
 	this.displayHUD = this.displayScoresHUD;
+	this.update = this.updateTimer;
+	
+	this.nextPlay(gameSet);
+}
+
+PlayGameState.prototype.nextPlay = function(gameSet) {
+	var gameState = this;
+	Connection.nextPlay(gameSet, function(target, request) { gameState.pickPlay(target, request)});
+}
+
+PlayGameState.prototype.pickPlay = function(gameSet, request) {
+	console.log(request);
 }
