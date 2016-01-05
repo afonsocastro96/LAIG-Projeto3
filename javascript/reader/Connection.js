@@ -59,8 +59,8 @@ Connection.botActionCode = 0;
 Connection.players = ["Light", "Dark"];
 
 Connection.winReasons = [
-	"Quicksand", "Double Island Initiative", "Completed Island",
-	"Double Pass Initiative", "Four Consecutive Passes"
+	"Quicksand", "Double Island", "Completed Island",
+	"Double Pass", "Four Passes"
 	];
 
 Connection.startgame = function(target, handler, boardType) {
