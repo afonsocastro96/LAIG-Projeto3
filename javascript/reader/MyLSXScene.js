@@ -84,7 +84,7 @@ MyLSXScene.prototype.initCameras = function () {
 	this.cameraPositions = [];
 	
 	this.cameraPositions["Oblique View"] = vec3.fromValues(15, 15,15);
-	this.cameraPositions["Upward View"] = vec3.fromValues(0.1, 25, 0);
+	this.cameraPositions["Upward View"] = vec3.fromValues(0, 25, 0.1);
 	
 	this.camera = new CGFcamera(0.4, 0.1, 500, this.cameraPositions["Oblique View"], vec3.fromValues(0, 0, 0))
 };
@@ -145,30 +145,38 @@ MyLSXScene.prototype.setTheme = function(themeId) {
 	if (this.theme != null && this.theme.id == themeId) {
 		return;
 	}
-	var theme = this.themes[themeId];
-	this.theme = theme;
-	this.currentTheme = theme.id;
-	this.camera.near = theme.graph.initials.frustum.near;
-	this.camera.far = theme.graph.initials.frustum.far;
-	this.updateCameraPositions();
-	
-	if (theme.graph.initials.referenceLength > 0)
-		this.axis = new CGFaxis(this, theme.graph.initials.referenceLength);
-	else
-		this.axis = null;
-   
-	this.gl.clearColor(theme.graph.illumination.background[0],theme.graph.illumination.background[1],theme.graph.illumination.background[2],theme.graph.illumination.background[3]);
-	this.setGlobalAmbientLight(theme.graph.illumination.ambient[0],theme.graph.illumination.ambient[1],theme.graph.illumination.ambient[2],theme.graph.illumination.ambient[3]);
+	var scene = this;
+	scene.currentTheme = themeId;
+	this.addUpdatable( {
+		update: function() {
+			if (!scene.updatingCamera) {
+				var theme = scene.themes[scene.currentTheme];
+				scene.theme = theme;
+				scene.camera.near = theme.graph.initials.frustum.near;
+				scene.camera.far = theme.graph.initials.frustum.far;
+				scene.updateCameraPositions();
+				
+				if (theme.graph.initials.referenceLength > 0)
+					scene.axis = new CGFaxis(scene, theme.graph.initials.referenceLength);
+				else
+					scene.axis = null;
+			   
+				scene.gl.clearColor(theme.graph.illumination.background[0],theme.graph.illumination.background[1],theme.graph.illumination.background[2],theme.graph.illumination.background[3]);
+				scene.setGlobalAmbientLight(theme.graph.illumination.ambient[0],theme.graph.illumination.ambient[1],theme.graph.illumination.ambient[2],theme.graph.illumination.ambient[3]);
 
-	this.lights = [];
+				scene.lights = [];
 
-	for (var i = 0; i < theme.graph.lights.length; ++i) {
-		this.lights.push(theme.graph.lights[i]);
-		this.lights[i].setVisible(false);
-		this.lightsEnabled[this.lights[i]._id] = this.lights[i].enabled;
-	}
-	
-    this.timer = 0;
+				for (var i = 0; i < theme.graph.lights.length; ++i) {
+					scene.lights.push(theme.graph.lights[i]);
+					scene.lights[i].setVisible(false);
+					scene.lightsEnabled[scene.lights[i]._id] = scene.lights[i].enabled;
+				}
+				
+				scene.timer = 0;
+				scene.removeUpdatable(this);
+			}
+		}
+	});
 }
 
 MyLSXScene.prototype.updateCameraPositions = function() {
@@ -186,7 +194,7 @@ MyLSXScene.prototype.updateCameraPositionsLoop = function(node) {
 			
 			this.cameraPositions["Oblique View"] = vec3.fromValues(15, 15,15);
 			vec3.transformMat4(this.cameraPositions["Oblique View"], this.cameraPositions["Oblique View"], transformationMatrix);
-			this.cameraPositions["Upward View"] = vec3.fromValues(0.1, 25, 0);
+			this.cameraPositions["Upward View"] = vec3.fromValues(0, 25, 0.1);
 			vec3.transformMat4(this.cameraPositions["Upward View"], this.cameraPositions["Upward View"], transformationMatrix);
 			
 			this.camera.setTarget(target);
