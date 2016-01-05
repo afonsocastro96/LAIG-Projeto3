@@ -44,9 +44,21 @@ Connection.tileSquare = 4;
 
 Connection.lightTower = 0;
 Connection.darkTower = 1;
+Connection.gameFinished = 2;
 
 Connection.light = "'light'";
 Connection.dark = "'dark'";
+
+Connection.sinkCode = 0;
+Connection.slideCode = 1;
+Connection.moveCode = 2;
+Connection.passCode = 3;
+Connection.raiseCode = 4;
+
+Connection.winReasons = [
+	"Quicksand", "Double Island Initiative", "Completed Island",
+	"Double Pass Initiave", "Four Consecutive Passes"
+	];
 
 Connection.startgame = function(target, handler, boardType) {
 	var requestString = "[startgame," + boardType + "]";
@@ -105,5 +117,15 @@ Connection.move = function(target, handler, startRow, startCol, finalRow, finalC
 
 Connection.pass = function(target, handler) {
 	var requestString = "[pass]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.undo = function(target, handler) {
+	var requestString = "[undo]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.gameFilm = function(target, handler) {
+	var requestString = "[gamefilm]";
 	makeRequest(target, requestString, handler);
 }
