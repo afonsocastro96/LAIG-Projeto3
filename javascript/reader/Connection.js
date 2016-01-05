@@ -54,10 +54,13 @@ Connection.slideCode = 1;
 Connection.moveCode = 2;
 Connection.passCode = 3;
 Connection.raiseCode = 4;
+Connection.botActionCode = 0;
+
+Connection.players = ["Light", "Dark"];
 
 Connection.winReasons = [
 	"Quicksand", "Double Island Initiative", "Completed Island",
-	"Double Pass Initiave", "Four Consecutive Passes"
+	"Double Pass Initiative", "Four Consecutive Passes"
 	];
 
 Connection.startgame = function(target, handler, boardType) {
@@ -120,6 +123,11 @@ Connection.pass = function(target, handler) {
 	makeRequest(target, requestString, handler);
 }
 
+Connection.botAction = function(target, handler) {
+	var requestString = "[botaction]";
+	makeRequest(target, requestString, handler);
+}
+
 Connection.undo = function(target, handler) {
 	var requestString = "[undo]";
 	makeRequest(target, requestString, handler);
@@ -128,4 +136,29 @@ Connection.undo = function(target, handler) {
 Connection.gameFilm = function(target, handler) {
 	var requestString = "[gamefilm]";
 	makeRequest(target, requestString, handler);
+}
+
+Connection.getScore = function(target, handler) {
+	var requestString = "[getscore]";
+	makeRequest(target, requestString, handler);
+}
+
+Connection.parseTile = function(colourCode, shapeCode, scene) {
+	if (colourCode == Connection.tileBlack) {
+		if (shapeCode == Connection.tileCircle) {
+			return new BlackCircleTile(scene);
+		}
+		if (shapeCode == Connection.tileSquare) {
+			return new BlackSquareTile(scene);
+		}
+	}
+	
+	if (colourCode == Connection.tileWhite) {
+		if (shapeCode == Connection.tileCircle) {
+			return new WhiteCircleTile(scene);
+		}
+		if (shapeCode == Connection.tileSquare) {
+			return new WhiteSquareTile(scene);
+		}
+	}
 }

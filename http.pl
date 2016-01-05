@@ -127,7 +127,7 @@ addtower('dark', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'T').
 botaction([Number|Rest]) :- difficulty(Difficulty), current_player(Player), is_bot(Player), bot_action(Difficulty, Player, [Action|Rest]),
 					lettertonumber(Action, Number).
 
-getscore([SinkStreak, [NWhite,NBlack]]) :- convert_sink_streak_stack([SinkStreak|_), number_passes('white', NWhite), number_passes('black', NBlack),.
+getscore([SinkStreak, [NWhite,NBlack]]) :- convert_sink_streak_stack([SinkStreak|_]), number_pass('white', NWhite), number_pass('black', NBlack).
 
 gamemode(Mode, 'Gamemode: ACK') :- Mode == 'MvM', set_mode(Mode), randomize_towers.
 gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvM', set_mode(Mode).
@@ -140,7 +140,7 @@ finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvM'
 finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('MvM'), difficulty(_), assert(is_bot('white')), assert(is_bot('black')), sinkstreakstack([SinkStreak]), numberpassesstack([NumberPasses]).
 finishsetup('Finish Setup: REJ').
 
-nextplay([GameOver, Winner, Condition]) :- check_winning_condition(Winner), GameOver = 2, win_condition(ConditionL), lettertonumber(ConditionL, Condition).
+nextplay([GameOver, Winner, Condition]) :- check_winning_condition(WinnerL), lettertonumber(WinnerL, Winner), GameOver = 2, win_condition(ConditionL), lettertonumber(ConditionL, Condition).
 nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), is_bot(CurrentPlayer), Moves = 0.
 nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), available_moves(Moves).
 
