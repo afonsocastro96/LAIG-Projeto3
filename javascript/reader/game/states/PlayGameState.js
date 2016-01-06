@@ -402,24 +402,7 @@ PlayGameState.prototype.animatePlay = function(gameSet, playInfo) {
 	this.timerPanel.setText(this.currentPlayer);
 	this.displayHUD = this.displayScoresHUD;
 	this.display = this.displayAnimation;
-	
-	switch(playInfo[0]) {
-		case Connection.sinkCode:
-			gameSet.animateSink(playInfo[1], playInfo[2]);
-			break;
-		case Connection.slideCode:
-			gameSet.animateSlide(playInfo[1], playInfo[2], playInfo[3], playInfo[4]);
-			break;
-		case Connection.moveCode:
-			gameSet.animateMove(playInfo[1], playInfo[2], playInfo[3], playInfo[4]);
-			break;
-		case Connection.passCode:
-			gameSet.animatePass();
-			break;
-		case Connection.raiseCode:
-			gameSet.animateRaise(playInfo[1], playInfo[2], Connection.parseTile(playInfo[3], playInfo[4], gameSet.scene));
-			break;
-	}
+	gameSet.animatePlay(playInfo);
 }
 
 PlayGameState.prototype.move = function(gameSet, startRow, startCol, endRow, endCol) {

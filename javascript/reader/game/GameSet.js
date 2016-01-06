@@ -113,9 +113,28 @@ GameSet.prototype.finishAnimation = function() {
 	this.update = this.updateState;
 }
 
-GameSet.prototype.animateSlide = function(startRow, startCol, endRow, endCol) {
+GameSet.prototype.animatePlay = function(playInfo) {
 	this.animating = true;
-	
+	switch(playInfo[0]) {
+		case Connection.sinkCode:
+			this.animateSink(playInfo[1], playInfo[2]);
+			break;
+		case Connection.slideCode:
+			this.animateSlide(playInfo[1], playInfo[2], playInfo[3], playInfo[4]);
+			break;
+		case Connection.moveCode:
+			this.animateMove(playInfo[1], playInfo[2], playInfo[3], playInfo[4]);
+			break;
+		case Connection.passCode:
+			this.animatePass();
+			break;
+		case Connection.raiseCode:
+			this.animateRaise(playInfo[1], playInfo[2], Connection.parseTile(playInfo[3], playInfo[4], gameSet.scene));
+			break;
+	}
+}
+
+GameSet.prototype.animateSlide = function(startRow, startCol, endRow, endCol) {
 	var tile = this.board.getTile(startRow, startCol);
 	var selectedTower = this.getTower(startRow, startCol);
 	var startBoardPosition = this.board.getBoardCoordinates(startRow, startCol);
@@ -183,8 +202,6 @@ GameSet.prototype.animateSlide = function(startRow, startCol, endRow, endCol) {
 }
 
 GameSet.prototype.animateMove = function(startRow, startCol, endRow, endCol) {
-	this.animating = true;
-	
 	var selectedTower = this.getTower(startRow, startCol);
 	var startBoardPosition = this.board.getBoardCoordinates(startRow, startCol);
 	var endBoardPosition = this.board.getBoardCoordinates(endRow, endCol);
@@ -231,8 +248,6 @@ GameSet.prototype.animateMove = function(startRow, startCol, endRow, endCol) {
 
 
 GameSet.prototype.animateSink = function(row, col) {
-	this.animating = true;
-	
 	var tile = this.board.getTile(row, col);
 	var fadeOutAnimation = new FadeAnimation(this.animationSpan/2, 1.0, 0.0);
 	var fadeInAnimation = new FadeAnimation(this.animationSpan/2, 0.0, 1.0);
@@ -271,8 +286,6 @@ GameSet.prototype.animateSink = function(row, col) {
 }
 
 GameSet.prototype.animateRaise = function(row, col, tile) {
-	this.animating = true;
-	
 	var fadeOutAnimation = new FadeAnimation(this.animationSpan/2, 1.0, 0.0);
 	var fadeInAnimation = new FadeAnimation(this.animationSpan/2, 0.0, 1.0);
 	
@@ -312,8 +325,6 @@ GameSet.prototype.animateRaise = function(row, col, tile) {
 }
 
 GameSet.prototype.animatePass = function() {
-	this.animating = true;
-	
 	this.displayAnimated = this.displayStatic;
 	
 	var startTime = Date.now();
