@@ -89,11 +89,18 @@ MyLSXScene.prototype.setDefaultAppearance = function () {
     this.setShininess(10.0);	
 };
 
-
+/**
+ * Add theme to the scene.
+ * @param theme {Theme} theme to add.
+ */
 MyLSXScene.prototype.addTheme = function(theme) {
 	this.themes[theme.id] = theme;
 }
 
+/**
+ * Change scene camera
+ * @param cameraId camera identification.
+ */
 MyLSXScene.prototype.setCamera = function(cameraId) {
 	var scene = this;
 	if (this.updatingCamera)
@@ -131,6 +138,10 @@ MyLSXScene.prototype.setCamera = function(cameraId) {
 	});
 }
 
+/**
+ * Change scene theme.
+ * @param themeId theme identification.
+ */
 MyLSXScene.prototype.setTheme = function(themeId) {
 	if (this.theme != null && this.theme.id == themeId) {
 		return;
@@ -169,12 +180,19 @@ MyLSXScene.prototype.setTheme = function(themeId) {
 	});
 }
 
+/**
+ * Calculate camera positions from graph.
+ */
 MyLSXScene.prototype.updateCameraPositions = function() {
     this.loadIdentity();
 	this.multMatrix(this.theme.graph.initials.transformationMatrix);
 	this.updateCameraPositionsLoop(this.theme.graph.root);
 }
 
+
+/**
+ * Calculate camera positions from graph (auxiliar function).
+ */
 MyLSXScene.prototype.updateCameraPositionsLoop = function(node) {
 	if (node in this.theme.primitives) {
 		if (this.theme.primitives[node] == this.gameSet) {
@@ -201,6 +219,9 @@ MyLSXScene.prototype.updateCameraPositionsLoop = function(node) {
 	this.popMatrix();
 }
 
+/**
+ * Process picking results.
+ */
 MyLSXScene.prototype.logPicking = function ()
 {
 	if (this.pickMode == false) {
@@ -270,6 +291,9 @@ MyLSXScene.prototype.display = function () {
 	}	
 };
 
+/**
+ * Init current theme and camera identifications.
+ */
 MyLSXScene.prototype.initUserOptions = function() {
 	this.currentCamera = "Oblique View";
 	this.currentTheme = "Wave";
@@ -370,10 +394,19 @@ MyLSXScene.prototype.update = function(currTime) {
 	}
 }
 
+/**
+ * Add object to be notified of scene updates.
+ * @param updatable {Object} object to be notified.
+ */
 MyLSXScene.prototype.addUpdatable = function(updatable) {
 	this.updatables.push(updatable);
 }
 
+
+/**
+ * Remove object from scene updates notification list.
+ * @param updatable {Object} object to remove.
+ */
 MyLSXScene.prototype.removeUpdatable = function(updatable) {
 	var index = this.updatables.indexOf(updatable);
 	if(index != -1) {
@@ -403,11 +436,18 @@ MyLSXScene.prototype.applyAnimation = function(node) {
 	this.multMatrix(animationMatrix);
 }
 
+/**
+ * Reset picking registration.
+ */
 MyLSXScene.prototype.resetPickRegistration = function() {
 	CGFscene.prototype.clearPickRegistration.call(this);
 	this.nextPickId = 1;
 }
 
+/**
+ * Register new pickable object.
+ * @param object {Object} pickable object.
+ */
 MyLSXScene.prototype.registerNextPick = function(object) {
 	CGFscene.prototype.registerForPick.call(this,this.nextPickId, object);
 	++this.nextPickId;

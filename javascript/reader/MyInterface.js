@@ -20,7 +20,7 @@ MyInterface.prototype.init = function(application) {
 };
 
 /**
- * Function to call when the SceneGraph is fully loaded.
+ * Function to call when the scene is fully loaded.
  */
 MyInterface.prototype.onSceneLoaded = function(){
 	/* These options may be changed on the fly during the game */
