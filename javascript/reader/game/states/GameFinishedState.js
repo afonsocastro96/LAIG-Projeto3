@@ -26,19 +26,27 @@ GameFinishedState.prototype.init = function(gameSet) {
 		}
 	}
 	
+	this.playerPanel = new Marker(gameSet.scene);
+	this.sinkStreakPanel = new Marker(gameSet.scene);
+	this.passesPanel = new Marker(gameSet.scene);
+	
 	this.winnerPanel = new Marker(gameSet.scene);
 	this.winnerPanel.setText(this.winner + " won");
 	this.reasonPanel = new Marker(gameSet.scene);
 	this.reasonPanel.setText(this.winReason);
-	
-	console.log("Game finished: " + this.winner + " won by " + this.winReason);
 }
 
-GameFinishedState.prototype.display = function(gameSet) {
+GameFinishedState.prototype.displayStatic = function(gameSet) {
 	gameSet.displayStatic();
 }
 
-GameFinishedState.prototype.displayHUD = function(gameSet) {
+GameFinishedState.prototype.display = GameFinishedState.prototype.displayStatic;
+
+GameFinishedState.prototype.displayAnimated = function(gameSet) {
+	gameSet.displayAnimated();
+}
+
+GameFinishedState.prototype.displayWinHUD = function(gameSet) {
 	gameSet.scene.pushMatrix();
 		gameSet.scene.translate(0, 3.5, -20);
 		gameSet.scene.scale(0.5, 0.5, 0.5);
@@ -68,9 +76,32 @@ GameFinishedState.prototype.displayHUD = function(gameSet) {
 	gameSet.scene.clearPickRegistration();
 }
 
+GameFinishedState.prototype.displayHUD = GameFinishedState.prototype.displayWinHUD;
+
+
 GameFinishedState.prototype.getFilm = function(gameSet) {
 	var state = this;
 	Connection.gameFilm(gameSet, function(target, request) {state.displayFilm(target, request)});
+}
+
+GameFinishedState.prototype.displayScoresHUD = function(gameSet) {
+	gameSet.scene.pushMatrix();
+		gameSet.scene.translate(0, 3.5, -20);
+		gameSet.scene.scale(0.75, 0.75, 0.75);
+		this.playerPanel.display();
+	gameSet.scene.popMatrix();
+	
+	gameSet.scene.pushMatrix();
+		gameSet.scene.translate(0, -3, -20);
+		gameSet.scene.scale(0.25, 0.25, 0.25);
+		this.sinkStreakPanel.display();
+	gameSet.scene.popMatrix();
+	
+	gameSet.scene.pushMatrix();
+		gameSet.scene.translate(0, -3.5, -20);
+		gameSet.scene.scale(0.25, 0.25, 0.25);
+		this.passesPanel.display();
+	gameSet.scene.popMatrix();
 }
 
 GameFinishedState.prototype.displayFilm = function(gameSet, request) {
@@ -96,4 +127,45 @@ GameFinishedState.prototype.displayFilm = function(gameSet, request) {
 		}
 	}
 	gameSet.setTowers(towers);
+	
+	var plays = filmInfo[2];
+	var sinkStreaks = filmInfo[3];
+	var passes = filmInfo[4];
+	var player = Connection.players[1];
+	
+	
+	this.update = function(gameSet, currTime) {
+		if (!gameSet.animating) {
+			if (plays.length == 0) {
+				gameSet.setState(new GameFinishedState);
+				return;
+			}
+
+			if (player == Connection.players[0]) {
+				player = Connection.players[1];
+			} else {
+				player = Connection.players[0];
+			}
+			this.playerPanel.setText(player);
+			
+			var sinkStreakInfo = sinkStreaks.pop();
+			var streaker = Connection.players[sinkStreakInfo[0]];
+			var sinkStreak = sinkStreakInfo[1];
+			
+			var passInfo = passes.pop();
+			var passWhite = passInfo[Connection.lightTower];
+			var passBlack = passInfo[Connection.darkTower];
+			
+			
+			this.sinkStreakPanel.setText("Sink Streak: " + streaker + sinkStreak.toString());
+			this.passesPanel.setText("Passes: White" + passWhite.toString() + " Dark" + passBlack.toString());
+			
+			var playInfo = plays.pop();
+			gameSet.animatePlay(playInfo);
+			
+		}
+	}
+	
+	this.display = this.displayAnimated;
+	this.displayHUD = this.displayScoresHUD;
 }
