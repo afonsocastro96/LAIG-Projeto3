@@ -1,7 +1,5 @@
-function FadeAnimation(object, span, startScale, endScale) {
-	this.object = object;
+function FadeAnimation(span, startScale, endScale) {
 	this.span = span;
-	this.updateFunction = this.finishedFunction;
 	this.startScale = startScale;
 	this.endScale = endScale;
 	this.scaleInc = (this.endScale - this.startScale) / this.span;
@@ -10,28 +8,13 @@ function FadeAnimation(object, span, startScale, endScale) {
 FadeAnimation.prototype = Object.create(Object.prototype);
 FadeAnimation.prototype.constructor = FadeAnimation;
 
-FadeAnimation.prototype.start = function() {
-	this.startTime = Date.now();
-	this.finished = false;
-	this.updateFunction = this.updateObject;
-}
-
-FadeAnimation.prototype.update = function(currentTime) {
-	this.updateFunction(currentTime);
-}
-
-FadeAnimation.prototype.updateObject = function(currentTime) {
-	var delta = currentTime - this.startTime;
-	if (delta > this.span) {
-		this.object.setAlphaScaling(this.endScale);
-		this.finished = true;
-		this.updateFunction = this.finishedFunction;
-		return;
+FadeAnimation.prototype.getScaling = function(t) {
+	if (t < 0) {
+		return this.startScale;
+	}
+	if (t > this.span) {
+		return this.endScale;
 	}
 	
-	this.object.setAlphaScaling(this.startScale + this.scaleInc * delta);
-}
-
-FadeAnimation.prototype.finishedFunction = function() {
-	// do nothing
+	return this.startScale + this.scaleInc * t;
 }

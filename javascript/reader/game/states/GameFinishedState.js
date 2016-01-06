@@ -74,5 +74,26 @@ GameFinishedState.prototype.getFilm = function(gameSet) {
 }
 
 GameFinishedState.prototype.displayFilm = function(gameSet, request) {
+	var filmInfo = JSON.parse(request);
 	
+	var boardSchema = filmInfo[0];
+	var board = new GameBoard(gameSet.scene);
+	board.init(boardSchema);
+	gameSet.setBoard(board);
+	
+	var towerSchema = filmInfo[1];
+	var towers = [];
+	for (var i = 0; i < towerSchema.length; ++i) {
+		switch (towerSchema[i][0]) {
+			case Connection.lightTower:
+				towers.push(new LightTower(gameSet.scene));
+				towers[towers.length - 1].setPosition(towerSchema[i][1], towerSchema[i][2]);
+				break;
+			case Connection.darkTower:
+				towers.push(new DarkTower(gameSet.scene));
+				towers[towers.length - 1].setPosition(towerSchema[i][1], towerSchema[i][2]);
+				break;
+		}
+	}
+	gameSet.setTowers(towers);
 }
