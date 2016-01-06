@@ -386,6 +386,7 @@ PlayGameState.prototype.executeUndo = function(gameSet, request) {
 		if (!gameSet.animating) {
 			if (undoActions.length == 0) {
 				this.getScore(gameSet);
+				return;
 			}
 			var playInfo = undoActions.shift();
 			this.animatePlay(gameSet, playInfo);
