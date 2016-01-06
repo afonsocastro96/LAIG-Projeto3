@@ -464,7 +464,10 @@ PlayGameState.prototype.undo = function(gameSet) {
 	console.log("Trying to undo");
 	this.display = this.displayStatic;
 	this.update = function() {};
-	this.getScore(gameSet);
+	var gameState = this;
+	Connection.undo(gameSet, function(target, request) {
+		gameState.executeUndo(target, request);
+	});
 }
 
 PlayGameState.prototype.animateRaise = function(gameSet, row, col, tile) {

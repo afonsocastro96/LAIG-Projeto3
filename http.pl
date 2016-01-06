@@ -77,16 +77,18 @@ move(StartX, StartY, EndX, EndY, Answer) :-
 	Answer = [Move, StartX, StartY, EndX, EndY].
 
 undo([Answer]) :-
-	game_mode("HvH"),
-	length(moves_stack, Length),
+	game_mode('HvH'),
+	moves_stack(Stack),
+	length(Stack, Length),
 	Length > 0,
 	undo_move(Answer),
 	pop_sink_streak,
 	pop_number_passes.
 
 undo([Move,OtherMove]) :-
-	game_mode("HvM"),
-	length(moves_stack, Length),
+	game_mode('HvM'),
+	moves_stack(Stack),
+	length(Stack, Length),
 	Length > 1,
 	undo_move(Move),
 	undo_move(OtherMove),
