@@ -10,6 +10,9 @@ PlayGameState.prototype.init = function(gameSet) {
 	this.undoButton.setText("Undo");
 	this.cancelButton = new Marker(gameSet.scene);
 	this.cancelButton.setText("Cancel");
+	this.passButton = new Marker(gameSet.scene);
+	this.passButton.setText("Pass");
+	
 	this.sinkStreakPanel = new Marker(gameSet.scene);
 	this.numPassLightPanel = new Marker(gameSet.scene);
 	this.numPassDarkPanel = new Marker(gameSet.scene);
@@ -71,6 +74,32 @@ PlayGameState.prototype.displayScoresHUD = function(gameSet) {
 
 PlayGameState.prototype.displayTurnHUD = function(gameSet) {
 	this.displayScoresHUD(gameSet);
+	
+	var gameState = this;
+	
+	gameSet.scene.pushMatrix();
+	gameSet.scene.translate(-3.5, -2.5, -20);
+	gameSet.scene.scale(0.5, 0.5, 0.5);
+	if (this.selectedTower) {
+		gameSet.scene.registerNextPick({
+			onPick: function() {
+				gameState.selectedTower = null;
+				gameState.display = gameState.firstSelection;
+			}
+		});
+		this.cancelButton.display();
+	}
+	else {
+		gameSet.scene.registerNextPick({
+			onPick: function() {
+				gameState.pass(gameSet);
+			}
+		});
+		this.passButton.display();
+	}
+	
+	gameSet.scene.clearPickRegistration();
+	gameSet.scene.popMatrix();
 }
 
 PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
