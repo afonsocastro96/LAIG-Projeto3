@@ -14,8 +14,7 @@ PlayGameState.prototype.init = function(gameSet) {
 	this.passButton.setText("Pass");
 	
 	this.sinkStreakPanel = new Marker(gameSet.scene);
-	this.numPassLightPanel = new Marker(gameSet.scene);
-	this.numPassDarkPanel = new Marker(gameSet.scene);
+	this.passesPanel = new Marker(gameSet.scene);
 	this.timerPanel = new Marker(gameSet.scene);
 	
 	this.selectionPanel = new MyPlane(gameSet.scene, 100);
@@ -54,6 +53,18 @@ PlayGameState.prototype.displayScoresHUD = function(gameSet) {
 		gameSet.scene.scale(0.75, 0.75, 0.75);
 		this.timerPanel.display();
 	gameSet.scene.popMatrix();
+	
+	gameSet.scene.pushMatrix();
+		gameSet.scene.translate(0, -3, -20);
+		gameSet.scene.scale(0.25, 0.25, 0.25);
+		this.sinkStreakPanel.display();
+	gameSet.scene.popMatrix();
+	
+	gameSet.scene.pushMatrix();
+		gameSet.scene.translate(0, -3.5, -20);
+		gameSet.scene.scale(0.25, 0.25, 0.25);
+		this.passesPanel.display();
+	gameSet.scene.popMatrix();
 }
 
 PlayGameState.prototype.displayTurnHUD = function(gameSet) {
@@ -62,7 +73,7 @@ PlayGameState.prototype.displayTurnHUD = function(gameSet) {
 	var gameState = this;
 	
 	gameSet.scene.pushMatrix();
-	gameSet.scene.translate(-3.5, -2.5, -20);
+	gameSet.scene.translate(-4.5, 1.5, -20);
 	gameSet.scene.scale(0.5, 0.5, 0.5);
 	if (this.selectedTower) {
 		gameSet.scene.registerNextPick({
@@ -81,9 +92,19 @@ PlayGameState.prototype.displayTurnHUD = function(gameSet) {
 		});
 		this.passButton.display();
 	}
-	
-	gameSet.scene.clearPickRegistration();
 	gameSet.scene.popMatrix();
+	
+	gameSet.scene.pushMatrix();
+	gameSet.scene.translate(-4.5, -1.5, -20);
+	gameSet.scene.scale(0.5, 0.5, 0.5);
+	gameSet.scene.registerNextPick({
+		onPick : function() {
+			gameState.undo(gameSet);
+		}
+	});
+	this.undoButton.display();
+	gameSet.scene.popMatrix();
+	gameSet.scene.clearPickRegistration();
 }
 
 PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
@@ -102,13 +123,16 @@ PlayGameState.prototype.getScore = function(gameSet) {
 }
 
 PlayGameState.prototype.setScore = function(gameSet, request) {
-	this.displayHUD = this.displayScoresHUD;
 	var scoreInfo = JSON.parse(request);
-	
 	var streaker = Connection.players[scoreInfo[0][0]];
 	var sinkStreak = scoreInfo[0][1];
 	var passWhite = scoreInfo[1][Connection.lightTower];
 	var passBlack = scoreInfo[1][Connection.darkTower];
+	
+	
+	this.sinkStreakPanel.setText("Sink Streak: " + streaker + sinkStreak.toString());
+	this.passesPanel.setText("Passes: White" + passWhite.toString() + " Dark" + passBlack.toString());
+	this.displayHUD = this.displayScoresHUD;
 	
 	this.nextPlay(gameSet);
 }
@@ -404,6 +428,13 @@ PlayGameState.prototype.pass = function(gameSet) {
 	Connection.pass(gameSet, function(target, request) {
 		gameState.animatePlay(target, request);
 	});
+}
+
+PlayGameState.prototype.undo = function(gameSet) {
+	console.log("Trying to undo");
+	this.display = this.displayStatic;
+	this.update = function() {};
+	this.getScore(gameSet);
 }
 
 PlayGameState.prototype.animateMove = function(gameSet, startRow, startCol, endRow, endCol) {

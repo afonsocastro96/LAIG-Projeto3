@@ -30,23 +30,7 @@ TowerSelectionState.prototype.displayHUD = function(gameSet) {
 }
 
 TowerSelectionState.prototype.display = function(gameSet) {
-	gameSet.board.display();
-	
-	gameSet.scene.pushMatrix();
-		gameSet.scene.translate(0,0,-5);
-		gameSet.stack.display();
-	gameSet.scene.popMatrix();
-	
-	for (var i = 0; i < gameSet.towers.length; ++i) {
-		var tower = gameSet.towers[i];
-		var boardPosition = gameSet.board.getBoardCoordinates(tower.row, tower.col);
-		
-		gameSet.scene.pushMatrix();
-			gameSet.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
-			tower.display();
-		gameSet.scene.popMatrix();
-	}
-	
+	gameSet.displayStatic();
 	
 	var prevValue;
 	if (!gameSet.scene.pickMode) {
