@@ -37,8 +37,8 @@ Connection.easyDifficulty = 0;
 Connection.hardDifficulty = 1;
 
 Connection.tileEmpty = 0;
-Connection.tileBlack = 1;
-Connection.tileWhite = 2;
+Connection.tileWhite = 1;
+Connection.tileBlack = 2;
 Connection.tileCircle = 3;
 Connection.tileSquare = 4;
 

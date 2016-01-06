@@ -674,7 +674,7 @@ get_board(Board, Towers) :- format_board(Board), get_towers(Towers).
 update_game(Action, Board, Towers) :- make_action(Action), push_move(Action), get_board(Board, Towers).
 push_move(Action) :- moves_stack(Actions), retract(moves_stack(_)), assert(moves_stack([Action|Actions])).
 pop_move(Action) :- moves_stack([Action|Actions]), retract(moves_stack(_)), assert(moves_stack(Actions)).
-push_sinked_tile(X,Y) :- board_cell(X,Y,[_, Colour, Shape]), 
+push_sinked_tile(X, Y, Colour, Shape) :- 
 						lettertonumber(Colour, NumberC), lettertonumber(Shape, NumberS), 
 						sinked_tiles(Tiles), retract(sinked_tiles(_)), assert(sinked_tiles([[X,Y,[NumberC, NumberS]]|Tiles])).
 pop_sinked_tile([Colour, Shape]) :- sinked_tiles([[_,_,[Colour, Shape]]|Tiles]), retract(sinked_tiles(_)), assert(sinked_tiles(Tiles)). 

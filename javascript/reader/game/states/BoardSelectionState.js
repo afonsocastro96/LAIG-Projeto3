@@ -7,6 +7,7 @@ BoardSelectionState.prototype.constructor = BoardSelectionState;
 
 BoardSelectionState.prototype.init = function(gameSet) {
 	GameState.prototype.init.call(this, gameSet);
+	gameSet.setTowers([]);
 	
 	this.minorButton = new Marker(gameSet.scene);
 	this.minorButton.setText("Syrtis Minor");

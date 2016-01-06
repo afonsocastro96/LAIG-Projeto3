@@ -52,9 +52,10 @@ processString([_Par=Val], R) :-
 /* Nota, as chamadas as funcoes auxiliares pressupoem que todos os X e Y sao numeros de 0 a length-1.
 Tranformacoes necessarias devem ser feitas no javascript */
 sink(X,Y, Answer) :-
+	board_cell(X,Y,[_, Colour, Shape]),
 	sink_tile_aux(X,Y),
 	push_move(['sink', X, Y]),
-	push_sinked_tile(X, Y),
+	push_sinked_tile(X, Y, Colour, Shape),
 	push_sink_streak,
 	push_number_passes,
 	lettertonumber('sink', Move),
