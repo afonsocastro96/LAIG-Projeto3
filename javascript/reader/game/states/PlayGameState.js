@@ -1,3 +1,7 @@
+/**
+ * PlayGameState constructor
+ * @constructor
+ */
 function PlayGameState() {
 	GameState.call(this);
 }
@@ -5,6 +9,10 @@ function PlayGameState() {
 PlayGameState.prototype = Object.create(GameState.prototype);
 PlayGameState.prototype.constructor = PlayGameState;
 
+/**
+ * Init game state.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.init = function(gameSet) {
 	this.undoButton = new Marker(gameSet.scene);
 	this.undoButton.setText("Undo");
@@ -43,10 +51,18 @@ PlayGameState.prototype.init = function(gameSet) {
 	Connection.finishSetup(gameSet, function(gameSet, request) { gameState.setScore(gameSet, request)});
 }
 
+/**
+ * Display game without animations.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.displayStatic = function(gameSet) {
 	gameSet.displayStatic();
 }
 
+/**
+ * Display scores HUD.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.displayScoresHUD = function(gameSet) {
 	gameSet.scene.pushMatrix();
 		gameSet.scene.translate(0, 3.5, -20);
@@ -67,6 +83,10 @@ PlayGameState.prototype.displayScoresHUD = function(gameSet) {
 	gameSet.scene.popMatrix();
 }
 
+/**
+ * Display turn information on HUD.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.displayTurnHUD = function(gameSet) {
 	this.displayScoresHUD(gameSet);
 	
@@ -107,6 +127,11 @@ PlayGameState.prototype.displayTurnHUD = function(gameSet) {
 	gameSet.scene.clearPickRegistration();
 }
 
+/**
+ * Update turn timer.
+ * @param gameSet {GameSet} game set linked to this state.
+ * @param currentTime {Integer} current time (in miliseconds).
+ */
 PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
 	var timeLeft = this.turnDuration - Math.trunc((currentTime - this.lastPlayTime) / 1000);
 	if (timeLeft <= 0) {
@@ -116,6 +141,10 @@ PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
 	this.timerPanel.setText(this.currentPlayer + " " + timeLeft.toString());
 }
 
+/**
+ * Get game score.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.getScore = function(gameSet) {
 	var gameState = this;
 	this.display = this.displayStatic;
@@ -123,6 +152,11 @@ PlayGameState.prototype.getScore = function(gameSet) {
 	Connection.getScore(gameSet, function(target, request) { gameState.setScore(target, request);});
 }
 
+/**
+ * Set game score.
+ * @param gameSet {GameSet} game set linked to this state.
+ * @request {String} score information.
+ */
 PlayGameState.prototype.setScore = function(gameSet, request) {
 	var scoreInfo = JSON.parse(request);
 	var streaker = Connection.players[scoreInfo[0][0]];
@@ -138,11 +172,20 @@ PlayGameState.prototype.setScore = function(gameSet, request) {
 	this.nextPlay(gameSet);
 }
 
+/**
+ * Request next play.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.nextPlay = function(gameSet) {
 	var gameState = this;
 	Connection.nextPlay(gameSet, function(target, request) { gameState.pickPlay(target, request)});
 }
 
+/**
+ * Pick play for current turn.
+ * @param gameSet {GameSet} game set linked to this state.
+ * @param request {String} available plays info.
+ */
 PlayGameState.prototype.pickPlay = function(gameSet, request) {
 	var nextPlayInfo = JSON.parse(request);
 	if (nextPlayInfo[0] == Connection.gameFinished) {
@@ -163,6 +206,11 @@ PlayGameState.prototype.pickPlay = function(gameSet, request) {
 	this.askPlayer(gameSet, nextPlayInfo[1]);
 }
 
+/**
+ * Ask human player for action.
+ * @param gameSet {GameSet} game set linked to this state.
+ * @param actions {Array} available actions.
+ */
 PlayGameState.prototype.askPlayer = function(gameSet, actions) {
 	this.sinkableTiles = [];
 	this.selectableTowers = [];
@@ -205,6 +253,10 @@ PlayGameState.prototype.askPlayer = function(gameSet, actions) {
 	this.display = this.firstSelection;
 }
 
+/**
+ * Display for first selection.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.firstSelection = function(gameSet) {
 	gameSet.board.display();
 
@@ -278,6 +330,10 @@ PlayGameState.prototype.firstSelection = function(gameSet) {
 	gameSet.scene.clearPickRegistration();
 }
 
+/**
+ * Display for second selection.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.secondSelection = function(gameSet) {
 	gameSet.board.display();
 
@@ -363,11 +419,20 @@ PlayGameState.prototype.secondSelection = function(gameSet) {
 	gameSet.scene.clearPickRegistration();
 }
 
+/**
+ * Action to apply after end of turn duration.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.turnDurationFinished = function(gameSet) {
 	var gameState = this;
 	this.pass(gameSet);
 }
 
+/**
+ * Execute play
+ * @param gameSet {GameSet} game set linked to this state.
+ * @param request {String} play info.
+ */
 PlayGameState.prototype.executePlay = function(gameSet, request) {
 	var playInfo = JSON.parse(request);
 	this.animatePlay(gameSet, playInfo);
@@ -379,6 +444,11 @@ PlayGameState.prototype.executePlay = function(gameSet, request) {
 	};
 }
 
+/**
+ * Execute undo.
+ * @param gameSet {GameSet} game set linked to this state.
+ * @param request {String} undo information.
+ */
 PlayGameState.prototype.executeUndo = function(gameSet, request) {
 	var undoActions = JSON.parse(request);	
 	
@@ -394,10 +464,19 @@ PlayGameState.prototype.executeUndo = function(gameSet, request) {
 	}
 }
 
+/**
+ * Display game with animated elements.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.displayAnimation = function(gameSet) {
 	gameSet.displayAnimated();
 }
 
+/**
+ * Animate play.
+ * @param gameSet {GameSet} game set linked to this state.
+ * @param playInfo {Array} play information.
+ */
 PlayGameState.prototype.animatePlay = function(gameSet, playInfo) {
 	this.timerPanel.setText(this.currentPlayer);
 	this.displayHUD = this.displayScoresHUD;
@@ -405,6 +484,14 @@ PlayGameState.prototype.animatePlay = function(gameSet, playInfo) {
 	gameSet.animatePlay(playInfo);
 }
 
+/**
+ * Move tower.
+ * @param gameSet {GameSet} game set linked to this state.
+ * @param startRow {Integer} start row.
+ * @param startCol {Integer} start column.
+ * @param endRow {Integer} end row.
+ * @param endCol {Integer} end column.
+ */
 PlayGameState.prototype.move = function(gameSet, startRow, startCol, endRow, endCol) {
 	this.display = this.displayStatic;
 	this.update = function() {};
@@ -415,6 +502,14 @@ PlayGameState.prototype.move = function(gameSet, startRow, startCol, endRow, end
 	startRow, startCol, endRow, endCol);
 }
 
+/**
+ * Slide tile.
+ * @param gameSet {GameSet} game set linked to this state.
+ * @param startRow {Integer} start row.
+ * @param startCol {Integer} start column.
+ * @param endRow {Integer} end row.
+ * @param endCol {Integer} end column.
+ */
 PlayGameState.prototype.slide = function(gameSet, startRow, startCol, endRow, endCol) {
 	this.display = this.displayStatic;
 	this.update = function() {};
@@ -425,6 +520,12 @@ PlayGameState.prototype.slide = function(gameSet, startRow, startCol, endRow, en
 	startRow, startCol, endRow, endCol);
 }
 
+/**
+ * Sink tile.
+ * @param gameSet {GameSet} game set linked to this state.
+ * @param row {Integer} row.
+ * @param col {Integer} column.
+ */
 PlayGameState.prototype.sink = function(gameSet, row, col) {
 	this.display = this.displayStatic;
 	this.update = function() {};
@@ -435,6 +536,10 @@ PlayGameState.prototype.sink = function(gameSet, row, col) {
 	row, col);
 }
 
+/**
+ * Pass turn.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.pass = function(gameSet) {
 	this.display = this.displayStatic;
 	this.update = function() {};
@@ -444,20 +549,15 @@ PlayGameState.prototype.pass = function(gameSet) {
 	});
 }
 
+/**
+ * Undo last human action.
+ * @param gameSet {GameSet} game set linked to this state.
+ */
 PlayGameState.prototype.undo = function(gameSet) {
-	console.log("Trying to undo");
 	this.display = this.displayStatic;
 	this.update = function() {};
 	var gameState = this;
 	Connection.undo(gameSet, function(target, request) {
 		gameState.executeUndo(target, request);
 	});
-}
-
-PlayGameState.prototype.animateRaise = function(gameSet, row, col, tile) {
-	gameSet.raise(row, col, tile);
-}
-
-PlayGameState.prototype.animatePass = function(gameSet) {
-	gameSet.pass();
 }
