@@ -113,11 +113,11 @@
         <MATERIAL id="branco" />
         <TEXTURE id="fractal" />
 
-        <SCALE sx="10" sy="0.1" sz="10" />
+        <SCALE sx="15" sy="0.1" sz="15" />
         <ROTATION axis="x" angle="-90" />
 
         <DESCENDANTS>
-            <DESCENDANT id="sphere" />
+            <DESCENDANT id="square" />
         </DESCENDANTS>
     </NODE>
 
