@@ -124,6 +124,8 @@ gettowers(Answer) :- get_towers(Answer).
 addtower('light', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'L').
 addtower('dark', Row, Col, 'addtower: ACK') :- insert_tower(Row, Col, 'T').
 
+save_initials :- format_board(Board), assert(start_board(Board)), gettowers(Towers), assert(start_towers(Towers)).
+
 botaction(Answer) :-
 	difficulty(Difficulty), current_player(Player), is_bot(Player),
 	bot_action(Difficulty, Player, Action), R = [Answer],
@@ -137,15 +139,15 @@ gamemode(Mode, 'Gamemode: ACK') :- Mode == 'HvH', set_mode(Mode).
 
 setDifficulty(Difficulty, 'Difficulty: ACK') :- set_difficulty(Difficulty).
 
-finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvH'), sinkstreakstack([SinkStreak]), numberpassesstack([NumberPasses]).
-finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvM'), difficulty(BotDifficulty), bot_pick_colour(BotDifficulty, Colour), assert(is_bot(Colour)), sinkstreakstack([SinkStreak]), numberpassesstack([NumberPasses]).
-finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('MvM'), difficulty(_), assert(is_bot('white')), assert(is_bot('black')), sinkstreakstack([SinkStreak]), numberpassesstack([NumberPasses]).
-finishsetup('Finish Setup: REJ').
+finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvH'), sinkstreakstack([SinkStreak]), numberpassesstack([NumberPasses]), save_initials.
+finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('HvM'), difficulty(BotDifficulty), bot_pick_colour(BotDifficulty, Colour), assert(is_bot(Colour)), sinkstreakstack([SinkStreak]), numberpassesstack([NumberPasses]),save_initials.
+finishsetup([SinkStreak, NumberPasses]) :- sink_streak_stack(_), game_mode('MvM'), difficulty(_), assert(is_bot('white')), assert(is_bot('black')), sinkstreakstack([SinkStreak]), numberpassesstack([NumberPasses]), save_initials.
+
 
 nextplay([GameOver, Winner, Condition]) :- check_winning_condition(WinnerL), lettertonumber(WinnerL, Winner), GameOver = 2, win_condition(ConditionL), lettertonumber(ConditionL, Condition).
 nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), is_bot(CurrentPlayer), Moves = 0.
 nextplay([Number,Moves]) :- current_player(CurrentPlayer), lettertonumber(CurrentPlayer, Number), available_moves(Moves).
 
-gamefilm([Plays,SinkStreaks,Passes,[Winner, Condition]]) :- moves_stack(Moves), convert_actions(Moves, Plays), convert_sink_streak_stack(SinkStreaks), number_passes_stack(Passes), check_winning_condition(WinnerL), lettertonumber(WinnerL, Winner),retract(win_condition(_)), win_condition(ConditionL),lettertonumber(ConditionL, Condition).
+gamefilm([Board, Towers, Plays,SinkStreaks,Passes,[Winner, Condition]]) :- start_board(Board), start_towers(Towers), moves_stack(Moves), convert_actions(Moves, Plays), convert_sink_streak_stack(SinkStreaks), number_passes_stack(Passes), check_winning_condition(WinnerL), lettertonumber(WinnerL, Winner),retract(win_condition(_)), win_condition(ConditionL),lettertonumber(ConditionL, Condition).
 
 :- server(8081).

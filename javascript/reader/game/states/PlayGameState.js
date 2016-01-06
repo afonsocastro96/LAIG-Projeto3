@@ -119,6 +119,7 @@ PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
 PlayGameState.prototype.getScore = function(gameSet) {
 	var gameState = this;
 	this.display = this.displayStatic;
+	this.update = function (){};
 	Connection.getScore(gameSet, function(target, request) { gameState.setScore(target, request);});
 }
 
@@ -155,7 +156,7 @@ PlayGameState.prototype.pickPlay = function(gameSet, request) {
 	
 	if (nextPlayInfo[1] == Connection.botActionCode) {
 		var gameState = this;
-		Connection.botAction(gameSet, function(target, request) {gameState.animatePlay(target, request);});
+		Connection.botAction(gameSet, function(target, request) {gameState.executePlay(target, request);});
 		return;
 	}
 	
@@ -367,26 +368,55 @@ PlayGameState.prototype.turnDurationFinished = function(gameSet) {
 	this.pass(gameSet);
 }
 
-PlayGameState.prototype.animatePlay = function(gameSet, request) {
+PlayGameState.prototype.executePlay = function(gameSet, request) {
+	var playInfo = JSON.parse(request);
+	this.animatePlay(gameSet, playInfo);
+	
+	this.update = function(gameSet, currTime) {
+		if (!gameSet.animating) {
+			this.getScore(gameSet);
+		}
+	};
+}
+
+PlayGameState.prototype.executeUndo = function(gameSet, request) {
+	var undoActions = JSON.parse(request);	
+	
+	this.update = function(gameSet, currTime) {
+		if (!gameSet.animating) {
+			if (undoActions.length == 0) {
+				this.getScore();
+			}
+			var playInfo = undoActions.shift();
+			this.animatePlay(gameSet, playInfo);
+		}
+	}
+}
+
+PlayGameState.prototype.displayAnimation = function(gameSet) {
+	gameSet.displayAnimated();
+}
+
+PlayGameState.prototype.animatePlay = function(gameSet, playInfo) {
 	this.timerPanel.setText(this.currentPlayer);
 	this.displayHUD = this.displayScoresHUD;
-	var playInfo = JSON.parse(request);
+	this.display = this.displayAnimation;
 	
 	switch(playInfo[0]) {
 		case Connection.sinkCode:
-			this.animateSink(gameSet, playInfo[1], playInfo[2]);
+			gameSet.animateSink(playInfo[1], playInfo[2]);
 			break;
 		case Connection.slideCode:
-			this.animateSlide(gameSet, playInfo[1], playInfo[2], playInfo[3], playInfo[4]);
+			gameSet.animateSlide(playInfo[1], playInfo[2], playInfo[3], playInfo[4]);
 			break;
 		case Connection.moveCode:
-			this.animateMove(gameSet, playInfo[1], playInfo[2], playInfo[3], playInfo[4]);
+			gameSet.animateMove(playInfo[1], playInfo[2], playInfo[3], playInfo[4]);
 			break;
 		case Connection.passCode:
-			this.animatePass(gameSet);
+			gameSet.animatePass();
 			break;
 		case Connection.raiseCode:
-			this.animateRaise(gameSet,playInfo[1], playInfo[2], Connection.parseTile(playInfo[3], playInfo[4], gameSet.scene));
+			gameSet.animateRaise(playInfo[1], playInfo[2], Connection.parseTile(playInfo[3], playInfo[4], gameSet.scene));
 			break;
 	}
 }
@@ -396,7 +426,7 @@ PlayGameState.prototype.move = function(gameSet, startRow, startCol, endRow, end
 	this.update = function() {};
 	var gameState = this;
 	Connection.move(gameSet, function(target, request) {
-		gameState.animatePlay(target, request);
+		gameState.executePlay(target, request);
 	},
 	startRow, startCol, endRow, endCol);
 }
@@ -406,7 +436,7 @@ PlayGameState.prototype.slide = function(gameSet, startRow, startCol, endRow, en
 	this.update = function() {};
 	var gameState = this;
 	Connection.slide(gameSet, function(target, request) {
-		gameState.animatePlay(target, request);
+		gameState.executePlay(target, request);
 	},
 	startRow, startCol, endRow, endCol);
 }
@@ -416,7 +446,7 @@ PlayGameState.prototype.sink = function(gameSet, row, col) {
 	this.update = function() {};
 	var gameState = this;
 	Connection.sink(gameSet, function(target, request) {
-		gameState.animatePlay(target, request);
+		gameState.executePlay(target, request);
 	},
 	row, col);
 }
@@ -426,7 +456,7 @@ PlayGameState.prototype.pass = function(gameSet) {
 	this.update = function() {};
 	var gameState = this;
 	Connection.pass(gameSet, function(target, request) {
-		gameState.animatePlay(target, request);
+		gameState.executePlay(target, request);
 	});
 }
 
@@ -437,94 +467,10 @@ PlayGameState.prototype.undo = function(gameSet) {
 	this.getScore(gameSet);
 }
 
-PlayGameState.prototype.animateMove = function(gameSet, startRow, startCol, endRow, endCol) {
-	gameSet.move(startRow, startCol, endRow, endCol);
-	this.getScore(gameSet);
-}
-
-PlayGameState.prototype.animateSlide = function(gameSet, startRow, startCol, endRow, endCol) {
-	gameSet.slide(startRow, startCol, endRow, endCol);
-	this.getScore(gameSet);
-	/*
-	var tile = this.board.getTile(startRow, startCol);
-	var fadeOutAnimation = new FadeAnimation(tile, span/2, 1.0, 0.0);
-	var fadeInAnimation = new FadeAnimation(tile, span/2, 0.0, 1.0);
-	fadeOutAnimation.start();
-	this.scene.addUpdatable(fadeOutAnimation);
-	tile.setTransparency(true);
-	
-	var fadeIn = function() {
-		this.displayNoPicking();
-	
-		if (fadeInAnimation.finished) {
-			this.scene.removeUpdatable(fadeInAnimation);
-			tile.setTransparency(false);
-			this.animating = false;
-			this.displayNextAnimation();
-		}
-	}
-	
-	var fadeOut = function () {
-		this.displayNoPicking();
-		
-		if (fadeOutAnimation.finished) {
-			this.board.moveTile(startRow, startCol, endRow, endCol);
-			this.scene.removeUpdatable(fadeOutAnimation);
-			fadeInAnimation.start();
-			this.scene.addUpdatable(fadeInAnimation);
-			this.displayFunction = fadeIn;
-		}
-	}
-	
-	this.displayFunction = fadeOut;
-	*/
-}
-
-PlayGameState.prototype.animateSink = function(gameSet, row, col) {
-	gameSet.sink(row, col);
-	this.getScore(gameSet);
-	/*
-	var tile = gameSet.board.getTile(row, col);
-	var fadeOutAnimation = new FadeAnimation(tile, span/2, 1.0, 0.0);
-	var fadeInAnimation = new FadeAnimation(tile, span/2, 0.0, 1.0);
-	fadeOutAnimation.start();
-	gameSet.scene.addUpdatable(fadeOutAnimation);
-	tile.setTransparency(true);
-	
-	var fadeIn = function() {
-		this.displayNoPicking();
-	
-		if (fadeInAnimation.finished) {
-			this.scene.removeUpdatable(fadeInAnimation);
-			tile.setTransparency(false);
-			this.animating = false;
-			this.displayNextAnimation();
-		}
-	}
-	
-	var fadeOut = function () {
-		this.displayNoPicking();
-		
-		if (fadeOutAnimation.finished) {
-			this.board.removeTile(row, col);
-			this.scene.removeUpdatable(fadeOutAnimation);
-			this.stack.addTile(tile);
-			fadeInAnimation.start();
-			this.scene.addUpdatable(fadeInAnimation);
-			this.displayFunction = fadeIn;
-		}
-	}
-	
-	this.displayFunction = fadeOut;
-	*/
-}
-
 PlayGameState.prototype.animateRaise = function(gameSet, row, col, tile) {
 	gameSet.raise(row, col, tile);
-	this.getScore(gameSet);
 }
 
 PlayGameState.prototype.animatePass = function(gameSet) {
 	gameSet.pass();
-	this.getScore(gameSet);
 }
