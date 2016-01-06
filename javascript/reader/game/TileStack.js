@@ -1,3 +1,8 @@
+/**
+ * TileStack constructor.
+ * @constructor
+ * @param scene {CGFscene} scene this tile stack belongs to.
+ */
 function TileStack(scene) {
     this.scene = scene;
 
@@ -10,6 +15,10 @@ function TileStack(scene) {
 TileStack.prototype = Object.create(Object.prototype);
 TileStack.prototype.constructor = TileStack;
 
+/**
+ * Add tile to respective stack.
+ * @param tile {Tile} tile to add to stack.
+ */
 TileStack.prototype.addTile = function(tile) {
 	if (tile instanceof BlackCircleTile)
 		this.blackCirclesStack.push(tile);
@@ -21,6 +30,10 @@ TileStack.prototype.addTile = function(tile) {
 		this.whiteSquaresStack.push(tile);
 }
 
+/**
+ * Remove tile from respective stack.
+ * @param tile {Tile} tile to remove.
+ */
 TileStack.prototype.removeTile = function(tile) {
 	if (tile instanceof BlackCircleTile)
 		this.blackCirclesStack.pop();
@@ -32,6 +45,9 @@ TileStack.prototype.removeTile = function(tile) {
 		this.whiteSquaresStack.pop();
 }
 
+/**
+ * Display tile stacks.
+ */
 TileStack.prototype.display = function() {
     this.scene.pushMatrix();
 		this.scene.translate(-1.5,0.1,0);
