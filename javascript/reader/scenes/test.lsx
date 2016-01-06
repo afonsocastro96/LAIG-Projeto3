@@ -257,14 +257,12 @@
 
             <DESCENDANT id="kitchenette" />
 
-            <DESCENDANT id="tetocandeeiro1" />
-
             <DESCENDANT id="balcaovertical1" />
             <DESCENDANT id="balcaohorizontal1" />
             <DESCENDANT id="chao" />
 
             <DESCENDANT id="paredes" />
-            <DESCENDANT id="salajantar" />
+            <DESCENDANT id="gameset1" />
 
         </DESCENDANTS>
 
@@ -493,191 +491,6 @@
             <DESCENDANT id="cubesquare4" />
             <DESCENDANT id="cubesquare5" />
             <DESCENDANT id="cubesquare6" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <!-- MESA --> 
-
-
-    <NODE id="pernamesa1">
-
-
-        <MATERIAL id="lightwood" />
-        <TEXTURE id="lightwood" />
-
-        <TRANSLATION x="-2.5" y="0" z="-1" />
-        <SCALE sx="0.5" sy="1.5" sz="0.5" />
-        <DESCENDANTS>
-            <DESCENDANT id="cube" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="pernamesa2">
-        <MATERIAL id="lightwood" />
-        <TEXTURE id="lightwood" />
-
-        <TRANSLATION x="-2.5" y="0" z="1" />
-        <SCALE sx="0.5" sy="1.5" sz="0.5" />
-        <DESCENDANTS>
-            <DESCENDANT id="cube" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="pernamesa3">
-
-
-        <MATERIAL id="lightwood" />
-        <TEXTURE id="lightwood" />
-
-        <TRANSLATION x="2.5" y="0" z="-1" />
-        <SCALE sx="0.5" sy="1.5" sz="0.5" />
-        <DESCENDANTS>
-            <DESCENDANT id="cube" />
-        </DESCENDANTS>
-
-    </NODE>
-
-         <NODE id="pernamesa4">
-
-
-        <MATERIAL id="lightwood" />
-        <TEXTURE id="lightwood" />
-
-        <TRANSLATION x="2.5" y="0" z="1" />
-        <SCALE sx="0.5" sy="1.5" sz="0.5" />
-        <DESCENDANTS>
-            <DESCENDANT id="cube" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="tampomesa">
-
-
-        <MATERIAL id="normal" />
-        <TEXTURE id="steel" />
-        <TRANSLATION x="-2.75" y="1.5" z="-1.25" />
-        <SCALE sx="6" sy="0.25" sz="3" />
-        <DESCENDANTS>
-            <DESCENDANT id="cube" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="mesa">
-
-
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="pernamesa1" />
-            <DESCENDANT id="pernamesa2" />
-            <DESCENDANT id="pernamesa3" />
-            <DESCENDANT id="pernamesa4" />
-            <DESCENDANT id="tampomesa" />
-        </DESCENDANTS>
-
-    </NODE>
-
-
-	<!-- CADEIRA -->
-	<NODE id="pernacadeira">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <SCALE sx="0.1" sy="0.5" sz="0.1" />
-        <DESCENDANTS>
-            <DESCENDANT id="cube" />
-        </DESCENDANTS>
-
-    </NODE>
-
-	<NODE id="pernacadeira1">
-        <MATERIAL id="lightwood" />
-        <TEXTURE id="lightwood" />
-
-        <TRANSLATION x="-0.25" y="0" z="-0.25" />
-        <DESCENDANTS>
-            <DESCENDANT id="pernacadeira" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="pernacadeira2">
-        <MATERIAL id="lightwood" />
-        <TEXTURE id="lightwood" />
-
-        <TRANSLATION x="-0.25" y="0" z="0.25" />
-        <DESCENDANTS>
-            <DESCENDANT id="pernacadeira" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="pernacadeira3">
-   		<MATERIAL id="lightwood" />
-        <TEXTURE id="lightwood" />
-
-        <TRANSLATION x="0.25" y="0" z="-0.25" />
-        <DESCENDANTS>
-            <DESCENDANT id="pernacadeira" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="pernacadeira4">
-    	<MATERIAL id="lightwood" />
-        <TEXTURE id="lightwood" />
-
-        <TRANSLATION x="0.25" y="0" z="0.25" />
-        <DESCENDANTS>
-            <DESCENDANT id="pernacadeira" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="tampocadeira">
-
-
-        <MATERIAL id="wood" />
-        <TEXTURE id="chair" />
-        <TRANSLATION x="-0.35" y="0.5" z="-0.30" />
-        <SCALE sx="0.75" sy="0.1" sz="0.75" />
-        <DESCENDANTS>
-            <DESCENDANT id="cube" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="encostocadeira">
-
-
-        <MATERIAL id="wood" />
-        <TEXTURE id="chair" />
-        <TRANSLATION x="-0.35" y="0.5" z="-0.3" />
-        <SCALE sx="0.75" sy="1" sz="0.1" />
-        <DESCENDANTS>
-            <DESCENDANT id="cube" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="cadeira">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-        <TRANSLATION x="0" y="0" z="0.5" />
-        <SCALE sx="2" sy="1.5" sz="2" />
-        <DESCENDANTS>
-            <DESCENDANT id="pernacadeira1" />
-            <DESCENDANT id="pernacadeira2" />
-            <DESCENDANT id="pernacadeira3" />
-            <DESCENDANT id="pernacadeira4" />
-            <DESCENDANT id="tampocadeira" />
-            <DESCENDANT id="encostocadeira" />
         </DESCENDANTS>
 
     </NODE>
@@ -1032,35 +845,6 @@
         </DESCENDANTS>
     </NODE>
 
-     <!-- CANDEEIRO DE TETO -->
-
-    <NODE id="fiotetocandeeiro">
-
-        <MATERIAL id="normal" />
-        <TEXTURE id="steel" />
-
-        <TRANSLATION x="0" y="1" z="0" />
-        <ROTATION axis="x" angle="-90" />
-        <SCALE sx="0.1" sy="0.1" sz="2" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="cylinder" />
-        </DESCENDANTS>
-    </NODE>
-
-     <NODE id="tetocandeeiro">
-
-        <MATERIAL id="lampada" />
-        <TEXTURE id="abajur" />
-
-        <SCALE sx="0.75" sy="0.75" sz="0.75" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="sphere" />
-            <DESCENDANT id="fiotetocandeeiro" />
-        </DESCENDANTS>
-    </NODE>
-
       <!--ARMARIO -->
 
       <NODE id="armario">
@@ -1218,79 +1002,16 @@
 
 
     <!-- OBJETOS -->
-
-
-    <NODE id="mesa1">
-        <MATERIAL id="normal" />
-        <TEXTURE id="null" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="mesa" />
-        </DESCENDANTS>
-
-    </NODE>
-
-
     <NODE id="gameset1">
         <MATERIAL id="branco" />
         <TEXTURE id="null" />
 
-        <TRANSLATION x="0" y="1.75" z="0.15" />
+        <TRANSLATION x="0" y="0" z="0.15" />
         <!--<SCALE sx="0.35" sy="0.35" sz="0.35" />-->
 
         <DESCENDANTS>
             <DESCENDANT id="gameset" />
         </DESCENDANTS>
-    </NODE>
-
-    <NODE id="cadeira1">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <TRANSLATION x="-1" y="0" z="-2" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="cadeira" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="cadeira2">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <TRANSLATION x="1" y="0" z="-2" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="cadeira" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="cadeira3">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <TRANSLATION x="1" y="0" z="2.5" />
-        <ROTATION axis="y" angle="180" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="cadeira" />
-        </DESCENDANTS>
-
-    </NODE>
-
-    <NODE id="cadeira4">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <TRANSLATION x="-1" y="0" z="2.5" />
-        <ROTATION axis="y" angle="180" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="cadeira" />
-        </DESCENDANTS>
-
     </NODE>
 
     <NODE id="candeeiro1">
@@ -1416,17 +1137,6 @@
 
         <DESCENDANTS>
             <DESCENDANT id="microondas" />
-        </DESCENDANTS>
-    </NODE>
-
-    <NODE id="tetocandeeiro1">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <TRANSLATION x="5" y="7" z="5" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="tetocandeeiro" />
         </DESCENDANTS>
     </NODE>
 
@@ -1584,29 +1294,6 @@
             <DESCENDANT id="parede2" />
             <DESCENDANT id="parede3" />
             <DESCENDANT id="parede4" />
-        </DESCENDANTS>
-    </NODE>
-
-    <NODE id="cadeiras">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="cadeira1" />
-            <DESCENDANT id="cadeira2" />
-            <DESCENDANT id="cadeira3" />
-            <DESCENDANT id="cadeira4" />
-        </DESCENDANTS>
-    </NODE>
-
-    <NODE id="salajantar">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="mesa1" />
-            <DESCENDANT id="gameset1" />
-            <DESCENDANT id="cadeiras" />
         </DESCENDANTS>
     </NODE>
 
