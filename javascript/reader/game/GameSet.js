@@ -40,13 +40,19 @@ GameSet.prototype.update = function(currenTime) {
 	this.state.update(this, currenTime);
 }
 
-GameSet.prototype.moveTower = function(startRow, startCol, endRow, endCol) {
+GameSet.prototype.getTower = function(row, col) {
 	for (var i = 0; i < this.towers.length; ++i) {
 		var tower = this.towers[i];
-		if (tower.row == startRow && tower.col == startCol) {
-			tower.setPosition(endRow, endCol);
-			return;
+		if (tower.row == row && tower.col == col) {
+			return tower;
 		}
+	}
+}
+
+GameSet.prototype.moveTower = function(startRow, startCol, endRow, endCol) {
+	var tower = this.getTower(startRow, startCol);
+	if (tower != null) {
+		tower.setPosition(endRow, endCol);
 	}
 }
 

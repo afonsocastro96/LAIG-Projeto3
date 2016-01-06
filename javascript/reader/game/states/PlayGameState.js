@@ -15,14 +15,21 @@ PlayGameState.prototype.init = function(gameSet) {
 	this.numPassDarkPanel = new Marker(gameSet.scene);
 	this.timerPanel = new Marker(gameSet.scene);
 	
+	this.selectionPanel = new MyPlane(gameSet.scene, 100);
+	this.selectionPanelAppearance = new CGFappearance(gameSet.scene);
+	this.selectionPanelAppearance.setAmbient(0.0, 0.0, 0.3, 0.1);
+	this.selectionPanelAppearance.setDiffuse(0.0, 0.0, 0.8, 0.1);
+	this.selectionPanelAppearance.setSpecular(0.0, 0.0, 0.8, 0.1);
+	
 	this.turnDuration = gameSet.turnDuration;
 	this.lastPlayTime = Date.now();
 	
+	this.display = this.displayStatic;	
 	var gameState = this;
 	Connection.finishSetup(gameSet, function(gameSet, request) { gameState.setScore(gameSet, request)});
 }
 
-PlayGameState.prototype.display = function(gameSet) {
+PlayGameState.prototype.displayStatic = function(gameSet) {
 	gameSet.board.display();
 	
 	gameSet.scene.pushMatrix();
@@ -65,6 +72,7 @@ PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
 
 PlayGameState.prototype.getScore = function(gameSet) {
 	var gameState = this;
+	this.display = this.displayStatic;
 	Connection.getScore(gameSet, function(target, request) { gameState.setScore(target, request);});
 }
 
@@ -87,14 +95,12 @@ PlayGameState.prototype.nextPlay = function(gameSet) {
 
 PlayGameState.prototype.pickPlay = function(gameSet, request) {
 	var nextPlayInfo = JSON.parse(request);
-	
 	if (nextPlayInfo[0] == Connection.gameFinished) {
 		gameSet.winner = Connection.players[nextPlayInfo[1]];
 		gameSet.winReason = Connection.winReasons[nextPlayInfo[2]];
 		gameSet.setState(new GameFinishedState());
 		return;
 	}
-	
 	
 	this.currentPlayer = Connection.players[nextPlayInfo[0]];
 	
@@ -104,15 +110,114 @@ PlayGameState.prototype.pickPlay = function(gameSet, request) {
 		return;
 	}
 	
+	this.askPlayer(gameSet, nextPlayInfo[1]);
+}
+
+PlayGameState.prototype.askPlayer = function(gameSet, actions) {
+	var sinkableTiles = [];
+	var selectableTowers = [];
+	var slidableTiles = [[],[]];
+	var movableTiles = [[], []];
+	
+	for (var i = 0; i < actions.length; ++i) {
+		var action = actions[i];
+		switch (action[0]) {
+			case Connection.slideCode:
+			case Connection.moveCode:
+				if (selectableTowers.indexOf(gameSet.getTower(action[1], action[2])) == -1) {
+					selectableTowers.push(gameSet.getTower(action[1], action[2]));
+				}
+			break;
+		}
+		if (selectableTowers.length == 2)
+			break;
+	}
+	
+	for (var i = 0; i < actions.length; ++i) {
+		var action = actions[i];
+		switch (action[0]) {
+			case Connection.sinkCode:
+				sinkableTiles.push([action[1], action[2]]);
+				break;
+			case Connection.slideCode:
+				slidableTiles[selectableTowers.indexOf(gameSet.getTower(action[1],action[2]))].push([action[3], action[4]]);
+				break;
+			case Connection.moveCode:
+				movableTiles[selectableTowers.indexOf(gameSet.getTower(action[1],action[2]))].push([action[3], action[4]]);
+				break;
+		}
+	}
+	
+	var gameState = this;
+	
+	var firstSelection = function(gameSet) {
+		gameSet.board.display();
+	
+		gameSet.scene.pushMatrix();
+			gameSet.scene.translate(5,0,0);
+			gameSet.scene.rotate(Math.PI / 2, 0, 1, 0);
+			gameSet.stack.display();
+		gameSet.scene.popMatrix();
+		
+		for (var i = 0; i < gameSet.towers.length; ++i) {
+			var tower = gameSet.towers[i];
+			gameSet.scene.clearPickRegistration();
+			if (selectableTowers.indexOf(tower) != -1) {
+				gameSet.scene.registerNextPick({
+					selectedTower: tower,
+					onPick : function() {
+						gameState.selectedTower = this.selectedTower;
+					}
+				});
+			}
+			var boardPosition = gameSet.board.getBoardCoordinates(tower.row, tower.col);
+			
+			gameSet.scene.pushMatrix();
+				gameSet.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
+				tower.display();
+			gameSet.scene.popMatrix();
+		}
+		
+		var prevValue;
+		if (!gameSet.scene.pickMode) {
+				prevValue = gameSet.scene.activeShader.getUniformValue("uAlphaScaling");
+				gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: 0.5});
+				this.selectionPanelAppearance.apply();
+		}
+		
+		for (var i = 0; i < sinkableTiles.length; ++i) {
+			var position = sinkableTiles[i];
+			var boardPosition = gameSet.board.getBoardCoordinates(position[0], position[1]);
+				
+			gameSet.scene.pushMatrix();
+				gameSet.scene.translate(boardPosition[0], boardPosition[1] + 0.01, boardPosition[2]);
+				gameSet.scene.registerNextPick({
+					row: position[0],
+					col: position[1],
+					onPick: function() {
+						gameState.sink(gameSet, this.row, this.col);
+					}
+				});
+				this.selectionPanel.display();
+			gameSet.scene.popMatrix();
+		}
+		
+		if (!gameSet.scene.pickMode) {
+			gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: prevValue});
+		}
+		
+		gameSet.scene.clearPickRegistration();
+	}
+	
 	this.lastPlayTime = Date.now();
 	this.update = this.updateTimer;
 	this.displayHUD = this.displayTurnHUD;
+	this.display = firstSelection;
 }
 
 PlayGameState.prototype.turnDurationFinished = function(gameSet) {
 	var gameState = this;
-	this.update = function() {};
-	Connection.pass(gameSet, function(target, request) {gameState.animatePlay(target, request);});
+	this.pass(gameSet);
 }
 
 PlayGameState.prototype.animatePlay = function(gameSet, request) {
@@ -137,6 +242,45 @@ PlayGameState.prototype.animatePlay = function(gameSet, request) {
 			this.animateRaise(gameSet,playInfo[1], playInfo[2], Connection.parseTile(playInfo[3], playInfo[4], gameSet.scene));
 			break;
 	}
+}
+
+PlayGameState.prototype.move = function(gameSet, startRow, startCol, endRow, endCol) {
+	this.display = this.displayStatic;
+	this.update = function() {};
+	var gameState = this;
+	Connection.move(gameSet, function(target, request) {
+		gameState.animatePlay(target, request);
+	},
+	startRow, startCol, endRow, endCol);
+}
+
+PlayGameState.prototype.slide = function(gameSet, startRow, startCol, endRow, endCol) {
+	this.display = this.displayStatic;
+	this.update = function() {};
+	var gameState = this;
+	Connection.slide(gameSet, function(target, request) {
+		gameState.animatePlay(target, request);
+	},
+	startRow, startCol, endRow, endCol);
+}
+
+PlayGameState.prototype.sink = function(gameSet, row, col) {
+	this.display = this.displayStatic;
+	this.update = function() {};
+	var gameState = this;
+	Connection.sink(gameSet, function(target, request) {
+		gameState.animatePlay(target, request);
+	},
+	row, col);
+}
+
+PlayGameState.prototype.pass = function(gameSet) {
+	this.display = this.displayStatic;
+	this.update = function() {};
+	var gameState = this;
+	Connection.pass(gameSet, function(target, request) {
+		gameState.animatePlay(target, request);
+	});
 }
 
 PlayGameState.prototype.animateMove = function(gameSet, startRow, startCol, endRow, endCol) {
