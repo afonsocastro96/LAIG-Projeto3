@@ -20,12 +20,12 @@ serialInclude(['../lib/CGF.js',
 'data/SceneGraphLeafSphere.js', 'data/SceneGraphLeafPlane.js', 'data/SceneGraphLeafPatch.js', 'data/SceneGraphLeafTriangle.js', 'data/SceneMaterial.js',
 'data/SceneGraphNode.js', 'MyInterface.js', 'Connection.js',
 'animations/Animation.js', 'animations/LinearAnimation.js', 'animations/CircularAnimation.js',
-// PLOG Items
-'game/GameBoard.js','game/BoardTile.js','game/EmptyTile.js','game/BlackCircleTile.js',
-'game/WhiteCircleTile.js','game/BlackSquareTile.js','game/WhiteSquareTile.js', 'game/Theme.js',
+
+'game/GameBoard.js','game/BoardTile.js','game/tiles/EmptyTile.js','game/tiles/BlackCircleTile.js',
+'game/tiles/WhiteCircleTile.js','game/tiles/BlackSquareTile.js','game/tiles/WhiteSquareTile.js', 'game/Theme.js',
 'game/TileStack.js','game/GameSet.js', 'game/Marker.js', 'animations/FadeAnimation.js',
 'game/GameState.js', 'game/states/BoardSelectionState.js', 'game/states/ModeSelectionState.js',
-'game/states/TowerSelectionState.js', 'game/BoardTower.js', 'game/LightTower.js', 'game/DarkTower.js',
+'game/states/TowerSelectionState.js', 'game/BoardTower.js', 'game/towers/LightTower.js', 'game/towers/DarkTower.js',
 'game/states/PlayGameState.js','animations/ParabolicAnimation.js', 'game/states/GameFinishedState.js',
 
 main=function()
