@@ -1,3 +1,12 @@
+/**
+ * ParabolicAnimation constructor.
+ * @constructor
+ * @param start {Array(3)} Initial position.
+ * @param end {Array(3)} Final position.
+ * @param elevation {Float} Elevation before arc.
+ * @param peak {Float} Arc height.
+ * @param span {Integer} Animation duration in miliseconds.
+ */
 function ParabolicAnimation(start, end, elevation, peak, span) {
 	this.start = start;
 	this.end = end;
@@ -10,6 +19,9 @@ function ParabolicAnimation(start, end, elevation, peak, span) {
 ParabolicAnimation.prototype = Object.create(Object.prototype);
 ParabolicAnimation.prototype.constructor = ParabolicAnimation;
 
+/**
+ * Init animation values
+ */
 ParabolicAnimation.prototype.init = function() {
 	var vector = [this.end[0] - this.start[0], this.end[1] - this.start[1], this.end[2] - this.start[2]];
 	
@@ -59,6 +71,11 @@ ParabolicAnimation.prototype.init = function() {
 	});
 }
 
+/**
+ * Calculate the position in the animation.
+ * @param t {Integer} Time (in miliseconds) occurred since the beginning of the animation.
+ * @return {Array(3)} returns the position in the animation.
+ */
 ParabolicAnimation.prototype.getPoint = function(t) {
 	if (t <= 0) {
         return this.start;
@@ -76,6 +93,11 @@ ParabolicAnimation.prototype.getPoint = function(t) {
 	return this.pointFunction[index](t - this.controlPointsTime[index]);
 }
 
+/**
+ * Calculate vector magnitude
+ * @param vector {Array(3)} 3D vector.
+ * @return {Float} returns vector magnitude.
+ */
 ParabolicAnimation.prototype.vectorMagnitude = function(vector) {
 	return Math.sqrt(
 		Math.pow(vector[0], 2) +
@@ -83,6 +105,14 @@ ParabolicAnimation.prototype.vectorMagnitude = function(vector) {
 		Math.pow(vector[2], 2));
 }
 
+/**
+ * Calculate position in a linear movement.
+ * @param t {Integer} Time occurred (in miliseconds) since the beginning of the movement.
+ * @param span {Integer} Movement duration (in miliseconds).
+ * @param start {Array(3)} Initial position.
+ * @param end {Array(3)} Final position.
+ * @return {Array(3)} returns position in the movement.
+ */
 ParabolicAnimation.prototype.linearFunction = function(t, span, start, end) {
 	var point = [];
 	
@@ -93,6 +123,16 @@ ParabolicAnimation.prototype.linearFunction = function(t, span, start, end) {
 	return point;
 }
 
+/**
+ * Calculate position in a parabolic movement.
+ * @param t {Integer} Time occurred (in miliseconds) since the beginning of the movement.
+ * @param span {Integer} Movement duration (in miliseconds).
+ * @param center {Array(3)} Center of the parabola base.
+ * @param radius {Float} Radius of the parabola base.
+ * @param peak {Float} Parabola height.
+ * @param angle {Float} Parabola angle with the x axis.
+ * @return {Array(3)} returns position in the movement.
+ */
 ParabolicAnimation.prototype.parabolicFunction = function(t, span, center, radius, peak, angle) {
 	var x = -radius + 2 * radius * t / span;
 	
