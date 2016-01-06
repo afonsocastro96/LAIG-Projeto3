@@ -45,23 +45,7 @@ PlayGameState.prototype.init = function(gameSet) {
 }
 
 PlayGameState.prototype.displayStatic = function(gameSet) {
-	gameSet.board.display();
-	
-	gameSet.scene.pushMatrix();
-		gameSet.scene.translate(5,0,0);
-		gameSet.scene.rotate(Math.PI / 2, 0, 1, 0);
-		gameSet.stack.display();
-	gameSet.scene.popMatrix();
-	
-	for (var i = 0; i < gameSet.towers.length; ++i) {
-		var tower = gameSet.towers[i];
-		var boardPosition = gameSet.board.getBoardCoordinates(tower.row, tower.col);
-		
-		gameSet.scene.pushMatrix();
-			gameSet.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
-			tower.display();
-		gameSet.scene.popMatrix();
-	}
+	gameSet.displayStatic();
 }
 
 PlayGameState.prototype.displayScoresHUD = function(gameSet) {

@@ -10,6 +10,7 @@ GameSet.prototype.init = function() {
 	this.turnDuration = 30;
 	this.maxTurnDuration = 60;
 	this.animating = false;
+	this.towers = [];
 	
 	this.setState(new BoardSelectionState());
 }
@@ -80,4 +81,24 @@ GameSet.prototype.raise = function(row, col, tile) {
 
 GameSet.prototype.pass = function() {
 	// do nothing
+}
+
+GameSet.prototype.displayStatic = function() {
+	this.board.display();
+	
+	this.scene.pushMatrix();
+		this.scene.translate(5,0,0);
+		this.scene.rotate(Math.PI / 2, 0, 1, 0);
+		this.stack.display();
+	this.scene.popMatrix();
+	
+	for (var i = 0; i < this.towers.length; ++i) {
+		var tower = this.towers[i];
+		var boardPosition = this.board.getBoardCoordinates(tower.row, tower.col);
+		
+		this.scene.pushMatrix();
+			this.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
+			tower.display();
+		this.scene.popMatrix();
+	}
 }
