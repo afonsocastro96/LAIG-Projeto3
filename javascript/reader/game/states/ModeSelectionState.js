@@ -52,12 +52,7 @@ ModeSelectionState.prototype.init = function(gameSet) {
 }
 
 ModeSelectionState.prototype.display = function(gameSet) {
-	gameSet.board.display();
-	
-	gameSet.scene.pushMatrix();
-		gameSet.scene.translate(0,0,-5);
-		gameSet.stack.display();
-	gameSet.scene.popMatrix();
+	gameSet.displayStatic();
 }
 
 ModeSelectionState.prototype.displayGameModesHUD = function(gameSet) {

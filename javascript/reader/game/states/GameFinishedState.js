@@ -19,9 +19,10 @@ GameFinishedState.prototype.init = function(gameSet) {
 	
 	this.replayButton = new Marker(gameSet.scene);
 	this.replayButton.setText("Replay");
+	var state = this;
 	this.replayPick = {
 		onPick : function() {
-			;
+			state.getFilm(gameSet);
 		}
 	}
 	
@@ -34,23 +35,7 @@ GameFinishedState.prototype.init = function(gameSet) {
 }
 
 GameFinishedState.prototype.display = function(gameSet) {
-	gameSet.board.display();
-	
-	gameSet.scene.pushMatrix();
-		gameSet.scene.translate(5,0,0);
-		gameSet.scene.rotate(Math.PI / 2, 0, 1, 0);
-		gameSet.stack.display();
-	gameSet.scene.popMatrix();
-	
-	for (var i = 0; i < gameSet.towers.length; ++i) {
-		var tower = gameSet.towers[i];
-		var boardPosition = gameSet.board.getBoardCoordinates(tower.row, tower.col);
-		
-		gameSet.scene.pushMatrix();
-			gameSet.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
-			tower.display();
-		gameSet.scene.popMatrix();
-	}
+	gameSet.displayStatic();
 }
 
 GameFinishedState.prototype.displayHUD = function(gameSet) {
@@ -67,18 +52,27 @@ GameFinishedState.prototype.displayHUD = function(gameSet) {
 	gameSet.scene.popMatrix();
 	
 	gameSet.scene.pushMatrix();
-		gameSet.scene.translate(-2.5, -2.5, -20);
+		gameSet.scene.translate(-2.5, -3.5, -20);
 		gameSet.scene.scale(0.5, 0.5, 0.5);
 		gameSet.scene.registerNextPick(this.replayPick);
 		this.replayButton.display();
 	gameSet.scene.popMatrix();
 	
 	gameSet.scene.pushMatrix();
-		gameSet.scene.translate(2.5, -2.5, -20);
+		gameSet.scene.translate(2.5, -3.5, -20);
 		gameSet.scene.scale(0.5, 0.5, 0.5);
 		gameSet.scene.registerNextPick(this.newGamePick);
 		this.newGameButton.display();
 	gameSet.scene.popMatrix();
 	
 	gameSet.scene.clearPickRegistration();
+}
+
+GameFinishedState.prototype.getFilm = function(gameSet) {
+	var state = this;
+	Connection.gameFilm(gameSet, function(target, request) {state.displayFilm(target, request)});
+}
+
+GameFinishedState.prototype.displayFilm = function(gameSet, request) {
+	
 }
