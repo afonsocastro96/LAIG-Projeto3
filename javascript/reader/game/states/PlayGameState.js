@@ -114,22 +114,23 @@ PlayGameState.prototype.pickPlay = function(gameSet, request) {
 }
 
 PlayGameState.prototype.askPlayer = function(gameSet, actions) {
-	var sinkableTiles = [];
-	var selectableTowers = [];
-	var slidableTiles = [[],[]];
-	var movableTiles = [[], []];
+	this.sinkableTiles = [];
+	this.selectableTowers = [];
+	this.slidableTiles = [[],[]];
+	this.movableTiles = [[], []];
+	this.selectedTower = null;
 	
 	for (var i = 0; i < actions.length; ++i) {
 		var action = actions[i];
 		switch (action[0]) {
 			case Connection.slideCode:
 			case Connection.moveCode:
-				if (selectableTowers.indexOf(gameSet.getTower(action[1], action[2])) == -1) {
-					selectableTowers.push(gameSet.getTower(action[1], action[2]));
+				if (this.selectableTowers.indexOf(gameSet.getTower(action[1], action[2])) == -1) {
+					this.selectableTowers.push(gameSet.getTower(action[1], action[2]));
 				}
 			break;
 		}
-		if (selectableTowers.length == 2)
+		if (this.selectableTowers.length == 2)
 			break;
 	}
 	
@@ -137,82 +138,157 @@ PlayGameState.prototype.askPlayer = function(gameSet, actions) {
 		var action = actions[i];
 		switch (action[0]) {
 			case Connection.sinkCode:
-				sinkableTiles.push([action[1], action[2]]);
+				this.sinkableTiles.push([action[1], action[2]]);
 				break;
 			case Connection.slideCode:
-				slidableTiles[selectableTowers.indexOf(gameSet.getTower(action[1],action[2]))].push([action[3], action[4]]);
+				this.slidableTiles[this.selectableTowers.indexOf(gameSet.getTower(action[1],action[2]))].push([action[3], action[4]]);
 				break;
 			case Connection.moveCode:
-				movableTiles[selectableTowers.indexOf(gameSet.getTower(action[1],action[2]))].push([action[3], action[4]]);
+				this.movableTiles[this.selectableTowers.indexOf(gameSet.getTower(action[1],action[2]))].push([action[3], action[4]]);
 				break;
 		}
-	}
-	
-	var gameState = this;
-	
-	var firstSelection = function(gameSet) {
-		gameSet.board.display();
-	
-		gameSet.scene.pushMatrix();
-			gameSet.scene.translate(5,0,0);
-			gameSet.scene.rotate(Math.PI / 2, 0, 1, 0);
-			gameSet.stack.display();
-		gameSet.scene.popMatrix();
-		
-		for (var i = 0; i < gameSet.towers.length; ++i) {
-			var tower = gameSet.towers[i];
-			gameSet.scene.clearPickRegistration();
-			if (selectableTowers.indexOf(tower) != -1) {
-				gameSet.scene.registerNextPick({
-					selectedTower: tower,
-					onPick : function() {
-						gameState.selectedTower = this.selectedTower;
-					}
-				});
-			}
-			var boardPosition = gameSet.board.getBoardCoordinates(tower.row, tower.col);
-			
-			gameSet.scene.pushMatrix();
-				gameSet.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
-				tower.display();
-			gameSet.scene.popMatrix();
-		}
-		
-		var prevValue;
-		if (!gameSet.scene.pickMode) {
-				prevValue = gameSet.scene.activeShader.getUniformValue("uAlphaScaling");
-				gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: 0.5});
-				this.selectionPanelAppearance.apply();
-		}
-		
-		for (var i = 0; i < sinkableTiles.length; ++i) {
-			var position = sinkableTiles[i];
-			var boardPosition = gameSet.board.getBoardCoordinates(position[0], position[1]);
-				
-			gameSet.scene.pushMatrix();
-				gameSet.scene.translate(boardPosition[0], boardPosition[1] + 0.01, boardPosition[2]);
-				gameSet.scene.registerNextPick({
-					row: position[0],
-					col: position[1],
-					onPick: function() {
-						gameState.sink(gameSet, this.row, this.col);
-					}
-				});
-				this.selectionPanel.display();
-			gameSet.scene.popMatrix();
-		}
-		
-		if (!gameSet.scene.pickMode) {
-			gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: prevValue});
-		}
-		
-		gameSet.scene.clearPickRegistration();
 	}
 	
 	this.lastPlayTime = Date.now();
 	this.update = this.updateTimer;
 	this.displayHUD = this.displayTurnHUD;
-	this.display = firstSelection;
+	this.display = this.firstSelection;
+}
+
+PlayGameState.prototype.firstSelection = function(gameSet) {
+	gameSet.board.display();
+
+	gameSet.scene.pushMatrix();
+		gameSet.scene.translate(5,0,0);
+		gameSet.scene.rotate(Math.PI / 2, 0, 1, 0);
+		gameSet.stack.display();
+	gameSet.scene.popMatrix();
+	
+	var gameState = this;
+	
+	for (var i = 0; i < gameSet.towers.length; ++i) {
+		var tower = gameSet.towers[i];
+		gameSet.scene.clearPickRegistration();
+		if (this.selectableTowers.indexOf(tower) != -1) {
+			gameSet.scene.registerNextPick({
+				selectedTower: tower,
+				onPick : function() {
+					gameState.selectedTower = this.selectedTower;
+					gameState.display = gameState.secondSelection;
+				}
+			});
+		}
+		var boardPosition = gameSet.board.getBoardCoordinates(tower.row, tower.col);
+		
+		gameSet.scene.pushMatrix();
+			gameSet.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
+			tower.display();
+		gameSet.scene.popMatrix();
+	}
+	
+	var prevValue;
+	if (!gameSet.scene.pickMode) {
+			prevValue = gameSet.scene.activeShader.getUniformValue("uAlphaScaling");
+			gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: 0.5});
+			this.selectionPanelAppearance.apply();
+	}
+	
+	for (var i = 0; i < this.sinkableTiles.length; ++i) {
+		var position = this.sinkableTiles[i];
+		var boardPosition = gameSet.board.getBoardCoordinates(position[0], position[1]);
+			
+		gameSet.scene.pushMatrix();
+			gameSet.scene.translate(boardPosition[0], boardPosition[1] + 0.01, boardPosition[2]);
+			gameSet.scene.registerNextPick({
+				row: position[0],
+				col: position[1],
+				onPick: function() {
+					gameState.sink(gameSet, this.row, this.col);
+				}
+			});
+			this.selectionPanel.display();
+		gameSet.scene.popMatrix();
+	}
+	
+	if (!gameSet.scene.pickMode) {
+		gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: prevValue});
+	}
+	
+	gameSet.scene.clearPickRegistration();
+}
+
+PlayGameState.prototype.secondSelection = function(gameSet) {
+	gameSet.board.display();
+
+	gameSet.scene.pushMatrix();
+		gameSet.scene.translate(5,0,0);
+		gameSet.scene.rotate(Math.PI / 2, 0, 1, 0);
+		gameSet.stack.display();
+	gameSet.scene.popMatrix();
+	
+	var gameState = this;
+	
+	for (var i = 0; i < gameSet.towers.length; ++i) {
+		var tower = gameSet.towers[i];
+		var boardPosition = gameSet.board.getBoardCoordinates(tower.row, tower.col);
+		
+		gameSet.scene.pushMatrix();
+			gameSet.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
+			tower.display();
+		gameSet.scene.popMatrix();
+	}
+	
+	var prevValue;
+	if (!gameSet.scene.pickMode) {
+			prevValue = gameSet.scene.activeShader.getUniformValue("uAlphaScaling");
+			gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: 0.5});
+			this.selectionPanelAppearance.apply();
+	}
+	
+	var towerIndex = this.selectableTowers.indexOf(this.selectedTower);
+	
+	for (var i = 0; i < this.movableTiles[towerIndex].length; ++i) {
+		var position = this.movableTiles[towerIndex][i];
+		var boardPosition = gameSet.board.getBoardCoordinates(position[0], position[1]);
+			
+		gameSet.scene.pushMatrix();
+			gameSet.scene.translate(boardPosition[0], boardPosition[1] + 0.01, boardPosition[2]);
+			gameSet.scene.registerNextPick({
+				startRow: gameState.selectedTower.row,
+				startCol: gameState.selectedTower.col,
+				endRow: position[0],
+				endCol: position[1],
+				onPick: function() {
+					gameState.move(gameSet, this.startRow, this.startCol, this.endRow, this.endCol);
+				}
+			});
+			this.selectionPanel.display();
+		gameSet.scene.popMatrix();
+	}
+	for (var i = 0; i < this.slidableTiles[towerIndex].length; ++i) {
+		var position = this.slidableTiles[towerIndex][i];
+		var boardPosition = gameSet.board.getBoardCoordinates(position[0], position[1]);
+			
+		gameSet.scene.pushMatrix();
+			gameSet.scene.translate(boardPosition[0], boardPosition[1] + 0.01, boardPosition[2]);
+			gameSet.scene.registerNextPick({
+				startRow: gameState.selectedTower.row,
+				startCol: gameState.selectedTower.col,
+				endRow: position[0],
+				endCol: position[1],
+				onPick: function() {
+					gameState.slide(gameSet, this.startRow, this.startCol, this.endRow, this.endCol);
+				}
+			});
+			this.selectionPanel.display();
+		gameSet.scene.popMatrix();
+	}
+	
+	if (!gameSet.scene.pickMode) {
+		gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: prevValue});
+	}
+	
+	gameSet.scene.clearPickRegistration();
 }
 
 PlayGameState.prototype.turnDurationFinished = function(gameSet) {
