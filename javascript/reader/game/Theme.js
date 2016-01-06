@@ -1,3 +1,10 @@
+/**
+ * Theme constructor.
+ * @constructor
+ * @param scene {CGFScene} The scene to which the Theme belongs.
+ * @param path {string} The path to the LSX file from this theme.
+ * @param id {string} Identification of the theme
+ */
 function Theme(scene, path, id) {
 	this.scene = scene;
 	this.path = path;
@@ -11,6 +18,9 @@ function Theme(scene, path, id) {
 Theme.prototype = Object.create(Object.prototype);
 Theme.prototype.constructor = Theme;
 
+/**
+ * Function to be called when the theme's SceneGraph is done loading
+ */
 Theme.prototype.onGraphLoaded = function() 
 {
     for (key in this.graph.leaves) {
