@@ -17,8 +17,7 @@ MyLSXScene.prototype.init = function (application) {
     CGFscene.prototype.init.call(this, application);
 
 	this.updatables = [];
-	
-    this.myinterface = null;
+
     this.theme = null;
 
     this.initCameras();
@@ -52,15 +51,6 @@ MyLSXScene.prototype.init = function (application) {
 	this.gameSet = new GameSet(this);
 	this.gameSet.init();
 };
-
-/**
- * Interface setter.
- * @param myinterface {CGFinterface} Interface to set.
- */
-MyLSXScene.prototype.setInterface = function(myinterface) {
-	this.myinterface = myinterface;
-	this.myinterface.onSceneLoaded();
-}
 
 /**
  * Initializes scene lights.

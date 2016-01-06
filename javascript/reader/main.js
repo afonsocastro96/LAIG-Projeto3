@@ -63,7 +63,7 @@ main=function()
 		}
 	});
 
-	myScene.setInterface(myInterface);
+	myInterface.onSceneLoaded();
 	
 	// start
     app.run();
