@@ -1,3 +1,8 @@
+/**
+ * BoardSelectionState constructor.
+ * @constructor
+ * @param scene {CGFScene} The scene to which the BoardSelectionState belongs.
+ */
 function BoardSelectionState(scene) {
 	GameState.call(this);
 }
@@ -5,6 +10,9 @@ function BoardSelectionState(scene) {
 BoardSelectionState.prototype = Object.create(GameState.prototype);
 BoardSelectionState.prototype.constructor = BoardSelectionState;
 
+/**
+* BoardSelectionState initializer.
+*/
 BoardSelectionState.prototype.init = function(gameSet) {
 	GameState.prototype.init.call(this, gameSet);
 	gameSet.setTowers([]);
@@ -29,6 +37,9 @@ BoardSelectionState.prototype.init = function(gameSet) {
 	}
 }
 
+/**
+* Displays the state's HUD.
+*/
 BoardSelectionState.prototype.displayHUD = function(gameSet) {
 	gameSet.scene.pushMatrix();
 		gameSet.scene.translate(0,1,-20);
@@ -49,10 +60,16 @@ BoardSelectionState.prototype.displayHUD = function(gameSet) {
 	gameSet.scene.clearPickRegistration();
 }
 
+/**
+* Function called when a board is picked.
+*/
 BoardSelectionState.prototype.onPick = function(gameSet, boardType) {
 	Connection.startgame(gameSet, this.gameStarted, boardType);
 }
 
+/**
+* Starts the mode selection state when the board is selected.
+*/
 BoardSelectionState.prototype.gameStarted = function(gameSet, requestData) {
 	var boardSchema = JSON.parse(requestData);
 	var board = new GameBoard(gameSet.scene);

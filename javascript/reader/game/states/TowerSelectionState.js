@@ -1,3 +1,8 @@
+/**
+ * TowerSelectionState constructor.
+ * @constructor
+ * @param scene {CGFScene} The scene to which the TowerSelectionState belongs.
+ */
 function TowerSelectionState() {
 	GameState.call(this);
 }
@@ -5,6 +10,9 @@ function TowerSelectionState() {
 TowerSelectionState.prototype = Object.create(GameState.prototype);
 TowerSelectionState.prototype.constructor = BoardSelectionState;
 
+/**
+* TowerSelectionState initializer.
+*/
 TowerSelectionState.prototype.init = function(gameSet) {
 	gameSet.towers = [];
 	var gameState = this;
@@ -20,6 +28,9 @@ TowerSelectionState.prototype.init = function(gameSet) {
 	this.positions = [];
 }
 
+/**
+* Displays the state's HUD.
+*/
 TowerSelectionState.prototype.displayHUD = function(gameSet) {
 	gameSet.scene.pushMatrix();
 		gameSet.scene.translate(0, -3.5, -20);
@@ -29,6 +40,9 @@ TowerSelectionState.prototype.displayHUD = function(gameSet) {
 	gameSet.scene.popMatrix();
 }
 
+/**
+* Display function used to render this object.
+*/
 TowerSelectionState.prototype.display = function(gameSet) {
 	gameSet.displayStatic();
 	
@@ -62,6 +76,9 @@ TowerSelectionState.prototype.display = function(gameSet) {
 	gameSet.scene.clearPickRegistration();
 }
 
+/**
+* Function called to handle the tower selection.
+*/
 TowerSelectionState.prototype.towerSet = function(gameSet, request) {
 	Connection.getTowers(gameSet, TowerSelectionState.prototype.updateTowers);
 	if (request == "Towers ready") {
@@ -86,6 +103,9 @@ TowerSelectionState.prototype.towerSet = function(gameSet, request) {
 	this.positions = requestData[1];
 }
 
+/**
+* Updates the games' towers information.
+*/
 TowerSelectionState.prototype.updateTowers = function(gameSet, request) {
 	var towerSchema = JSON.parse(request);
 	var towers = [];
@@ -105,11 +125,19 @@ TowerSelectionState.prototype.updateTowers = function(gameSet, request) {
 	gameSet.setTowers(towers);
 }
 
+
+/**
+* Function called when the user chooses a place to place a tower.
+*/
 TowerSelectionState.prototype.onPickTower = function(gameSet, row, col) {
 	var gameState = this;
 	Connection.addTower(this.pickingTower, row, col, gameSet, function(gameSet, request) { gameState.towerAdded(gameSet, request);});
 }
 
+
+/**
+* Function called when a tower is added.
+*/
 TowerSelectionState.prototype.towerAdded = function(gameSet, request) {
 	var gameState = this;
 	Connection.setupTowers(gameSet, function (target, request) { gameState.towerSet(target, request); });

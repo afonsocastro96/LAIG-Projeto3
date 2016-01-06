@@ -1,3 +1,8 @@
+/**
+ * ModeSelectionState constructor.
+ * @constructor
+ * @param scene {CGFScene} The scene to which the ModeSelectionState belongs.
+ */
 function ModeSelectionState() {
 	GameState.call(this);
 }
@@ -5,6 +10,9 @@ function ModeSelectionState() {
 ModeSelectionState.prototype = Object.create(GameState.prototype);
 ModeSelectionState.prototype.constructor = BoardSelectionState;
 
+/**
+* ModeSelectionState initializer.
+*/
 ModeSelectionState.prototype.init = function(gameSet) {
 	var gameState = this;
 	
@@ -51,10 +59,16 @@ ModeSelectionState.prototype.init = function(gameSet) {
 	}
 }
 
+/**
+* Display function used to render this object.
+*/
 ModeSelectionState.prototype.display = function(gameSet) {
 	gameSet.displayStatic();
 }
 
+/**
+* Displays the state's HUD.
+*/
 ModeSelectionState.prototype.displayGameModesHUD = function(gameSet) {
 	gameSet.scene.pushMatrix();
 		gameSet.scene.translate(0,3,-20);
@@ -83,6 +97,9 @@ ModeSelectionState.prototype.displayGameModesHUD = function(gameSet) {
 	gameSet.scene.clearPickRegistration();
 }
 
+/**
+* Displays the difficulties HUD.
+*/
 ModeSelectionState.prototype.displayDifficultiesHUD = function(gameSet) {
 	gameSet.scene.pushMatrix();
 		gameSet.scene.translate(0,1,-20);
@@ -103,6 +120,9 @@ ModeSelectionState.prototype.displayDifficultiesHUD = function(gameSet) {
 	gameSet.scene.clearPickRegistration();
 }
 
+/**
+* Function called when a game mode is picked.
+*/
 ModeSelectionState.prototype.onPickMode = function(gameSet, gameMode) {
 	var gameState = this;
 	
@@ -113,10 +133,16 @@ ModeSelectionState.prototype.onPickMode = function(gameSet, gameMode) {
 	gameMode);
 }
 
+/**
+* Function called when a difficulty is picked.
+*/
 ModeSelectionState.prototype.onPickDifficulty = function(gameSet, difficulty) {
 	Connection.setDifficulty(gameSet, this.difficultySelected, difficulty);
 }
 
+/**
+* Function called to change the state when a mode is selected.
+*/
 ModeSelectionState.prototype.modeSelected = function(gameSet, request, gameMode) {	
 	if (gameMode == Connection.humanVsHumanMode) {
 		gameSet.setState(new TowerSelectionState());
@@ -126,6 +152,9 @@ ModeSelectionState.prototype.modeSelected = function(gameSet, request, gameMode)
 	this.displayHUD = this.displayDifficultiesHUD;
 }
 
+/**
+* Function called to change the state when a difficulty is selected.
+*/
 ModeSelectionState.prototype.difficultySelected = function(gameSet, request) {
 	gameSet.setState(new TowerSelectionState());
 }

@@ -1,3 +1,8 @@
+/**
+ * GameFinishedState constructor.
+ * @constructor
+ * @param scene {CGFScene} The scene to which the GameFinishedState belongs.
+ */
 function GameFinishedState() {
 	GameState.call(this);
 }
@@ -5,6 +10,9 @@ function GameFinishedState() {
 GameFinishedState.prototype = Object.create(GameState.prototype);
 GameFinishedState.prototype.constructor = GameFinishedState;
 
+/**
+* GameFinishedState initializer.
+*/
 GameFinishedState.prototype.init = function(gameSet) {
 	this.winner = gameSet.winner;
 	this.winReason = gameSet.winReason;
@@ -40,12 +48,18 @@ GameFinishedState.prototype.displayStatic = function(gameSet) {
 	gameSet.displayStatic();
 }
 
+/**
+* Display function used to render this object.
+*/
 GameFinishedState.prototype.display = GameFinishedState.prototype.displayStatic;
 
 GameFinishedState.prototype.displayAnimated = function(gameSet) {
 	gameSet.displayAnimated();
 }
 
+/**
+* Displays the state's HUD.
+*/
 GameFinishedState.prototype.displayWinHUD = function(gameSet) {
 	gameSet.scene.pushMatrix();
 		gameSet.scene.translate(0, 3.5, -20);
@@ -76,6 +90,9 @@ GameFinishedState.prototype.displayWinHUD = function(gameSet) {
 	gameSet.scene.clearPickRegistration();
 }
 
+/**
+* Displays the state's HUD.
+*/
 GameFinishedState.prototype.displayHUD = GameFinishedState.prototype.displayWinHUD;
 
 
@@ -84,6 +101,9 @@ GameFinishedState.prototype.getFilm = function(gameSet) {
 	Connection.gameFilm(gameSet, function(target, request) {state.displayFilm(target, request)});
 }
 
+/**
+* Displays the current score's HUD.
+*/
 GameFinishedState.prototype.displayScoresHUD = function(gameSet) {
 	gameSet.scene.pushMatrix();
 		gameSet.scene.translate(0, 3.5, -20);
@@ -104,6 +124,9 @@ GameFinishedState.prototype.displayScoresHUD = function(gameSet) {
 	gameSet.scene.popMatrix();
 }
 
+/**
+* Displays the game film.
+*/
 GameFinishedState.prototype.displayFilm = function(gameSet, request) {
 	var filmInfo = JSON.parse(request);
 	
