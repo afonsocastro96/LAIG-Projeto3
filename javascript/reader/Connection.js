@@ -1,7 +1,6 @@
 /* Handle the prolog connection */
 function handleReply(data, target, handler){
-	response=JSON.parse(data.target.response); // Access message and show	
-	console.log(response.answer);
+	response=JSON.parse(data.target.response);
 	
 	if(handler != undefined){
 		handler(target, response.answer);
