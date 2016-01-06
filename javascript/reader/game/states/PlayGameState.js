@@ -16,10 +16,22 @@ PlayGameState.prototype.init = function(gameSet) {
 	this.timerPanel = new Marker(gameSet.scene);
 	
 	this.selectionPanel = new MyPlane(gameSet.scene, 100);
-	this.selectionPanelAppearance = new CGFappearance(gameSet.scene);
-	this.selectionPanelAppearance.setAmbient(0.0, 0.0, 0.3, 0.1);
-	this.selectionPanelAppearance.setDiffuse(0.0, 0.0, 0.8, 0.1);
-	this.selectionPanelAppearance.setSpecular(0.0, 0.0, 0.8, 0.1);
+	this.moveAppearance = new CGFappearance(gameSet.scene);
+	this.moveAppearance.setAmbient(0.0, 0.0, 0.3, 0.1);
+	this.moveAppearance.setDiffuse(0.0, 0.0, 0.8, 0.1);
+	this.moveAppearance.setSpecular(0.0, 0.0, 0.8, 0.1);
+	this.slideAppearance = new CGFappearance(gameSet.scene);
+	this.slideAppearance.setAmbient(0.0, 0.3, 0.0, 0.1);
+	this.slideAppearance.setDiffuse(0.0, 0.8, 0.0, 0.1);
+	this.slideAppearance.setSpecular(0.0, 0.8, 0.0, 0.1);
+	this.sinkAppearance = new CGFappearance(gameSet.scene);
+	this.sinkAppearance.setAmbient(0.3, 0.0, 0.0, 0.1);
+	this.sinkAppearance.setDiffuse(0.8, 0.0, 0.0, 0.1);
+	this.sinkAppearance.setSpecular(0.8, 0.0, 0.0, 0.1);
+	this.towerAppearance = new CGFappearance(gameSet.scene);
+	this.towerAppearance.setAmbient(0.3, 0.3, 0.0, 0.1);
+	this.towerAppearance.setDiffuse(0.8, 0.8, 0.0, 0.1);
+	this.towerAppearance.setSpecular(0.8, 0.8, 0.0, 0.1);
 	
 	this.turnDuration = gameSet.turnDuration;
 	this.lastPlayTime = Date.now();
@@ -188,10 +200,21 @@ PlayGameState.prototype.firstSelection = function(gameSet) {
 	
 	var prevValue;
 	if (!gameSet.scene.pickMode) {
-			prevValue = gameSet.scene.activeShader.getUniformValue("uAlphaScaling");
-			gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: 0.5});
-			this.selectionPanelAppearance.apply();
+		prevValue = gameSet.scene.activeShader.getUniformValue("uAlphaScaling");
+		gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: 0.5});
 	}
+	this.towerAppearance.apply();
+	for (var i = 0; i < this.selectableTowers.length; ++i) {
+		var tower = this.selectableTowers[i];
+		var boardPosition = gameSet.board.getBoardCoordinates(tower.row, tower.col);
+		
+		gameSet.scene.pushMatrix();
+			gameSet.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
+			this.selectionPanel.display();
+		gameSet.scene.popMatrix();
+	}
+	
+	this.sinkAppearance.apply();
 	
 	for (var i = 0; i < this.sinkableTiles.length; ++i) {
 		var position = this.sinkableTiles[i];
@@ -242,8 +265,16 @@ PlayGameState.prototype.secondSelection = function(gameSet) {
 	if (!gameSet.scene.pickMode) {
 			prevValue = gameSet.scene.activeShader.getUniformValue("uAlphaScaling");
 			gameSet.scene.activeShader.setUniformsValues({uAlphaScaling: 0.5});
-			this.selectionPanelAppearance.apply();
 	}
+	
+	this.towerAppearance.apply();
+	var boardPosition = gameSet.board.getBoardCoordinates(this.selectedTower.row, this.selectedTower.col);
+	gameSet.scene.pushMatrix();	
+		gameSet.scene.translate(boardPosition[0],boardPosition[1],boardPosition[2]);
+		this.selectionPanel.display();
+	gameSet.scene.popMatrix();
+	
+	this.moveAppearance.apply();
 	
 	var towerIndex = this.selectableTowers.indexOf(this.selectedTower);
 	
@@ -265,6 +296,9 @@ PlayGameState.prototype.secondSelection = function(gameSet) {
 			this.selectionPanel.display();
 		gameSet.scene.popMatrix();
 	}
+	
+	this.slideAppearance.apply();
+	
 	for (var i = 0; i < this.slidableTiles[towerIndex].length; ++i) {
 		var position = this.slidableTiles[towerIndex][i];
 		var boardPosition = gameSet.board.getBoardCoordinates(position[0], position[1]);
