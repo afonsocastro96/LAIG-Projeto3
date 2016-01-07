@@ -40,6 +40,9 @@ function postGameRequest(requestString, onSuccess, onError)
 	request.send('requestString='+encodeURIComponent(requestString));
 }
 
+/**
+* Initializes the connection object.
+*/
 Connection = new Object();
 
 Connection.minorBoard = 0;

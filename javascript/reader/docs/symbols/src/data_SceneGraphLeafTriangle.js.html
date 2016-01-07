@@ -1,0 +1,30 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/**
+<span class='line'>  2</span>  * SceneGraph triangle leaf constructor
+<span class='line'>  3</span>  * @constructor
+<span class='line'>  4</span>  * @param id {string} Node identification
+<span class='line'>  5</span>  * @param v1x {number} First point x coordinate
+<span class='line'>  6</span>  * @param v1y {number} First point y coordinate
+<span class='line'>  7</span>  * @param v1z {number} First point z coordinate
+<span class='line'>  8</span>  * @param v2x {number} Second point x coordinate
+<span class='line'>  9</span>  * @param v2y {number} Second point y coordinate
+<span class='line'> 10</span>  * @param v2z {number} Second point z coordinate
+<span class='line'> 11</span>  * @param v3x {number} Third point x coordinate
+<span class='line'> 12</span>  * @param v3y {number} Third point y coordinate
+<span class='line'> 13</span>  * @param v3z {number} Third point z coordinate
+<span class='line'> 14</span>  */</span><span class="WHIT">
+<span class='line'> 15</span> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">SceneGraphLeafTriangle</span><span class="PUNC">(</span><span class="NAME">id</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v1x</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v1y</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v1z</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v2x</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v2y</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v2z</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v3x</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v3y</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v3z</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 16</span> </span><span class="WHIT">    </span><span class="NAME">SceneGraphLeaf.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">id</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">"triangle"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="WHIT">    </span><span class="NAME">this.v1</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">vec3.fromValues</span><span class="PUNC">(</span><span class="NAME">v1x</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v1y</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v1z</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="WHIT">    </span><span class="NAME">this.v2</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">vec3.fromValues</span><span class="PUNC">(</span><span class="NAME">v2x</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v2y</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v2z</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 19</span> </span><span class="WHIT">    </span><span class="NAME">this.v3</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">vec3.fromValues</span><span class="PUNC">(</span><span class="NAME">v3x</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v3y</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v3z</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 21</span> 
+<span class='line'> 22</span> </span><span class="NAME">SceneGraphLeafTriangle.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Object.create</span><span class="PUNC">(</span><span class="NAME">SceneGraphLeaf.prototype</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 23</span> </span><span class="NAME">SceneGraphLeafTriangle.prototype.constructor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">SceneGraphLeafTriangle</span><span class="PUNC">;</span></pre></body></html>
