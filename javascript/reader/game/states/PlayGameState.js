@@ -133,7 +133,7 @@ PlayGameState.prototype.displayTurnHUD = function(gameSet) {
  * @param currentTime {Integer} current time (in miliseconds).
  */
 PlayGameState.prototype.updateTimer = function(gameSet, currentTime) {
-	var timeLeft = this.turnDuration - Math.trunc((currentTime - this.lastPlayTime) / 1000);
+	var timeLeft = Math.trunc(this.turnDuration) - Math.trunc((currentTime - this.lastPlayTime) / 1000);
 	if (timeLeft <= 0) {
 		timeLeft = 0;
 		this.turnDurationFinished(gameSet);

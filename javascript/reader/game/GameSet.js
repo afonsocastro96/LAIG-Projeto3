@@ -218,7 +218,7 @@ GameSet.prototype.animatePlay = function(playInfo) {
 			this.animatePass();
 			break;
 		case Connection.raiseCode:
-			this.animateRaise(playInfo[1], playInfo[2], Connection.parseTile(playInfo[3], playInfo[4], gameSet.scene));
+			this.animateRaise(playInfo[1], playInfo[2], Connection.parseTile(playInfo[3], playInfo[4], this.scene));
 			break;
 	}
 }
